@@ -3,148 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Quiz Educacional Extravagante</title>
-</head>
-<body style="margin: 0; height: 100vh; background: linear-gradient(135deg, #1e1e2f, #3b1b5e); font-family: Arial, sans-serif; color: white; overflow-x: hidden;">
-    <!-- Container Principal -->
-    <div id="main-container" style="padding: 40px; text-align: center;">
-        <h1 style="font-size: 3.5em; text-shadow: 0 0 15px #ff00ff, 0 0 30px #00ffff; animation: glow 2s ease-in-out infinite alternate;">Super Quiz Educacional</h1>
-        <p style="font-size: 1.5em; margin-bottom: 40px; text-shadow: 0 0 10px #00ffff;">Escolha uma disciplina e mergulhe no conhecimento com animações épicas!</p>
-
-        <!-- Disciplinas -->
-        <div id="disciplines" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-            <!-- Matemática -->
-            <div class="discipline-card" style="background: linear-gradient(45deg, #ff00ff, #00ffff); padding: 20px; border-radius: 15px; box-shadow: 0 0 20px #00ffff; transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 30px #ff00ff';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 0 20px #00ffff';">
-                <h2 style="font-size: 2em; text-shadow: 0 0 10px #ffffff;">Matemática</h2>
-                <div class="topics" style="display: none; margin-top: 10px;">
-                    <button onclick="loadTopic('matematica', 'numeros-naturais')" style="display: block; margin: 10px auto; padding: 10px; background: rgba(0, 0, 0, 0.5); border: none; color: white; border-radius: 10px; cursor: pointer;">Números Naturais</button>
-                    <button onclick="loadTopic('matematica', 'operacoes-basicas')" style="display: block; margin: 10px auto; padding: 10px; background: rgba(0, 0, 0, 0.5); border: none; color: white; border-radius: 10px; cursor: pointer;">Operações Básicas</button>
-                    <!-- Outros tópicos de Matemática -->
-                </div>
-            </div>
-            <!-- Português -->
-            <div class="discipline-card" style="background: linear-gradient(45deg, #ff00ff, #00ffff); padding: 20px; border-radius: 15px; box-shadow: 0 0 20px #00ffff; transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 30px #ff00ff';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 0 20px #00ffff';">
-                <h2 style="font-size: 2em; text-shadow: 0 0 10px #ffffff;">Português</h2>
-                <div class="topics" style="display: none; margin-top: 10px;">
-                    <button onclick="loadTopic('portugues', 'leitura-interpretacao')" style="display: block; margin: 10px auto; padding: 10px; background: rgba(0, 0, 0, 0.5); border: none; color: white; border-radius: 10px; cursor: pointer;">Leitura e Interpretação</button>
-                    <!-- Outros tópicos de Português -->
-                </div>
-            </div>
-            <!-- Outras disciplinas (História, Geografia, etc.) seguirão o mesmo padrão -->
-        </div>
-
-        <!-- Seção de Conteúdo do Tópico -->
-        <div id="topic-content" style="display: none; margin-top: 40px; background: rgba(0, 0, 0, 0.7); padding: 20px; border-radius: 15px; box-shadow: 0 0 20px #ff00ff;">
-            <h2 id="topic-title" style="font-size: 2.5em; text-shadow: 0 0 10px #00ffff;"></h2>
-            <div id="explanation" style="font-size: 1.2em; line-height: 1.6; margin-bottom: 20px;"></div>
-            <div id="quiz" style="margin-top: 20px;">
-                <h3 style="font-size: 1.8em; text-shadow: 0 0 10px #ffffff;">Quiz Interativo</h3>
-                <div id="question" style="font-size: 1.5em; margin: 20px 0;"></div>
-                <div id="options" style="display: flex; flex-direction: column; gap: 15px;"></div>
-                <div id="feedback" style="margin-top: 20px; font-size: 1.5em; opacity: 0; transition: opacity 0.5s;"></div>
-                <button onclick="nextQuestion()" style="margin-top: 20px; padding: 15px; font-size: 1.2em; background: linear-gradient(45deg, #ff00ff, #00ffff); border: none; border-radius: 10px; color: white; cursor: pointer; box-shadow: 0 0 15px #00ffff; display: none;" id="next-btn">Próxima Pergunta</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Estilos de Animação -->
+    <title>Super Quiz Educacional Cósmico</title>
     <style>
-        @keyframes glow {
-            from { text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff; }
-            to { text-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            overflow: hidden;
+            background: radial-gradient(circle, #1e1e2f, #000);
+            height: 100vh;
+            perspective: 1000px;
         }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
         }
-        @keyframes explode {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
+        #main-container {
+            padding: 40px;
+            text-align: center;
+            transform-style: preserve-3d;
+            animation: cosmicPulse 10s infinite alternate;
+        }
+        h1 {
+            font-size: 5em;
+            text-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff, 0 0 60px #ff0000;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+        #disciplines {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+        .discipline-card {
+            background: linear-gradient(135deg, #ff00ff, #00ffff, #ff0000);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 50px #00ffff, inset 0 0 20px #ff00ff;
+            transition: transform 0.5s, box-shadow 0.5s;
+            cursor: pointer;
+            transform: rotateY(0deg);
+        }
+        .discipline-card:hover {
+            transform: scale(1.1) rotateY(10deg);
+            box-shadow: 0 0 100px #ff00ff, inset 0 0 40px #00ffff;
+        }
+        .topics {
+            display: none;
+            margin-top: 20px;
+        }
+        .topics button {
+            display: block;
+            margin: 15px auto;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            color: #fff;
+            border-radius: 15px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .topics button:hover {
+            transform: scale(1.1);
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+        }
+        #topic-content {
+            display: none;
+            margin: 40px auto;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 60px #ff00ff;
+            max-width: 800px;
+            transform: translateZ(50px);
+        }
+        #question {
+            font-size: 2em;
+            text-shadow: 0 0 15px #00ffff;
+            margin: 20px 0;
+        }
+        #options button {
+            padding: 20px;
+            font-size: 1.5em;
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border: none;
+            border-radius: 15px;
+            color: #fff;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 20px #00ffff;
+        }
+        #options button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px #ff00ff;
+        }
+        #feedback {
+            font-size: 2em;
+            margin: 20px 0;
+            opacity: 0;
+            transition: opacity 0.5s;
         }
         .correct { animation: explode 0.5s ease-out; background: green !important; }
         .incorrect { animation: shake 0.5s ease; background: red !important; }
         .particle {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background: radial-gradient(circle, #ffffff, #ff00ff);
+            width: 15px;
+            height: 15px;
+            background: radial-gradient(circle, #fff, #ff00ff);
             border-radius: 50%;
             pointer-events: none;
             animation: particleBurst 1s ease-out forwards;
+        }
+        @keyframes neonGlow {
+            from { text-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff; }
+            to { text-shadow: 0 0 40px #ff00ff, 0 0 80px #00ffff; }
+        }
+        @keyframes cosmicPulse {
+            from { transform: scale(1) translateZ(0); }
+            to { transform: scale(1.05) translateZ(100px); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-15px); }
+            40%, 80% { transform: translateX(15px); }
+        }
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
         }
         @keyframes particleBurst {
             0% { transform: scale(1); opacity: 1; }
             100% { transform: scale(0); opacity: 0; }
         }
     </style>
+</head>
+<body>
+    <canvas id="canvas-bg"></canvas>
+    <div id="main-container">
+        <h1>Super Quiz Educacional Cósmico</h1>
+        <p style="font-size: 2em; text-shadow: 0 0 15px #00ffff;">Desafie o universo com conhecimento ilimitado!</p>
+        <div id="disciplines"></div>
+        <div id="topic-content">
+            <h2 id="topic-title"></h2>
+            <div id="explanation"></div>
+            <div id="quiz">
+                <h3>Quiz Interativo</h3>
+                <div id="question"></div>
+                <div id="options"></div>
+                <div id="feedback"></div>
+                <button id="next-btn" onclick="nextQuestion()">Próxima Pergunta</button>
+            </div>
+        </div>
+    </div>
 
-    <!-- JavaScript para Lógica e Animações -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
     <script>
-        // Dados dos Tópicos (Exemplo para alguns tópicos)
+        // Configuração do Three.js para fundo 3D
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-bg'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.position.z = 5;
+
+        // Partículas 3D
+        const particleGeometry = new THREE.BufferGeometry();
+        const particleCount = 1000;
+        const posArray = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 10;
+        }
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particleMaterial = new THREE.PointsMaterial({ color: 0xff00ff, size: 0.05 });
+        const particleMesh = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particleMesh);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particleMesh.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Dados das Disciplinas e Tópicos
         const topics = {
             matematica: {
-                'numeros-naturais': {
-                    title: 'Números Naturais',
+                'calculo-diferencial': {
+                    title: 'Cálculo Diferencial',
                     explanation: `
-                        <h3>O que são Números Naturais?</h3>
-                        <p>Os números naturais são os números inteiros não negativos usados para contar ou ordenar. Eles são representados pelo conjunto ℕ = {0, 1, 2, 3, ...}. Em algumas definições, o zero não é incluído, mas aqui consideraremos ℕ com o zero.</p>
-                        <p><b>Propriedades:</b></p>
-                        <ul>
-                            <li>Usados em contagens (ex.: 3 maçãs).</li>
-                            <li>Fechados para adição e multiplicação (o resultado é sempre um número natural).</li>
-                            <li>Não são fechados para subtração ou divisão (ex.: 2 - 3 não é natural).</li>
-                        </ul>
-                        <p><b>Exemplo:</b> Se você tem 5 livros e adiciona 3, terá 8 livros (5 + 3 = 8).</p>
+                        <h3>Cálculo Diferencial</h3>
+                        <p>O cálculo diferencial estuda taxas de variação e inclinações de curvas. Derivadas são usadas para modelar fenômenos dinâmicos, como movimento e crescimento.</p>
+                        <p><b>Conceitos-chave:</b> Limites, derivadas, regras de derivação (produto, quociente, cadeia).</p>
                     `,
                     questions: [
-                        { question: 'Qual é o menor número natural?', options: ['-1', '0', '1', '2'], answer: '0' },
-                        { question: 'A soma de 7 + 4 resulta em um número natural?', options: ['Sim', 'Não'], answer: 'Sim' },
-                        { question: 'Qual número vem após 9 no conjunto dos números naturais?', options: ['8', '9', '10', '11'], answer: '10' },
-                        { question: 'O número 0 é natural?', options: ['Sim', 'Não'], answer: 'Sim' },
-                        { question: 'Qual é o resultado de 6 × 3?', options: ['12', '18', '15', '9'], answer: '18' },
-                        { question: 'A subtração 5 - 7 resulta em um número natural?', options: ['Sim', 'Não'], answer: 'Não' },
-                        { question: 'Qual número natural é par e está entre 4 e 8?', options: ['5', '6', '7', '9'], answer: '6' },
-                        { question: 'Quantos números naturais existem entre 1 e 5 (exclusivo)?', options: ['2', '3', '4', '5'], answer: '3' },
-                        { question: 'O número 10 é divisível por quais números naturais?', options: ['1, 2, 5, 10', '1, 3, 5', '2, 4, 6', '1, 10'], answer: '1, 2, 5, 10' },
-                        { question: 'Qual é o maior número natural de um dígito?', options: ['7', '8', '9', '10'], answer: '9' }
+                        { question: 'Qual é a derivada de f(x) = x³?', options: ['3x²', 'x²', '3x', '6x'], answer: '3x²' },
+                        { question: 'O que representa a derivada em um ponto?', options: ['Área sob a curva', 'Inclinação da tangente', 'Valor máximo', 'Integral'], answer: 'Inclinação da tangente' },
+                        { question: 'Qual é a derivada de f(x) = sin(x)?', options: ['cos(x)', '-sin(x)', 'sin(x)', '-cos(x)'], answer: 'cos(x)' },
+                        { question: 'Qual é a regra da cadeia?', options: ['d/dx(f(g(x))) = f\'(g(x)) * g\'(x)', 'f(x) * g(x)', 'f\'(x) + g\'(x)', 'f(x) / g(x)'], answer: 'd/dx(f(g(x))) = f\'(g(x)) * g\'(x)' },
+                        { question: 'Qual é a derivada de f(x) = e^x?', options: ['e^x', 'x * e^x', 'ln(x)', 'e^(x+1)'], answer: 'e^x' },
+                        { question: 'Qual é a derivada de f(x) = ln(x)?', options: ['1/x', 'ln(x)', 'x', 'e^x'], answer: '1/x' },
+                        { question: 'Qual é a derivada de f(x) = x^2 * sin(x)?', options: ['2x * sin(x) + x^2 * cos(x)', '2x * cos(x)', 'x^2 * sin(x)', 'sin(x) + x^2'], answer: '2x * sin(x) + x^2 * cos(x)' },
+                        { question: 'Qual é o limite de (sin(x)/x) quando x tende a 0?', options: ['1', '0', '∞', '-1'], answer: '1' },
+                        { question: 'Qual é a derivada de f(x) = 1/x²?', options: ['-2/x³', '1/x', '-1/x²', '2/x'], answer: '-2/x³' },
+                        { question: 'O que é uma derivada segunda?', options: ['Derivada da derivada', 'Integral dupla', 'Derivada parcial', 'Limite'], answer: 'Derivada da derivada' }
+                    ]
+                },
+                'geometria-analitica': {
+                    title: 'Geometria Analítica',
+                    explanation: `
+                        <h3>Geometria Analítica</h3>
+                        <p>Geometria analítica combina álgebra e geometria para estudar figuras no plano cartesiano, como retas, círculos e cônicas.</p>
+                        <p><b>Conceitos-chave:</b> Equações de reta, distância entre pontos, seções cônicas.</p>
+                    `,
+                    questions: [
+                        { question: 'Qual é a distância entre os pontos (1, 2) e (4, 6)?', options: ['5', '3', '7', '4'], answer: '5' },
+                        { question: 'Qual é a equação da reta que passa por (0, 1) e (2, 3)?', options: ['y = x + 1', 'y = 2x + 1', 'y = x - 1', 'y = 2x - 1'], answer: 'y = x + 1' },
+                        { question: 'Qual é o centro do círculo x² + y² - 4x + 6y - 12 = 0?', options: ['(2, -3)', '(4, 6)', '(-2, 3)', '(0, 0)'], answer: '(2, -3)' },
+                        { question: 'Qual é a inclinação da reta y = 2x + 3?', options: ['2', '3', '1/2', '-2'], answer: '2' },
+                        { question: 'Qual é a equação da parábola com vértice em (0, 0) e foco em (0, 2)?', options: ['y = x²/8', 'x² = 8y', 'y² = 8x', 'x² = 2y'], answer: 'x² = 8y' },
+                        { question: 'Qual é a distância do ponto (3, 4) à reta y = x?', options: ['√2', '2√2', '√3', '3√2'], answer: '√2' },
+                        { question: 'Qual é a equação da reta perpendicular a y = 2x + 1 que passa por (1, 1)?', options: ['y = -x/2 + 3/2', 'y = 2x - 1', 'y = -2x + 1', 'y = x/2'], answer: 'y = -x/2 + 3/2' },
+                        { question: 'Qual é o tipo de cônica da equação x² + y² = 16?', options: ['Círculo', 'Elipse', 'Parábola', 'Hipérbole'], answer: 'Círculo' },
+                        { question: 'Qual é a área de um triângulo com vértices (0, 0), (2, 0), (0, 3)?', options: ['3', '6', '9', '12'], answer: '3' },
+                        { question: 'Qual é a equação da elipse com centro (0, 0), eixos 4 e 6?', options: ['x²/16 + y²/36 = 1', 'x²/4 + y²/9 = 1', 'x²/9 + y²/4 = 1', 'x²/36 + y²/16 = 1'], answer: 'x²/16 + y²/36 = 1' }
+                    ]
+                },
+                'probabilidade': {
+                    title: 'Probabilidade',
+                    explanation: `
+                        <h3>Probabilidade</h3>
+                        <p>Probabilidade estuda a chance de ocorrência de eventos aleatórios, usada em estatística, jogos, e ciências.</p>
+                        <p><b>Conceitos-chave:</b> Espaço amostral, eventos, probabilidade condicional.</p>
+                    `,
+                    questions: [
+                        { question: 'Qual é a probabilidade de tirar um ás em um baralho de 52 cartas?', options: ['1/13', '1/52', '4/52', '1/4'], answer: '1/13' },
+                        { question: 'Qual é a probabilidade de tirar dois ases consecutivos sem reposição?', options: ['1/169', '1/221', '4/663', '1/1326'], answer: '1/221' },
+                        { question: 'Qual é a probabilidade de um dado de 6 faces mostrar um número par?', options: ['1/2', '1/3', '2/3', '1/6'], answer: '1/2' },
+                        { question: 'O que é um evento independente?', options: ['Não afeta outro evento', 'Depende de outro evento', 'Sempre ocorre', 'Nunca ocorre'], answer: 'Não afeta outro evento' },
+                        { question: 'Qual é a probabilidade de tirar uma bola vermelha de um saco com 3 vermelhas e 2 azuis?', options: ['3/5', '2/5', '1/3', '3/10'], answer: '3/5' },
+                        { question: 'Qual é a fórmula da probabilidade condicional?', options: ['P(A|B) = P(A ∩ B)/P(B)', 'P(A|B) = P(A) + P(B)', 'P(A|B) = P(A)/P(B)', 'P(A|B) = P(A ∩ B)'], answer: 'P(A|B) = P(A ∩ B)/P(B)' },
+                        { question: 'Qual é a probabilidade de tirar um número maior que 4 em um dado?', options: ['1/3', '1/2', '2/3', '1/6'], answer: '1/3' },
+                        { question: 'Qual é a probabilidade de pelo menos um 6 em dois lançamentos de um dado?', options: ['11/36', '1/6', '5/36', '25/36'], answer: '11/36' },
+                        { question: 'O que é espaço amostral?', options: ['Todos os resultados possíveis', 'Um evento específico', 'A probabilidade de um evento', 'Um subconjunto de eventos'], answer: 'Todos os resultados possíveis' },
+                        { question: 'Qual é a probabilidade de tirar uma carta de ouros ou um rei?', options: ['16/52', '13/52', '4/52', '17/52'], answer: '16/52' }
                     ]
                 }
-                // Outros tópicos de Matemática podem ser adicionados aqui
             },
             portugues: {
-                'leitura-interpretacao': {
-                    title: 'Leitura e Interpretação de Textos',
+                'analise-literaria': {
+                    title: 'Análise Literária',
                     explanation: `
-                        <h3>Leitura e Interpretação de Textos</h3>
-                        <p>A leitura e interpretação de textos é uma habilidade essencial para compreender informações, ideias e intenções expressas em diferentes gêneros textuais, como narrativas, artigos, poemas, etc.</p>
-                        <p><b>Estratégias:</b></p>
-                        <ul>
-                            <li>Leia o texto com atenção, identificando o tema principal.</li>
-                            <li>Observe palavras-chave e o contexto em que são usadas.</li>
-                            <li>Responda perguntas com base no que está explícito ou implícito no texto.</li>
-                        </ul>
-                        <p><b>Exemplo:</b> Em um texto que descreve a importância da preservação ambiental, a ideia central pode ser a necessidade de proteger os recursos naturais.</p>
+                        <h3>Análise Literária</h3>
+                        <p>A análise literária examina textos para compreender temas, símbolos, e intenções do autor, considerando contexto histórico e estilístico.</p>
+                        <p><b>Conceitos-chave:</b> Figuras de linguagem, gêneros literários, escolas literárias.</p>
                     `,
                     questions: [
-                        { question: 'O que é interpretação de texto?', options: ['Escrever um texto', 'Compreender o texto', 'Copiar o texto', 'Traduzir o texto'], answer: 'Compreender o texto' },
-                        { question: 'Qual é o objetivo principal da leitura interpretativa?', options: ['Memorizar o texto', 'Entender ideias e intenções', 'Resumir o texto', 'Criticar o autor'], answer: 'Entender ideias e intenções' },
-                        { question: 'O que são palavras-chave em um texto?', options: ['Palavras difíceis', 'Palavras repetidas', 'Palavras que resumem ideias principais', 'Palavras em negrito'], answer: 'Palavras que resumem ideias principais' },
-                        { question: 'O que significa informação implícita?', options: ['Está escrita diretamente', 'Não está no texto, mas pode ser deduzida', 'É um erro do autor', 'É um título'], answer: 'Não está no texto, mas pode ser deduzida' },
-                        { question: 'Qual gênero textual é mais comum em interpretação?', options: ['Propaganda', 'Narrativa', 'Todos os gêneros', 'Manual'], answer: 'Todos os gêneros' },
-                        { question: 'O que fazer se não entender uma palavra?', options: ['Ignorar o texto', 'Usar o contexto para deduzir', 'Parar a leitura', 'Mudar de texto'], answer: 'Usar o contexto para deduzir' },
-                        { question: 'Qual é a primeira etapa da leitura interpretativa?', options: ['Escrever um resumo', 'Identificar o tema', 'Responder perguntas', 'Criticar o texto'], answer: 'Identificar o tema' },
-                        { question: 'O que é o tema principal de um texto?', options: ['A ideia central', 'O título', 'O autor', 'O gênero'], answer: 'A ideia central' },
-                        { question: 'Por que é importante reler um texto?', options: ['Para memorizar', 'Para encontrar detalhes', 'Para mudar o texto', 'Para corrigir erros'], answer: 'Para encontrar detalhes' },
-                        { question: 'O que é um texto narrativo?', options: ['Relata fatos com personagens e enredo', 'Explica um processo', 'Convence o leitor', 'Descreve um objeto'], answer: 'Relata fatos com personagens e enredo' }
+                        { question: 'O que é uma metáfora?', options: ['Comparação sem "como"', 'Repetição de sons', 'Exagero intencional', 'Substituição de termos'], answer: 'Comparação sem "como"' },
+                        { question: 'Qual é a escola literária de "Dom Casmurro"?', options: ['Realismo', 'Romantismo', 'Modernismo', 'Parnasianismo'], answer: 'Realismo' },
+                        { question: 'O que caracteriza o Modernismo?', options: ['Ruptura com tradições', 'Exaltação da natureza', 'Formalismo', 'Idealização amorosa'], answer: 'Ruptura com tradições' },
+                        { question: 'Quem é o autor de "O Cortiço"?', options: ['Aluísio Azevedo', 'Machado de Assis', 'José de Alencar', 'Graciliano Ramos'], answer: 'Aluísio Azevedo' },
+                        { question: 'O que é um clímax em uma narrativa?', options: ['Ponto de maior tensão', 'Introdução', 'Desfecho', 'Conflito inicial'], answer: 'Ponto de maior tensão' },
+                        { question: 'Qual é a figura de linguagem em "O rio é uma serpente"?', options: ['Metáfora', 'Metonímia', 'Hipérbole', 'Personificação'], answer: 'Metáfora' },
+                        { question: 'Qual é o gênero de "Memórias Póstumas de Brás Cubas"?', options: ['Romance', 'Conto', 'Crônica', 'Poema'], answer: 'Romance' },
+                        { question: 'O que é ironia?', options: ['Contraste entre o dito e o real', 'Exagero', 'Repetição', 'Comparação'], answer: 'Contraste entre o dito e o real' },
+                        { question: 'Qual é o tema central de "Vidas Secas"?', options: ['Seca e desigualdade', 'Amor impossível', 'Modernização urbana', 'Religião'], answer: 'Seca e desigualdade' },
+                        { question: 'O que é um narrador onisciente?', options: ['Sabe tudo sobre os personagens', 'Participa da história', 'Usa primeira pessoa', 'Foca em um personagem'], answer: 'Sabe tudo sobre os personagens' }
+                    ]
+                },
+                'gramatica-avancada': {
+                    title: 'Gramática Avançada',
+                    explanation: `
+                        <h3>Gramática Avançada</h3>
+                        <p>Gramática avançada explora regras complexas de sintaxe, semântica, e estilística para aprimorar a comunicação escrita e oral.</p>
+                        <p><b>Conceitos-chave:</b> Concordância, regência, colocação pronominal.</p>
+                    `,
+                    questions: [
+                        { question: 'Qual é a concordância correta: "A maioria dos alunos ___ aprovado."?', options: ['foi', 'foram', 'era', 'estava'], answer: 'foi' },
+                        { question: 'Qual é o tipo de pronome em "Que livro interessante!"?', options: ['Exclamativo', 'Relativo', 'Indefinido', 'Pessoal'], answer: 'Exclamativo' },
+                        { question: 'Qual é a regência do verbo "assistir" em "Assistimos ___ filme"?', options: ['ao', 'o', 'em', 'de'], answer: 'ao' },
+                        { question: 'O que é crase?', options: ['Fusão de preposições', 'Acentuação em vogais', 'Repetição de sons', 'Uso de vírgula'], answer: 'Fusão de preposições' },
+                        { question: 'Qual é a colocação correta: "___-te um presente."?', options: ['Dar-te-ei', 'Te-darei', 'Dar-ei-te', 'Te-ei-dar'], answer: 'Te-darei' },
+                        { question: 'Qual é o tipo de oração em "Se chover, não saio"?', options: ['Condicional', 'Causal', 'Concessiva', 'Final'], answer: 'Condicional' },
+                        { question: 'Qual é o sujeito em "Vende-se casas"?', options: ['Indeterminado', 'Casas', 'Vende', 'Nenhum'], answer: 'Indeterminado' },
+                        { question: 'Qual é a função de "que" em "O livro que li é ótimo"?', options: ['Pronome relativo', 'Conjunção', 'Advérbio', 'Preposição'], answer: 'Pronome relativo' },
+                        { question: 'Qual é o erro em "Houveram muitos problemas"?', options: ['Concordância', 'Regência', 'Crase', 'Pontuação'], answer: 'Concordância' },
+                        { question: 'O que é uma oração subordinada adverbial?', options: ['Modifica o verbo', 'Completa o sujeito', 'Substitui o objeto', 'Descreve o adjetivo'], answer: 'Modifica o verbo' }
+                    ]
+                },
+                'producao-textual': {
+                    title: 'Produção Textual',
+                    explanation: `
+                        <h3>Produção Textual</h3>
+                        <p>Produção textual envolve a criação de textos coesos e coerentes, respeitando normas gramaticais e estruturas de gêneros textuais.</p>
+                        <p><b>Conceitos-chave:</b> Coesão, coerência, gêneros textuais.</p>
+                    `,
+                    questions: [
+                        { question: 'O que é coesão textual?', options: ['Ligação entre ideias', 'Uso de metáforas', 'Repetição de palavras', 'Estrutura fixa'], answer: 'Ligação entre ideias' },
+                        { question: 'Qual é a estrutura de uma dissertação?', options: ['Introdução, desenvolvimento, conclusão', 'Narrativa, clímax, desfecho', 'Título, corpo, assinatura', 'Tema, exemplos, resumo'], answer: 'Introdução, desenvolvimento, conclusão' },
+                        { question: 'O que é um texto argumentativo?', options: ['Defende uma tese', 'Narra uma história', 'Descreve um objeto', 'Explica um processo'], answer: 'Defende uma tese' },
+                        { question: 'Qual é o conectivo de causa?', options: ['Porque', 'Porém', 'Embora', 'Portanto'], answer: 'Porque' },
+                        { question: 'O que é coerência textual?', options: ['Lógica entre ideias', 'Uso de sinônimos', 'Repetição de termos', 'Uso de parágrafos'], answer: 'Lógica entre ideias' },
+                        { question: 'Qual é o gênero de um editorial?', options: ['Argumentativo', 'Narrativo', 'Descritivo', 'Injuntivo'], answer: 'Argumentativo' },
+                        { question: 'O que é uma tese em um texto?', options: ['Ideia principal', 'Exemplo', 'Conclusão', 'Introdução'], answer: 'Ideia principal' },
+                        { question: 'Qual é a função de um parágrafo de desenvolvimento?', options: ['Apresentar argumentos', 'Concluir o texto', 'Introduzir o tema', 'Resumir ideias'], answer: 'Apresentar argumentos' },
+                        { question: 'O que é um texto injuntivo?', options: ['Orienta uma ação', 'Defende uma ideia', 'Relata um fato', 'Descreve um lugar'], answer: 'Orienta uma ação' },
+                        { question: 'Qual é o erro em "A violência é um problema, mas não sabemos a solução"?', options: ['Coerência', 'Coesão', 'Paralelismo', 'Clareza'], answer: 'Clareza' }
                     ]
                 }
-                // Outros tópicos de Português
+            },
+            historia: {
+                'revolucao-industrial': {
+                    title: 'Revolução Industrial',
+                    explanation: `
+                        <h3>Revolução Industrial</h3>
+                        <p>A Revolução Industrial (século XVIII-XIX) marcou a transição para a produção mecanizada, impactando economia, sociedade e urbanização.</p>
+                        <p><b>Conceitos-chave:</b> Máquinas a vapor, urbanização, capitalismo industrial.</p>
+                    `,
+                    questions: [
+                        { question: 'Onde começou a Revolução Industrial?', options: ['Inglaterra', 'França', 'EUA', 'Alemanha'], answer: 'Inglaterra' },
+                        { question: 'Qual foi a principal fonte de energia inicial?', options: ['Vapor', 'Eletricidade', 'Petróleo', 'Carvão'], answer: 'Vapor' },
+                        { question: 'O que é o ludismo?', options: ['Movimento contra máquinas', 'Sindicalismo', 'Reforma agrária', 'Revolução política'], answer: 'Movimento contra máquinas' },
+                        { question: 'Quem inventou a máquina a vapor moderna?', options: ['James Watt', 'Thomas Edison', 'Henry Ford', 'Karl Benz'], answer: 'James Watt' },
+                        { question: 'Qual foi uma consequência social?', options: ['Urbanização', 'Feudalismo', 'Ruralização', 'Monarquia'], answer: 'Urbanização' },
+                        { question: 'O que é o capitalismo industrial?', options: ['Produção em larga escala', 'Economia agrária', 'Comércio marítimo', 'Feudalismo'], answer: 'Produção em larga escala' },
+                        { question: 'Qual foi o impacto nas condições de trabalho?', options: ['Jornadas longas e insalubres', 'Melhoria imediata', 'Fim do trabalho infantil', 'Salários altos'], answer: 'Jornadas longas e insalubres' },
+                        { question: 'O que é o cartismo?', options: ['Movimento por direitos políticos', 'Revolta operária', 'Invenção tecnológica', 'Reforma educacional'], answer: 'Movimento por direitos políticos' },
+                        { question: 'Qual setor foi revolucionado primeiro?', options: ['Têxtil', 'Metalúrgico', 'Automobilístico', 'Químico'], answer: 'Têxtil' },
+                        { question: 'Qual foi uma invenção chave?', options: ['Máquina de fiar', 'Telefone', 'Rádio', 'Avião'], answer: 'Máquina de fiar' }
+                    ]
+                },
+                'segunda-guerra': {
+                    title: 'Segunda Guerra Mundial',
+                    explanation: `
+                        <h3>Segunda Guerra Mundial</h3>
+                        <p>A Segunda Guerra Mundial (1939-1945) foi um conflito global entre as potências do Eixo e os Aliados, marcado por eventos como o Holocausto e a bomba atômica.</p>
+                        <p><b>Conceitos-chave:</b> Eixo, Aliados, Holocausto, Guerra Fria.</p>
+                    `,
+                    questions: [
+                        { question: 'Quem liderava a Alemanha nazista?', options: ['Adolf Hitler', 'Joseph Stalin', 'Winston Churchill', 'Franklin Roosevelt'], answer: 'Adolf Hitler' },
+                        { question: 'Qual evento marcou o início da guerra?', options: ['Invasão da Polônia', 'Ataque a Pearl Harbor', 'Bomba de Hiroshima', 'Queda de Paris'], answer: 'Invasão da Polônia' },
+                        { question: 'Quem eram os Aliados?', options: ['EUA, URSS, Reino Unido', 'Alemanha, Itália, Japão', 'França, Espanha, China', 'Rússia, Japão, EUA'], answer: 'EUA, URSS, Reino Unido' },
+                        { question: 'O que foi o Holocausto?', options: ['Genocídio de judeus', 'Batalha naval', 'Acordo de paz', 'Invasão da França'], answer: 'Genocídio de judeus' },
+                        { question: 'Qual foi o evento final da guerra?', options: ['Bombas de Hiroshima e Nagasaki', 'Invasão da Normandia', 'Queda de Berlim', 'Ataque a Stalingrado'], answer: 'Bombas de Hiroshima e Nagasaki' },
+                        { question: 'O que foi o Dia D?', options: ['Invasão da Normandia', 'Ataque a Pearl Harbor', 'Queda de Berlim', 'Assinatura do armistício'], answer: 'Invasão da Normandia' },
+                        { question: 'Qual foi o principal objetivo do Eixo?', options: ['Expansão territorial', 'Reforma econômica', 'Paz global', 'Desarmamento'], answer: 'Expansão territorial' },
+                        { question: 'O que foi a Blitzkrieg?', options: ['Guerra relâmpago', 'Guerra de trincheiras', 'Guerra naval', 'Guerra aérea'], answer: 'Guerra relâmpago' },
+                        { question: 'Qual país permaneceu neutro?', options: ['Suíça', 'França', 'Itália', 'Japão'], answer: 'Suíça' },
+                        { question: 'O que marcou o início da Guerra Fria?', options: ['Fim da Segunda Guerra', 'Invasão da Polônia', 'Tratado de Versalhes', 'Queda do Muro de Berlim'], answer: 'Fim da Segunda Guerra' }
+                    ]
+                },
+                'independencia-brasil': {
+                    title: 'Independência do Brasil',
+                    explanation: `
+                        <h3>Independência do Brasil</h3>
+                        <p>A Independência do Brasil (1822) marcou a emancipação política de Portugal, liderada por D. Pedro I, com o grito do Ipiranga.</p>
+                        <p><b>Conceitos-chave:</b> Grito do Ipiranga, Tratado de 1825, Conjuração Mineira.</p>
+                    `,
+                    questions: [
+                        { question: 'Quem proclamou a Independência do Brasil?', options: ['D. Pedro I', 'José Bonifácio', 'Tiradentes', 'D. João VI'], answer: 'D. Pedro I' },
+                        { question: 'Qual foi a data da Independência?', options: ['7 de setembro de 1822', '15 de novembro de 1889', '12 de outubro de 1822', '21 de abril de 1792'], answer: '7 de setembro de 1822' },
+                        { question: 'O que foi o grito do Ipiranga?', options: ['Proclamação de independência', 'Revolta popular', 'Acordo com Portugal', 'Batalha final'], answer: 'Proclamação de independência' },
+                        { question: 'Quem foi José Bonifácio?', options: ['Patriarca da Independência', 'Líder militar', 'Rei de Portugal', 'Governador'], answer: 'Patriarca da Independência' },
+                        { question: 'Qual foi o principal motivo da Independência?', options: ['Recolocação colonial', 'Falta de recursos', 'Guerras napoleônicas', 'Revolução Francesa'], answer: 'Recolocação colonial' },
+                        { question: 'O que foi o Tratado de 1825?', options: ['Reconhecimento da Independência', 'Fim da escravidão', 'Criação da Constituição', 'Aliança com a Inglaterra'], answer: 'Reconhecimento da Independência' },
+                        { question: 'Qual foi o papel de Maria Leopoldina?', options: ['Assinou a Independência', 'Liderou batalhas', 'Organizou a corte', 'Escreveu a Constituição'], answer: 'Assinou a Independência' },
+                        { question: 'O que foi a Confederação do Equador?', options: ['Revolta contra a Independência', 'Movimento republicano', 'Aliança militar', 'Acordo econômico'], answer: 'Movimento republicano' },
+                        { question: 'Qual foi a primeira Constituição do Brasil?', options: ['1824', '1891', '1889', '1822'], answer: '1824' },
+                        { question: 'Qual foi o impacto da Independência?', options: ['Manutenção da monarquia', 'Fim da escravidão', 'República imediata', 'Descentralização política'], answer: 'Manutenção da monarquia' }
+                    ]
+                }
             }
-            // Outras disciplinas (História, Geografia, etc.) seguirão o mesmo padrão
+            // Outras disciplinas (Geografia, Física, Química, etc.) seguirão o mesmo padrão
         };
 
-        // Função para Carregar Tópico
+        // Gerar Disciplinas Dinamicamente
+        const disciplinesDiv = document.getElementById('disciplines');
+        Object.keys(topics).forEach(discipline => {
+            const card = document.createElement('div');
+            card.className = 'discipline-card';
+            card.innerHTML = `
+                <h2>${discipline.charAt(0).toUpperCase() + discipline.slice(1)}</h2>
+                <div class="topics">
+                    ${Object.keys(topics[discipline]).map(topic => `
+                        <button onclick="loadTopic('${discipline}', '${topic}')">${topics[discipline][topic].title}</button>
+                    `).join('')}
+                </div>
+            `;
+            disciplinesDiv.appendChild(card);
+            card.addEventListener('click', () => {
+                const topics = card.querySelector('.topics');
+                topics.style.display = topics.style.display === 'none' ? 'block' : 'none';
+                gsap.to(card, { rotationY: 10, scale: 1.1, duration: 0.5 });
+                setTimeout(() => gsap.to(card, { rotationY: 0, scale: 1, duration: 0.5 }), 1000);
+            });
+        });
+
+        // Variáveis do Quiz
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+
+        // Carregar Tópico
         function loadTopic(discipline, topic) {
             const topicData = topics[discipline][topic];
             document.getElementById('topic-content').style.display = 'block';
@@ -153,11 +415,8 @@
             currentQuestions = topicData.questions;
             currentQuestionIndex = 0;
             loadQuestion();
+            gsap.from('#topic-content', { y: 100, opacity: 0, duration: 1, ease: 'power3.out' });
         }
-
-        // Variáveis do Quiz
-        let currentQuestions = [];
-        let currentQuestionIndex = 0;
 
         // Carregar Pergunta
         function loadQuestion() {
@@ -168,19 +427,9 @@
             questionData.options.forEach(option => {
                 const button = document.createElement('button');
                 button.innerText = option;
-                button.style.padding = '15px';
-                button.style.fontSize = '1.2em';
-                button.style.background = 'linear-gradient(45deg, #ff00ff, #00ffff)';
-                button.style.border = 'none';
-                button.style.borderRadius = '10px';
-                button.style.color = 'white';
-                button.style.cursor = 'pointer';
-                button.style.transition = 'transform 0.3s, box-shadow 0.3s';
-                button.style.boxShadow = '0 0 15px #00ffff';
-                button.onmouseover = () => button.style.transform = 'scale(1.05)';
-                button.onmouseout = () => button.style.transform = 'scale(1)';
                 button.onclick = () => checkAnswer(option, questionData.answer);
                 optionsDiv.appendChild(button);
+                gsap.from(button, { x: -50, opacity: 0, duration: 0.5, delay: Math.random() * 0.3 });
             });
             document.getElementById('feedback').style.opacity = '0';
             document.getElementById('next-btn').style.display = 'none';
@@ -190,18 +439,19 @@
         function checkAnswer(selected, correct) {
             const feedback = document.getElementById('feedback');
             if (selected === correct) {
-                feedback.innerText = 'ACERTOU! 🎉';
+                feedback.innerText = 'ACERTOU! 🌌';
                 feedback.style.color = 'lime';
                 feedback.style.opacity = '1';
-                document.body.style.background = 'linear-gradient(135deg, #00ff00, #00cc00)';
-                createParticles();
-                setTimeout(() => document.body.style.background = 'linear-gradient(135deg, #1e1e2f, #3b1b5e)', 1000);
+                createExplosion();
+                gsap.to(document.body, { background: 'radial-gradient(circle, #00ff00, #000)', duration: 0.5, onComplete: () => {
+                    gsap.to(document.body, { background: 'radial-gradient(circle, #1e1e2f, #000)', duration: 0.5 });
+                }});
             } else {
-                feedback.innerText = 'ERROU! 😱 Tente novamente!';
+                feedback.innerText = 'ERROU! 💥 Tente novamente!';
                 feedback.style.color = 'red';
                 feedback.style.opacity = '1';
                 document.body.classList.add('incorrect');
-                createParticles();
+                createExplosion();
                 setTimeout(() => document.body.classList.remove('incorrect'), 500);
             }
             document.getElementById('next-btn').style.display = 'block';
@@ -213,32 +463,38 @@
             if (currentQuestionIndex < currentQuestions.length) {
                 loadQuestion();
             } else {
-                document.getElementById('question').innerText = 'Parabéns! Você completou o quiz!';
+                document.getElementById('question').innerText = 'Você conquistou o cosmos do conhecimento!';
                 document.getElementById('options').innerHTML = '';
                 document.getElementById('feedback').innerText = '';
                 document.getElementById('next-btn').style.display = 'none';
+                createExplosion(50);
             }
         }
 
-        // Criar Partículas para Animações
-        function createParticles() {
-            for (let i = 0; i < 20; i++) {
+        // Criar Explosão de Partículas
+        function createExplosion(count = 20) {
+            for (let i = 0; i < count; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('particle');
                 particle.style.left = `${Math.random() * window.innerWidth}px`;
                 particle.style.top = `${Math.random() * window.innerHeight}px`;
                 document.body.appendChild(particle);
-                setTimeout(() => particle.remove(), 1000);
+                gsap.to(particle, {
+                    scale: 0,
+                    opacity: 0,
+                    duration: 1,
+                    ease: 'power2.out',
+                    onComplete: () => particle.remove()
+                });
             }
         }
 
-        // Mostrar/Esconder Tópicos ao Clicar na Disciplina
-        document.querySelectorAll('.discipline-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const topics = card.querySelector('.topics');
-                topics.style.display = topics.style.display === 'none' ? 'block' : 'none';
-            });
+        // Redimensionar Canvas
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
         });
     </script>
 </body>
-  </html>
+</html>
