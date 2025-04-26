@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comment Site</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    input, button, textarea {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .comment {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #f9f9f9;
+    }
+    .comment img, .comment video {
+      max-width: 100%;
+      margin-top: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+    .error {
+      color: red;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to the Comment Site</h1>
+    <div id="auth-screen">
+      <h2>Create Account</h2>
+      <form id="register-form">
+        <input type="text" id="register-name" placeholder="Enter your name" required>
+        <input type="password" id="register-password" placeholder="Enter your password" required>
+        <button type="submit">Register</button>
+        <p class="error" id="register-error"></p>
+      </form>
+      <h2>Login</h2>
+      <form id="login-form">
+        <input type="text" id="login-name" placeholder="Enter your name" required>
+        <input type="password" id="login-password" placeholder="Enter your password" required>
+        <button type="submit">Login</button>
+        <p class="error" id="login-error"></p>
+      </form>
+    </div>
+    <div id="comment-screen" class="hidden">
+      <h2>Welcome, <span id="user-name"></span>!</h2>
+      <form id="comment-form">
+        <textarea id="comment-text" placeholder="Write a comment..." rows="4"></textarea>
+        <input type="file" id="comment-media" accept="image/*,video/*">
+        <button type="submit">Post Comment</button>
+      </form>
+      <button id="logout-button">Logout</button>
+      <h2>Comments</h2>
+      <div id="comments-section"></div>
+    </div>
+  </div>
+
+  <script>
+    // Simulate a database
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+    const comments = JSON.parse(localStorage.getItem('comments')) || [];
+
+    // DOM Elements
+    const authScreen = document.getElementById('auth-screen');
+    const commentScreen = document.getElementById('comment-screen');
+    const registerForm = document.getElementById('register-form');
+    const loginForm = document.getElementById('login-form');
+    const commentForm = document.getElementById('comment-form');
+    const commentsSection = document.getElementById('comments-section');
+    const logoutButton = document.getElementById('logout-button');
+    const userNameDisplay = document.getElementById('user-name');
+    const registerError = document.getElementById('register-error');
+    const loginError = document.getElementById('login-error');
+
+    let currentUser = null;
+
+    // Utility Functions
+    function saveData() {
+      localStorage.setItem('users', JSON.stringify(users));
+      localStorage.setItem('comments', JSON.stringify(comments));
+    }
+
+    function renderComments() {
+      commentsSection.innerHTML = '';
+      comments.forEach(({ user, text, media }) => {
+        const commentDiv = document.createElement('div');
+        commentDiv.classList.add('comment');
+        commentDiv.innerHTML = `<strong>${user}:</strong><p>${text || ''}</p>`;
+        if (media) {
+          if (media.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = media.url;
+            commentDiv.appendChild(img);
+          } else if (media.type.startsWith('video/')) {
+            const video = document.createElement('video');
+            video.src = media.url;
+            video.controls = true;
+            commentDiv.appendChild(video);
+          }
+        }
+        commentsSection.appendChild(commentDiv);
+      });
+    }
+
+    // Event Listeners
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('register-name').value.trim();
+      const password = document.getElementById('register-password').value.trim();
+
+      if (users[name]) {
+        registerError.textContent = 'User already exists!';
+      } else {
+        users[name] = password;
+        saveData();
+        registerError.textContent = 'Account created! Please log in.';
+      }
+    });
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('login-name').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+
+      if (users[name] && users[name] === password) {
+        currentUser = name;
+        userNameDisplay.textContent = name;
+        authScreen.classList.add('hidden');
+        commentScreen.classList.remove('hidden');
+        renderComments();
+      } else {
+        loginError.textContent = 'Invalid username or password!';
+      }
+    });
+
+    commentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = document.getElementById('comment-text').value.trim();
+      const mediaInput = document.getElementById('comment-media');
+      const file = mediaInput.files[0];
+      let media = null;
+
+      if (file) {
+        const url = URL.createObjectURL(file);
+        media = { type: file.type, url };
+      }
+
+      comments.push({ user: currentUser, text, media });
+      saveData();
+      renderComments();
+
+      // Clear inputs
+      document.getElementById('comment-text').value = '';
+      mediaInput.value = '';
+    });
+
+    logoutButton.addEventListener('click', () => {
+      currentUser = null;
+      authScreen.classList.remove('hidden');
+      commentScreen.classList.add('hidden');
+    });
+
+    // Initial Render
+    renderComments();
+  </script>
+</body>
+</html>
