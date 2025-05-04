@@ -1,114 +1,186 @@
-import { useState, useEffect } from 'react';
-import { Star, Moon, Sun, Search, X, History } from 'lucide-react';
-import { Button } from "/components/ui/button";
-import { Input } from "/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "/components/ui/tabs";
-
-const SongCard = ({ song, isFavorite }: { song: Song; isFavorite: boolean }) => {
-  const apiKey = "AIzaSyCf16bTmrWp9Xp20hX0nQSPowJQ6KronXs";
-
-  const searchYouTubeAndRedirect = async () => {
-    const query = `${song.trackName} ${song.artistName} official music video`;
-    const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(
-      query
-    )}&key=${apiKey}`;
-
-    try {
-      const res = await fetch(searchUrl);
-      const data = await res.json();
-
-      if (data.items && data.items.length > 0) {
-        const videoId = data.items[0].id.videoId;
-        const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
-        window.open(videoUrl, "_blank");
-      } else {
-        // Fallback: abrir busca normal
-        const fallbackUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}&sp=EgIQAQ%3D%3D`;
-        window.open(fallbackUrl, "_blank");
-      }
-    } catch (error) {
-      console.error("Erro ao buscar no YouTube:", error);
-      const fallbackUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}&sp=EgIQAQ%3D%3D`;
-      window.open(fallbackUrl, "_blank");
-    }
-  };
-
-  const youtubeButton = (
-    <Button
-      variant="outline"
-      size="sm"
-      className="flex-1"
-      onClick={searchYouTubeAndRedirect}
-      title="Assistir no YouTube"
-    >
-      <YouTubeLogo />
-      YouTube
-    </Button>
-  );
-
-  // aqui permanece o restante do seu Card
-  return (
-    <Card className="dark:bg-gray-800">
-      <CardHeader className="flex flex-row items-start justify-between pb-2">
-        <div>
-          <CardTitle className="text-lg dark:text-white">
-            {song.trackName}
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            {song.artistName} • {song.collectionName}
-          </p>
+"<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicUniverse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #1DB954;
+            text-align: center;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        #searchInput {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        #searchButton {
+            padding: 10px 20px;
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .song-card {
+            border: 1px solid #eee;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .song-info {
+            flex: 1;
+        }
+        
+        .song-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .spotify-btn {
+            background-color: #1DB954;
+        }
+        
+        .youtube-btn {
+            background-color: #FF0000;
+        }
+        
+        .favorite-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .favorite-btn.active {
+            color: gold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MusicUniverse</h1>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Digite o nome da música ou artista">
+            <button id="searchButton">Buscar</button>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => toggleFavorite(song)}
-          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-        >
-          <Star
-            className={`h-4 w-4 ${
-              isFavorite
-                ? "fill-yellow-400 text-yellow-400"
-                : "text-gray-400"
-            }`}
-          />
-        </Button>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center gap-4 mb-4">
-          <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16">
-            {song.artworkUrl100 && (
-              <img
-                src={song.artworkUrl100}
-                alt={`${song.trackName} album art`}
-                className="w-full h-full rounded-xl"
-              />
-            )}
-          </div>
-          {song.previewUrl && (
-            <audio controls className="w-full max-w-xs">
-              <source src={song.previewUrl} type="audio/mpeg" />
-              Seu navegador não suporta áudio.
-            </audio>
-          )}
+        
+        <div id="results">
+            <!-- Os resultados serão inseridos aqui pelo JavaScript -->
         </div>
-      </CardContent>
-      <CardFooter className="flex justify-between gap-2">
-        <Button variant="outline" size="sm" asChild className="flex-1">
-          <a
-            href={`https://open.spotify.com/search/${encodeURIComponent(
-              `${song.trackName} ${song.artistName}`
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Ouvir no Spotify"
-          >
-            <SpotifyLogo />
-            Spotify
-          </a>
-        </Button>
-        {youtubeButton}
-      </CardFooter>
-    </Card>
-  );
-};
+    </div>
+
+    <script>
+        // Função para buscar músicas
+        function searchSongs() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            
+            document.getElementById('results').innerHTML = '<p>Buscando músicas...</p>';
+            
+            fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=5`)
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data.results || []);
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    document.getElementById('results').innerHTML = '<p>Erro ao buscar músicas</p>';
+                });
+        }
+        
+        // Função para exibir resultados
+        function displayResults(songs) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (songs.length === 0) {
+                resultsDiv.innerHTML = '<p>Nenhuma música encontrada</p>';
+                return;
+            }
+            
+            let html = '';
+            
+            songs.forEach(song => {
+                html += `
+                    <div class="song-card">
+                        <img src="${song.artworkUrl100}" alt="Capa do álbum" width="100">
+                        <div class="song-info">
+                            <h3>${song.trackName}</h3>
+                            <p>${song.artistName}</p>
+                            <p>${song.collectionName}</p>
+                            
+                            ${song.previewUrl ? `
+                                <audio controls>
+                                    <source src="${song.previewUrl}" type="audio/mpeg">
+                                </audio>
+                            ` : ''}
+                            
+                            <div class="song-actions">
+                                <a href="https://open.spotify.com/search/${encodeURIComponent(song.trackName + ' ' + song.artistName)}" 
+                                   target="_blank" 
+                                   class="action-btn spotify-btn">
+                                    Spotify
+                                </a>
+                                <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(song.trackName + ' ' + song.artistName)}" 
+                                   target="_blank" 
+                                   class="action-btn youtube-btn">
+                                    YouTube
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        // Configurar eventos
+        document.getElementById('searchButton').addEventListener('click', searchSongs);
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchSongs();
+            }
+        });
+    </script>
+</body>
+</html>"
+ https://llamacoder.together.ai/chats/ymCSs2ITVxWVLN_k#:~:text=%3C!DOCTYPE%20html%3E%0A%3C,body%3E%0A%3C/html%3E
