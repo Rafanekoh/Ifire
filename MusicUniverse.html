@@ -1,3 +1,10 @@
+import { useState, useEffect } from 'react';
+import { Star, Moon, Sun, Search, X, History } from 'lucide-react';
+import { Button } from "/components/ui/button";
+import { Input } from "/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "/components/ui/tabs";
+
 const SongCard = ({ song, isFavorite }: { song: Song; isFavorite: boolean }) => {
   const apiKey = "AIzaSyCf16bTmrWp9Xp20hX0nQSPowJQ6KronXs";
 
