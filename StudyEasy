@@ -1,0 +1,2318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyEasy - Learn, Compete, Grow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#FF6B6B',
+                        tertiary: '#4ECDC4',
+                        accent: '#FFD166',
+                        dark: {
+                            primary: '#181818',
+                            secondary: '#252525',
+                            text: '#E0E0E0'
+                        },
+                        light: {
+                            primary: '#FFFFFF',
+                            secondary: '#F5F5F5',
+                            text: '#333333'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 2s infinite',
+                        'wiggle': 'wiggle 1s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+        
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .card {
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .nav-indicator {
+            transition: left 0.3s ease;
+        }
+        
+        .message-bubble-left {
+            border-top-left-radius: 0;
+        }
+        
+        .message-bubble-right {
+            border-top-right-radius: 0;
+        }
+        
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #FF6B6B;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .play-btn {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(93, 92, 222, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 15px rgba(93, 92, 222, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(93, 92, 222, 0);
+            }
+        }
+        
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        .dark .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+    </style>
+</head>
+<body class="bg-light-primary dark:bg-dark-primary text-light-text dark:text-dark-text">
+    <div class="min-h-screen flex flex-col">
+        <!-- Main Content Area -->
+        <main class="flex-1 container mx-auto px-4 pt-2 pb-6 mb-16 md:mb-0">
+            <!-- Top bar with title and toggle -->
+            <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM1RDVDREUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNNCAxOVY1YTIgMiAwIDAgMSAyLTJoMTRhMiAyIDAgMCAxIDIgMnYxNGEyIDIgMCAwIDEtMiAySDZhMiAyIDAgMCAxLTItMnoiPjwvcGF0aD48cGF0aCBkPSJNNiAxNFYzIj48L3BhdGg+PHBhdGggZD0iTTE4IDIxVjE0Ij48L3BhdGg+PHBhdGggZD0iTTYgMTBIMTgiPjwvcGF0aD48L3N2Zz4=" alt="Logo" class="h-10 w-10">
+                    <h1 class="text-2xl font-bold ml-2">StudyEasy</h1>
+                </div>
+                <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
+                    <i class="bx bx-moon dark:hidden"></i>
+                    <i class="bx bx-sun hidden dark:inline-block"></i>
+                </button>
+            </div>
+            
+            <!-- Content Tabs -->
+            <div id="content" class="relative min-h-[calc(100vh-140px)]">
+                <!-- Start Tab -->
+                <div id="start-tab" class="tab-content active flex flex-col items-center justify-center h-full py-8">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold mb-4">Welcome back!</h2>
+                        <p class="text-gray-600 dark:text-gray-300 max-w-md mx-auto">Ready to challenge your knowledge and compete with others?</p>
+                    </div>
+                    <button id="play-button" class="play-btn bg-primary text-white rounded-full w-32 h-32 flex items-center justify-center text-2xl font-bold shadow-lg hover:shadow-xl transform transition focus:outline-none">
+                        PLAY
+                    </button>
+                    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
+                        <div class="card bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-md">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-primary/10 p-3 rounded-full">
+                                    <i class="bx bx-trophy text-primary text-2xl"></i>
+                                </div>
+                                <h3 class="font-semibold ml-3">Daily Challenge</h3>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Complete today's challenge to earn extra points!</p>
+                            <button class="mt-4 bg-primary/10 text-primary px-4 py-2 rounded-lg text-sm font-medium">Start Challenge</button>
+                        </div>
+                        <div class="card bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-md">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-secondary/10 p-3 rounded-full">
+                                    <i class="bx bx-user-plus text-secondary text-2xl"></i>
+                                </div>
+                                <h3 class="font-semibold ml-3">Invite Friends</h3>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Challenge your friends and learn together!</p>
+                            <button class="mt-4 bg-secondary/10 text-secondary px-4 py-2 rounded-lg text-sm font-medium">Invite Now</button>
+                        </div>
+                        <div class="card bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-md">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-tertiary/10 p-3 rounded-full">
+                                    <i class="bx bx-trending-up text-tertiary text-2xl"></i>
+                                </div>
+                                <h3 class="font-semibold ml-3">Leaderboard</h3>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">See where you rank among other students!</p>
+                            <button class="mt-4 bg-tertiary/10 text-tertiary px-4 py-2 rounded-lg text-sm font-medium">View Rankings</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Study Tab -->
+                <div id="study-tab" class="tab-content">
+                    <h2 class="text-2xl font-bold mb-6">Study Materials</h2>
+                    
+                    <!-- Search bar -->
+                    <div class="mb-6">
+                        <div class="relative">
+                            <input type="text" id="study-search" placeholder="Search for subjects, topics, or keywords..." class="w-full bg-gray-100 dark:bg-gray-800 text-base rounded-lg py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <i class="bx bx-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- View States -->
+                    <div id="disciplines-view" class="block">
+                        <h3 class="text-xl font-semibold mb-4">Disciplines</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Mathematics -->
+                            <div class="discipline-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer" data-discipline="mathematics">
+                                <div class="h-32 bg-primary flex items-center justify-center">
+                                    <i class="bx bx-math text-white text-6xl"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg mb-2">Mathematics</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Explore numbers, equations, geometry, and mathematical concepts.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">25 topics</span>
+                                        <button class="view-topics-btn bg-primary text-white text-sm px-3 py-1 rounded-lg">View Topics</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Portuguese -->
+                            <div class="discipline-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer" data-discipline="portuguese">
+                                <div class="h-32 bg-secondary flex items-center justify-center">
+                                    <i class="bx bx-book-open text-white text-6xl"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg mb-2">Portuguese</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Master language skills, grammar, literature, and text analysis.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">28 topics</span>
+                                        <button class="view-topics-btn bg-secondary text-white text-sm px-3 py-1 rounded-lg">View Topics</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- History -->
+                            <div class="discipline-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer" data-discipline="history">
+                                <div class="h-32 bg-accent flex items-center justify-center">
+                                    <i class="bx bx-time-five text-white text-6xl"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg mb-2">History</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Discover key events, civilizations, and transformations throughout time.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">30 topics</span>
+                                        <button class="view-topics-btn bg-accent text-white text-sm px-3 py-1 rounded-lg">View Topics</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Geography -->
+                            <div class="discipline-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer" data-discipline="geography">
+                                <div class="h-32 bg-primary flex items-center justify-center">
+                                    <i class="bx bx-map text-white text-6xl"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg mb-2">Geography</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Explore landscapes, climates, populations, and global interactions.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">25 topics</span>
+                                        <button class="view-topics-btn bg-primary text-white text-sm px-3 py-1 rounded-lg">View Topics</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Biology -->
+                            <div class="discipline-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer" data-discipline="biology">
+                                <div class="h-32 bg-tertiary flex items-center justify-center">
+                                    <i class="bx bx-dna text-white text-6xl"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg mb-2">Biology</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Study living organisms, ecosystems, genetics, and human physiology.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">30 topics</span>
+                                        <button class="view-topics-btn bg-tertiary text-white text-sm px-3 py-1 rounded-lg">View Topics</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Physics -->
+                            <div class="discipline-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer" data-discipline="physics">
+                                <div class="h-32 bg-secondary flex items-center justify-center">
+                                    <i class="bx bx-atom text-white text-6xl"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg mb-2">Physics</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Explore energy, forces, motion, and the fundamental laws of nature.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">30 topics</span>
+                                        <button class="view-topics-btn bg-secondary text-white text-sm px-3 py-1 rounded-lg">View Topics</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Chemistry -->
+                            <div class="discipline-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer" data-discipline="chemistry">
+                                <div class="h-32 bg-tertiary flex items-center justify-center">
+                                    <i class="bx bx-vial text-white text-6xl"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg mb-2">Chemistry</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Study elements, compounds, reactions, and properties of matter.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">30 topics</span>
+                                        <button class="view-topics-btn bg-tertiary text-white text-sm px-3 py-1 rounded-lg">View Topics</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- English -->
+                            <div class="discipline-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer" data-discipline="english">
+                                <div class="h-32 bg-accent flex items-center justify-center">
+                                    <i class="bx bx-conversation text-white text-6xl"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg mb-2">English</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Develop language skills, vocabulary, grammar, and communication.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">27 topics</span>
+                                        <button class="view-topics-btn bg-accent text-white text-sm px-3 py-1 rounded-lg">View Topics</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sociology -->
+                            <div class="discipline-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer" data-discipline="sociology">
+                                <div class="h-32 bg-primary flex items-center justify-center">
+                                    <i class="bx bx-group text-white text-6xl"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg mb-2">Sociology</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Examine social behavior, relationships, institutions, and social change.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">29 topics</span>
+                                        <button class="view-topics-btn bg-primary text-white text-sm px-3 py-1 rounded-lg">View Topics</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Philosophy -->
+                            <div class="discipline-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer" data-discipline="philosophy">
+                                <div class="h-32 bg-secondary flex items-center justify-center">
+                                    <i class="bx bx-bulb text-white text-6xl"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg mb-2">Philosophy</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Explore ideas about knowledge, reality, existence, and ethics.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">30 topics</span>
+                                        <button class="view-topics-btn bg-secondary text-white text-sm px-3 py-1 rounded-lg">View Topics</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Physical Education -->
+                            <div class="discipline-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer" data-discipline="physical-education">
+                                <div class="h-32 bg-tertiary flex items-center justify-center">
+                                    <i class="bx bx-run text-white text-6xl"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg mb-2">Physical Education</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Learn about sports, physical fitness, health, and body movement.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">30 topics</span>
+                                        <button class="view-topics-btn bg-tertiary text-white text-sm px-3 py-1 rounded-lg">View Topics</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Art -->
+                            <div class="discipline-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer" data-discipline="art">
+                                <div class="h-32 bg-accent flex items-center justify-center">
+                                    <i class="bx bx-palette text-white text-6xl"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg mb-2">Art</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Explore visual arts, music, theater, dance, and creative expression.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">30 topics</span>
+                                        <button class="view-topics-btn bg-accent text-white text-sm px-3 py-1 rounded-lg">View Topics</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Topics View (initially hidden) -->
+                    <div id="topics-view" class="hidden">
+                        <div class="flex items-center mb-6">
+                            <button id="back-to-disciplines" class="flex items-center text-primary mr-4">
+                                <i class="bx bx-arrow-back mr-1"></i>
+                                <span>Back to Disciplines</span>
+                            </button>
+                            <h3 id="current-discipline-title" class="text-xl font-semibold">Mathematics</h3>
+                        </div>
+                        
+                        <!-- Topic filters -->
+                        <div class="mb-6 overflow-x-auto">
+                            <div id="topic-filters" class="flex space-x-2 pb-2">
+                                <!-- Will be populated dynamically based on discipline -->
+                            </div>
+                        </div>
+                        
+                        <!-- Topics grid -->
+                        <div id="topics-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Will be populated dynamically based on selected discipline -->
+                        </div>
+                    </div>
+                    
+                    <!-- Content View (initially hidden) -->
+                    <div id="content-view" class="hidden">
+                        <div class="flex items-center mb-6">
+                            <button id="back-to-topics" class="flex items-center text-primary mr-4">
+                                <i class="bx bx-arrow-back mr-1"></i>
+                                <span>Back to Topics</span>
+                            </button>
+                            <h3 id="current-topic-title" class="text-xl font-semibold">Topic Name</h3>
+                        </div>
+                        
+                        <!-- Content type filters -->
+                        <div class="mb-6">
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <button class="content-type-filter active flex flex-col items-center justify-center bg-white dark:bg-dark-secondary p-4 rounded-xl shadow-sm" data-content-type="handouts">
+                                    <i class="bx bx-book text-3xl text-primary mb-2"></i>
+                                    <span>Handouts</span>
+                                </button>
+                                <button class="content-type-filter flex flex-col items-center justify-center bg-white dark:bg-dark-secondary p-4 rounded-xl shadow-sm" data-content-type="videos">
+                                    <i class="bx bx-video text-3xl text-primary mb-2"></i>
+                                    <span>Video Classes</span>
+                                </button>
+                                <button class="content-type-filter flex flex-col items-center justify-center bg-white dark:bg-dark-secondary p-4 rounded-xl shadow-sm" data-content-type="questions">
+                                    <i class="bx bx-question-mark text-3xl text-primary mb-2"></i>
+                                    <span>Questions</span>
+                                </button>
+                                <button class="content-type-filter flex flex-col items-center justify-center bg-white dark:bg-dark-secondary p-4 rounded-xl shadow-sm" data-content-type="flashcards">
+                                    <i class="bx bx-card text-3xl text-primary mb-2"></i>
+                                    <span>Flashcards</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Content items grid -->
+                        <div id="content-items-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Will be populated dynamically based on selected topic and content type -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Messages Tab -->
+                <div id="messages-tab" class="tab-content">
+                    <h2 class="text-2xl font-bold mb-6">Messages</h2>
+                    
+                    <div class="bg-white dark:bg-dark-secondary rounded-xl shadow-md overflow-hidden">
+                        <div class="flex h-[calc(100vh-250px)] max-h-[600px]">
+                            <!-- Contacts sidebar -->
+                            <div class="w-1/3 border-r border-gray-200 dark:border-gray-700">
+                                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                                    <div class="relative">
+                                        <input type="text" placeholder="Search messages..." class="w-full bg-gray-100 dark:bg-gray-800 text-base rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-primary">
+                                        <i class="bx bx-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="overflow-y-auto h-[calc(100%-70px)]">
+                                    <div class="contact-item bg-gray-100 dark:bg-gray-800 p-3 border-l-4 border-primary flex items-center cursor-pointer">
+                                        <div class="w-12 h-12 rounded-full bg-tertiary flex items-center justify-center text-white font-bold text-lg mr-3 relative">
+                                            <span>PS</span>
+                                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-dark-secondary"></span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between">
+                                                <h4 class="font-semibold">Prof. Silva</h4>
+                                                <span class="text-xs text-gray-500 dark:text-gray-400">9:41 AM</span>
+                                            </div>
+                                            <div class="flex justify-between items-center">
+                                                <p class="text-sm text-gray-600 dark:text-gray-300 truncate">Don't forget about the test tomorrow!</p>
+                                                <span class="bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="contact-item p-3 flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <div class="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-white font-bold text-lg mr-3 relative">
+                                            <span>SM</span>
+                                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-gray-400 rounded-full border-2 border-white dark:border-dark-secondary"></span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between">
+                                                <h4 class="font-semibold">Study Math Group</h4>
+                                                <span class="text-xs text-gray-500 dark:text-gray-400">Yesterday</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <p class="text-sm text-gray-500 dark:text-gray-400 truncate">You: I'll share my notes tonight</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="contact-item p-3 flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <div class="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-white font-bold text-lg mr-3 relative">
+                                            <span>LO</span>
+                                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-dark-secondary"></span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between">
+                                                <h4 class="font-semibold">Luisa Oliveira</h4>
+                                                <span class="text-xs text-gray-500 dark:text-gray-400">Monday</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <p class="text-sm text-gray-500 dark:text-gray-400 truncate">Can we study together for the biology exam?</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="contact-item p-3 flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg mr-3 relative">
+                                            <span>MM</span>
+                                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-gray-400 rounded-full border-2 border-white dark:border-dark-secondary"></span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between">
+                                                <h4 class="font-semibold">Marcos Mendes</h4>
+                                                <span class="text-xs text-gray-500 dark:text-gray-400">Monday</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <p class="text-sm text-gray-500 dark:text-gray-400 truncate">Thanks for helping with that question!</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Chat area -->
+                            <div class="w-2/3 flex flex-col">
+                                <!-- Chat header -->
+                                <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded-full bg-tertiary flex items-center justify-center text-white font-bold mr-3">
+                                            <span>PS</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold">Prof. Silva</h4>
+                                            <p class="text-xs text-green-500">Online</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                                            <i class="bx bx-phone text-gray-600 dark:text-gray-300"></i>
+                                        </button>
+                                        <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                                            <i class="bx bx-video text-gray-600 dark:text-gray-300"></i>
+                                        </button>
+                                        <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                                            <i class="bx bx-dots-vertical-rounded text-gray-600 dark:text-gray-300"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Messages -->
+                                <div class="flex-1 p-4 overflow-y-auto">
+                                    <div class="flex flex-col space-y-3">
+                                        <div class="flex justify-start">
+                                            <div class="max-w-[70%] bg-gray-100 dark:bg-gray-800 rounded-tr-xl rounded-br-xl rounded-bl-xl p-3 message-bubble-left">
+                                                <p class="text-sm">Good morning! Just a reminder that we have a history test tomorrow. Make sure to review chapters 4-6.</p>
+                                                <span class="text-xs text-gray-500 dark:text-gray-400 block text-right mt-1">9:30 AM</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-start">
+                                            <div class="max-w-[70%] bg-gray-100 dark:bg-gray-800 rounded-tr-xl rounded-br-xl rounded-bl-xl p-3 message-bubble-left">
+                                                <p class="text-sm">Don't forget to bring your materials. The test will cover the Brazilian Empire period.</p>
+                                                <span class="text-xs text-gray-500 dark:text-gray-400 block text-right mt-1">9:32 AM</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-end">
+                                            <div class="max-w-[70%] bg-primary text-white rounded-tl-xl rounded-bl-xl rounded-br-xl p-3 message-bubble-right">
+                                                <p class="text-sm">Thank you for the reminder, Professor! I've been studying all week.</p>
+                                                <span class="text-xs text-white/70 block text-right mt-1">9:36 AM</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-end">
+                                            <div class="max-w-[70%] bg-primary text-white rounded-tl-xl rounded-bl-xl rounded-br-xl p-3 message-bubble-right">
+                                                <p class="text-sm">Could you clarify if we need to know specific dates of events or just the sequence and importance?</p>
+                                                <span class="text-xs text-white/70 block text-right mt-1">9:37 AM</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-start">
+                                            <div class="max-w-[70%] bg-gray-100 dark:bg-gray-800 rounded-tr-xl rounded-br-xl rounded-bl-xl p-3 message-bubble-left">
+                                                <p class="text-sm">Focus on the sequence of events and their significance. Key dates will be important, but don't worry about memorizing every single date.</p>
+                                                <span class="text-xs text-gray-500 dark:text-gray-400 block text-right mt-1">9:40 AM</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-start">
+                                            <div class="max-w-[70%] bg-gray-100 dark:bg-gray-800 rounded-tr-xl rounded-br-xl rounded-bl-xl p-3 message-bubble-left">
+                                                <p class="text-sm">Also, be prepared to write a short essay about the factors leading to the end of the Empire.</p>
+                                                <span class="text-xs text-gray-500 dark:text-gray-400 block text-right mt-1">9:41 AM</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Message input -->
+                                <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                                    <div class="flex items-center">
+                                        <button class="p-2 mr-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                                            <i class="bx bx-smile text-gray-600 dark:text-gray-300 text-xl"></i>
+                                        </button>
+                                        <button class="p-2 mr-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                                            <i class="bx bx-paperclip text-gray-600 dark:text-gray-300 text-xl"></i>
+                                        </button>
+                                        <input type="text" placeholder="Type a message..." class="flex-1 bg-gray-100 dark:bg-gray-800 text-base rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary">
+                                        <button class="p-2 ml-2 bg-primary text-white rounded-full">
+                                            <i class="bx bx-send text-xl"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistics Tab -->
+                <div id="stats-tab" class="tab-content">
+                    <h2 class="text-2xl font-bold mb-6">Your Statistics</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+                        <div class="card bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-md">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-primary/10 p-3 rounded-full">
+                                    <i class="bx bx-question-mark text-primary text-2xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-xl font-bold">247</h3>
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm">Questions Answered</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full mt-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+                            </div>
+                            <p class="text-xs text-right mt-1 text-gray-500 dark:text-gray-400">75% of your goal</p>
+                        </div>
+                        
+                        <div class="card bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-md">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-secondary/10 p-3 rounded-full">
+                                    <i class="bx bx-book text-secondary text-2xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-xl font-bold">34</h3>
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm">Handouts Read</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full mt-2">
+                                <div class="bg-secondary h-2 rounded-full" style="width: 60%"></div>
+                            </div>
+                            <p class="text-xs text-right mt-1 text-gray-500 dark:text-gray-400">60% of your goal</p>
+                        </div>
+                        
+                        <div class="card bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-md">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-tertiary/10 p-3 rounded-full">
+                                    <i class="bx bx-video text-tertiary text-2xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-xl font-bold">19</h3>
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm">Videos Watched</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full mt-2">
+                                <div class="bg-tertiary h-2 rounded-full" style="width: 45%"></div>
+                            </div>
+                            <p class="text-xs text-right mt-1 text-gray-500 dark:text-gray-400">45% of your goal</p>
+                        </div>
+                        
+                        <div class="card bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-md">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-accent/10 p-3 rounded-full">
+                                    <i class="bx bx-card text-accent text-2xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-xl font-bold">128</h3>
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm">Flashcards Reviewed</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full mt-2">
+                                <div class="bg-accent h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                            <p class="text-xs text-right mt-1 text-gray-500 dark:text-gray-400">85% of your goal</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <div class="card bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-md">
+                            <h3 class="font-semibold mb-4">Competition Results</h3>
+                            <div class="flex justify-around mb-6">
+                                <div class="text-center">
+                                    <div class="w-20 h-20 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mx-auto mb-2">
+                                        <span class="text-2xl font-bold text-green-600 dark:text-green-400">42</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">Wins</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-20 h-20 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mx-auto mb-2">
+                                        <span class="text-2xl font-bold text-red-600 dark:text-red-400">27</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">Losses</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mx-auto mb-2">
+                                        <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">61%</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">Win Rate</p>
+                                </div>
+                            </div>
+                            <div class="h-40 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                                <p class="text-gray-400 text-sm">Competition history graph will appear here</p>
+                            </div>
+                        </div>
+                        
+                        <div class="card bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-md">
+                            <h3 class="font-semibold mb-4">Usage Statistics</h3>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Total Time</p>
+                                    <p class="text-xl font-bold">87h 23m</p>
+                                </div>
+                                <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Streak</p>
+                                    <p class="text-xl font-bold">21 days</p>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-sm mb-2">Daily Activity</h4>
+                            <div class="flex space-x-1">
+                                <div class="flex-1 h-16 flex items-end">
+                                    <div class="w-full bg-primary/20 rounded-t-sm" style="height: 20%"></div>
+                                </div>
+                                <div class="flex-1 h-16 flex items-end">
+                                    <div class="w-full bg-primary/30 rounded-t-sm" style="height: 40%"></div>
+                                </div>
+                                <div class="flex-1 h-16 flex items-end">
+                                    <div class="w-full bg-primary/40 rounded-t-sm" style="height: 35%"></div>
+                                </div>
+                                <div class="flex-1 h-16 flex items-end">
+                                    <div class="w-full bg-primary/50 rounded-t-sm" style="height: 70%"></div>
+                                </div>
+                                <div class="flex-1 h-16 flex items-end">
+                                    <div class="w-full bg-primary/60 rounded-t-sm" style="height: 85%"></div>
+                                </div>
+                                <div class="flex-1 h-16 flex items-end">
+                                    <div class="w-full bg-primary/70 rounded-t-sm" style="height: 55%"></div>
+                                </div>
+                                <div class="flex-1 h-16 flex items-end">
+                                    <div class="w-full bg-primary rounded-t-sm" style="height: 90%"></div>
+                                </div>
+                            </div>
+                            <div class="flex text-xs text-gray-500 dark:text-gray-400 justify-between mt-1">
+                                <span>Mon</span>
+                                <span>Tue</span>
+                                <span>Wed</span>
+                                <span>Thu</span>
+                                <span>Fri</span>
+                                <span>Sat</span>
+                                <span>Sun</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-md">
+                        <h3 class="font-semibold mb-4">Performance by Subject</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="text-left text-gray-500 dark:text-gray-400">
+                                        <th class="py-3 pr-6">Subject</th>
+                                        <th class="py-3 px-6">Questions</th>
+                                        <th class="py-3 px-6">Correct</th>
+                                        <th class="py-3 px-6">Accuracy</th>
+                                        <th class="py-3 pl-6">Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-t border-gray-200 dark:border-gray-700">
+                                        <td class="py-3 pr-6 font-medium">Mathematics</td>
+                                        <td class="py-3 px-6">74</td>
+                                        <td class="py-3 px-6">58</td>
+                                        <td class="py-3 px-6">78%</td>
+                                        <td class="py-3 pl-6">
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full">
+                                                <div class="bg-primary h-2 rounded-full" style="width: 78%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-t border-gray-200 dark:border-gray-700">
+                                        <td class="py-3 pr-6 font-medium">Portuguese</td>
+                                        <td class="py-3 px-6">52</td>
+                                        <td class="py-3 px-6">45</td>
+                                        <td class="py-3 px-6">87%</td>
+                                        <td class="py-3 pl-6">
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full">
+                                                <div class="bg-primary h-2 rounded-full" style="width: 87%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-t border-gray-200 dark:border-gray-700">
+                                        <td class="py-3 pr-6 font-medium">Science</td>
+                                        <td class="py-3 px-6">63</td>
+                                        <td class="py-3 px-6">44</td>
+                                        <td class="py-3 px-6">70%</td>
+                                        <td class="py-3 pl-6">
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full">
+                                                <div class="bg-primary h-2 rounded-full" style="width: 70%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-t border-gray-200 dark:border-gray-700">
+                                        <td class="py-3 pr-6 font-medium">History</td>
+                                        <td class="py-3 px-6">41</td>
+                                        <td class="py-3 px-6">35</td>
+                                        <td class="py-3 px-6">85%</td>
+                                        <td class="py-3 pl-6">
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full">
+                                                <div class="bg-primary h-2 rounded-full" style="width: 85%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-t border-gray-200 dark:border-gray-700">
+                                        <td class="py-3 pr-6 font-medium">Geography</td>
+                                        <td class="py-3 px-6">38</td>
+                                        <td class="py-3 px-6">29</td>
+                                        <td class="py-3 px-6">76%</td>
+                                        <td class="py-3 pl-6">
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full">
+                                                <div class="bg-primary h-2 rounded-full" style="width: 76%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-t border-gray-200 dark:border-gray-700">
+                                        <td class="py-3 pr-6 font-medium">English</td>
+                                        <td class="py-3 px-6">57</td>
+                                        <td class="py-3 px-6">51</td>
+                                        <td class="py-3 px-6">89%</td>
+                                        <td class="py-3 pl-6">
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full">
+                                                <div class="bg-primary h-2 rounded-full" style="width: 89%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Settings Tab -->
+                <div id="settings-tab" class="tab-content">
+                    <h2 class="text-2xl font-bold mb-6">Settings</h2>
+                    
+                    <div class="bg-white dark:bg-dark-secondary rounded-xl shadow-md overflow-hidden">
+                        <div class="border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex overflow-x-auto">
+                                <button class="settings-tab-btn active whitespace-nowrap px-6 py-3 font-medium text-primary border-b-2 border-primary">Account</button>
+                                <button class="settings-tab-btn whitespace-nowrap px-6 py-3 font-medium text-gray-500 dark:text-gray-400">Notifications</button>
+                                <button class="settings-tab-btn whitespace-nowrap px-6 py-3 font-medium text-gray-500 dark:text-gray-400">Appearance</button>
+                                <button class="settings-tab-btn whitespace-nowrap px-6 py-3 font-medium text-gray-500 dark:text-gray-400">Privacy</button>
+                                <button class="settings-tab-btn whitespace-nowrap px-6 py-3 font-medium text-gray-500 dark:text-gray-400">Language</button>
+                                <button class="settings-tab-btn whitespace-nowrap px-6 py-3 font-medium text-gray-500 dark:text-gray-400">Help & Support</button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="settings-tab-content active">
+                                <div class="flex items-center justify-between mb-8">
+                                    <div class="flex items-center">
+                                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                                            <i class="bx bx-user text-primary text-3xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold">User Name</h3>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">user@example.com</p>
+                                        </div>
+                                    </div>
+                                    <button class="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm font-medium">Edit Profile</button>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <h3 class="font-semibold mb-4">Account Information</h3>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm text-gray-600 dark:text-gray-300 mb-1">Name</label>
+                                            <input type="text" value="User Name" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-primary text-base">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm text-gray-600 dark:text-gray-300 mb-1">Email</label>
+                                            <input type="email" value="user@example.com" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-primary text-base">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm text-gray-600 dark:text-gray-300 mb-1">Education Level</label>
+                                            <select class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-primary text-base">
+                                                <option>Elementary School</option>
+                                                <option>Middle School</option>
+                                                <option selected>High School</option>
+                                                <option>College</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <h3 class="font-semibold mb-4">Password</h3>
+                                    <button class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg text-sm font-medium">Change Password</button>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="font-semibold mb-4">Linked Accounts</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center justify-between p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                            <div class="flex items-center">
+                                                <i class="bx bxl-google text-2xl mr-3 text-red-500"></i>
+                                                <span>Google</span>
+                                            </div>
+                                            <button class="text-sm text-primary">Connect</button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                            <div class="flex items-center">
+                                                <i class="bx bxl-facebook-circle text-2xl mr-3 text-blue-600"></i>
+                                                <span>Facebook</span>
+                                            </div>
+                                            <button class="text-sm text-primary">Connect</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-tab-content hidden">
+                                <h3 class="font-semibold mb-4">Notification Settings</h3>
+                                
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Push Notifications</h4>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Receive notifications on your device</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" value="" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Email Notifications</h4>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Receive email about activity and updates</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" value="" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Study Reminders</h4>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Receive reminders to study based on your schedule</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" value="" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">New Content Alerts</h4>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Be notified when new study materials are added</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" value="" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Appearance Settings -->
+                            <div class="settings-tab-content hidden">
+                                <h3 class="font-semibold mb-4">Appearance Settings</h3>
+                                
+                                <div class="space-y-6">
+                                    <div>
+                                        <h4 class="font-medium mb-3">Theme</h4>
+                                        <div class="grid grid-cols-3 gap-4">
+                                            <div class="theme-option cursor-pointer bg-white dark:bg-dark-secondary border-2 border-primary rounded-xl p-4 flex flex-col items-center">
+                                                <div class="w-full h-24 bg-light-primary rounded-lg mb-2 flex items-center justify-center">
+                                                    <div class="w-8 h-8 rounded-full bg-primary"></div>
+                                                </div>
+                                                <p class="text-sm font-medium">Light</p>
+                                            </div>
+                                            <div class="theme-option cursor-pointer bg-white dark:bg-dark-secondary border-2 border-transparent rounded-xl p-4 flex flex-col items-center">
+                                                <div class="w-full h-24 bg-dark-primary rounded-lg mb-2 flex items-center justify-center">
+                                                    <div class="w-8 h-8 rounded-full bg-primary"></div>
+                                                </div>
+                                                <p class="text-sm font-medium">Dark</p>
+                                            </div>
+                                            <div class="theme-option cursor-pointer bg-white dark:bg-dark-secondary border-2 border-transparent rounded-xl p-4 flex flex-col items-center">
+                                                <div class="w-full h-24 bg-gradient-to-b from-light-primary to-dark-primary rounded-lg mb-2 flex items-center justify-center">
+                                                    <div class="w-8 h-8 rounded-full bg-primary"></div>
+                                                </div>
+                                                <p class="text-sm font-medium">System</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="font-medium mb-3">Color Scheme</h4>
+                                        <div class="grid grid-cols-4 gap-4">
+                                            <div class="color-option cursor-pointer bg-white dark:bg-dark-secondary border-2 border-primary rounded-xl overflow-hidden">
+                                                <div class="h-12 bg-[#5D5CDE]"></div>
+                                                <p class="text-xs text-center py-1">Default</p>
+                                            </div>
+                                            <div class="color-option cursor-pointer bg-white dark:bg-dark-secondary border-2 border-transparent rounded-xl overflow-hidden">
+                                                <div class="h-12 bg-[#3B82F6]"></div>
+                                                <p class="text-xs text-center py-1">Blue</p>
+                                            </div>
+                                            <div class="color-option cursor-pointer bg-white dark:bg-dark-secondary border-2 border-transparent rounded-xl overflow-hidden">
+                                                <div class="h-12 bg-[#10B981]"></div>
+                                                <p class="text-xs text-center py-1">Green</p>
+                                            </div>
+                                            <div class="color-option cursor-pointer bg-white dark:bg-dark-secondary border-2 border-transparent rounded-xl overflow-hidden">
+                                                <div class="h-12 bg-[#F59E0B]"></div>
+                                                <p class="text-xs text-center py-1">Orange</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="font-medium mb-3">Font Size</h4>
+                                        <div class="flex items-center">
+                                            <span class="text-sm mr-3">A</span>
+                                            <input type="range" min="1" max="5" value="3" class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                                            <span class="text-lg ml-3">A</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="font-medium mb-3">Animation Effects</h4>
+                                        <div class="flex items-center justify-between">
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Enable animations for a more dynamic experience</p>
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input type="checkbox" value="" class="sr-only peer" checked>
+                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Privacy Settings -->
+                            <div class="settings-tab-content hidden">
+                                <h3 class="font-semibold mb-4">Privacy Settings</h3>
+                                
+                                <div class="space-y-6">
+                                    <div>
+                                        <h4 class="font-medium mb-3">Profile Visibility</h4>
+                                        <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                            <div class="flex items-center justify-between mb-4">
+                                                <div>
+                                                    <p class="text-sm font-medium">Who can see my profile</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">Control who can view your profile information</p>
+                                                </div>
+                                                <select class="bg-white dark:bg-dark-primary border border-gray-300 dark:border-gray-700 rounded-lg text-sm py-2 px-3">
+                                                    <option>Everyone</option>
+                                                    <option selected>Friends Only</option>
+                                                    <option>Only Me</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="flex items-center justify-between mb-4">
+                                                <div>
+                                                    <p class="text-sm font-medium">Show my learning progress</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">Allow others to see your study achievements</p>
+                                                </div>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" value="" class="sr-only peer" checked>
+                                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="flex items-center justify-between">
+                                                <div>
+                                                    <p class="text-sm font-medium">Show online status</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">Let others know when you're active</p>
+                                                </div>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" value="" class="sr-only peer" checked>
+                                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="font-medium mb-3">Data Preferences</h4>
+                                        <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg space-y-4">
+                                            <div class="flex items-center justify-between">
+                                                <div>
+                                                    <p class="text-sm font-medium">Personalized learning</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">Use your activity to improve study recommendations</p>
+                                                </div>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" value="" class="sr-only peer" checked>
+                                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="flex items-center justify-between">
+                                                <div>
+                                                    <p class="text-sm font-medium">Analytics cookies</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">Help us improve with anonymous usage data</p>
+                                                </div>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" value="" class="sr-only peer" checked>
+                                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="font-medium mb-3">Privacy Controls</h4>
+                                        <div class="space-y-3">
+                                            <button class="w-full bg-gray-100 dark:bg-gray-800 text-left p-3 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                                                Download your data
+                                            </button>
+                                            <button class="w-full bg-gray-100 dark:bg-gray-800 text-left p-3 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                                                Delete your account
+                                            </button>
+                                            <button class="w-full bg-gray-100 dark:bg-gray-800 text-left p-3 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                                                Manage third-party permissions
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Language Settings -->
+                            <div class="settings-tab-content hidden">
+                                <h3 class="font-semibold mb-4">Language Settings</h3>
+                                
+                                <div class="space-y-6">
+                                    <div>
+                                        <h4 class="font-medium mb-3">App Language</h4>
+                                        <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Select your preferred language for the application interface</p>
+                                            <select class="w-full bg-white dark:bg-dark-primary border border-gray-300 dark:border-gray-700 rounded-lg p-3 text-base">
+                                                <option selected>English (United States)</option>
+                                                <option>Portuguese (Brazil)</option>
+                                                <option>Spanish (Latin America)</option>
+                                                <option>French (France)</option>
+                                                <option>German (Germany)</option>
+                                                <option>Mandarin Chinese (Simplified)</option>
+                                                <option>Japanese (Japan)</option>
+                                                <option>Korean (South Korea)</option>
+                                                <option>Russian (Russia)</option>
+                                                <option>Arabic (Saudi Arabia)</option>
+                                                <option>Hindi (India)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="font-medium mb-3">Content Language Preferences</h4>
+                                        <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg space-y-4">
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Select languages for your study content (you can select multiple)</p>
+                                            
+                                            <div class="flex flex-wrap gap-2">
+                                                <div class="flex items-center">
+                                                    <input checked id="language-pt" type="checkbox" value="portuguese" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="language-pt" class="ms-2 text-sm font-medium">Portuguese</label>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <input checked id="language-en" type="checkbox" value="english" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="language-en" class="ms-2 text-sm font-medium">English</label>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <input id="language-es" type="checkbox" value="spanish" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="language-es" class="ms-2 text-sm font-medium">Spanish</label>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <input id="language-fr" type="checkbox" value="french" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="language-fr" class="ms-2 text-sm font-medium">French</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="font-medium mb-3">Translation Settings</h4>
+                                        <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                            <div class="flex items-center justify-between mb-4">
+                                                <div>
+                                                    <p class="text-sm font-medium">Auto-translate content</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">Automatically translate content not in your preferred language</p>
+                                                </div>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" value="" class="sr-only peer" checked>
+                                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="flex items-center justify-between">
+                                                <div>
+                                                    <p class="text-sm font-medium">Show original text</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">Display original content alongside translations</p>
+                                                </div>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" value="" class="sr-only peer">
+                                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Help & Support -->
+                            <div class="settings-tab-content hidden">
+                                <h3 class="font-semibold mb-4">Help & Support</h3>
+                                
+                                <div class="space-y-6">
+                                    <div>
+                                        <h4 class="font-medium mb-3">Frequently Asked Questions</h4>
+                                        <div class="space-y-3">
+                                            <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                                <button class="flex w-full justify-between items-center">
+                                                    <span class="font-medium text-sm">How do I track my study progress?</span>
+                                                    <i class="bx bx-chevron-down"></i>
+                                                </button>
+                                                <div class="pt-3 hidden">
+                                                    <p class="text-sm text-gray-600 dark:text-gray-300">Your study progress is automatically tracked in the Statistics tab. You can view detailed information about completed lessons, practice questions, and time spent studying.</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                                <button class="flex w-full justify-between items-center">
+                                                    <span class="font-medium text-sm">How do competitive challenges work?</span>
+                                                    <i class="bx bx-chevron-down"></i>
+                                                </button>
+                                                <div class="pt-3 hidden">
+                                                    <p class="text-sm text-gray-600 dark:text-gray-300">In the Play section, you can compete against other students by answering questions in various subjects. You'll earn points based on correct answers and speed. Your performance is tracked in the Statistics tab.</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                                <button class="flex w-full justify-between items-center">
+                                                    <span class="font-medium text-sm">How do I create or join a study group?</span>
+                                                    <i class="bx bx-chevron-down"></i>
+                                                </button>
+                                                <div class="pt-3 hidden">
+                                                    <p class="text-sm text-gray-600 dark:text-gray-300">You can create or join study groups from the Messages tab. Click on the "+" icon to start a new group, or search for existing groups to join. Study groups allow you to share materials and discuss topics together.</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                                <button class="flex w-full justify-between items-center">
+                                                    <span class="font-medium text-sm">Can I download study materials for offline use?</span>
+                                                    <i class="bx bx-chevron-down"></i>
+                                                </button>
+                                                <div class="pt-3 hidden">
+                                                    <p class="text-sm text-gray-600 dark:text-gray-300">Yes, most study materials can be downloaded for offline use. Look for the download icon when viewing handouts or flashcards. Video content requires an internet connection to stream.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="font-medium mb-3">Contact Support</h4>
+                                        <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Need more help? Contact our support team and we'll get back to you as soon as possible.</p>
+                                            
+                                            <div class="space-y-4">
+                                                <div>
+                                                    <label class="block text-sm mb-1">Subject</label>
+                                                    <select class="w-full bg-white dark:bg-gray-900 rounded-lg border border-gray-300 dark:border-gray-700 p-2 text-base">
+                                                        <option>Technical Problem</option>
+                                                        <option>Account Issue</option>
+                                                        <option>Billing Question</option>
+                                                        <option>Content Request</option>
+                                                        <option>Other</option>
+                                                    </select>
+                                                </div>
+                                                
+                                                <div>
+                                                    <label class="block text-sm mb-1">Message</label>
+                                                    <textarea rows="4" class="w-full bg-white dark:bg-gray-900 rounded-lg border border-gray-300 dark:border-gray-700 p-2 text-base" placeholder="Describe your issue..."></textarea>
+                                                </div>
+                                                
+                                                <button class="bg-primary text-white py-2 px-4 rounded-lg text-sm font-medium">Send Message</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="font-medium mb-3">Resources</h4>
+                                        <div class="flex flex-col space-y-2">
+                                            <a href="#" class="flex items-center p-3 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                                                <i class="bx bx-book text-primary mr-3"></i>
+                                                <span class="text-sm">User Guide</span>
+                                            </a>
+                                            <a href="#" class="flex items-center p-3 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                                                <i class="bx bx-video text-primary mr-3"></i>
+                                                <span class="text-sm">Tutorial Videos</span>
+                                            </a>
+                                            <a href="#" class="flex items-center p-3 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                                                <i class="bx bx-bulb text-primary mr-3"></i>
+                                                <span class="text-sm">Study Tips & Tricks</span>
+                                            </a>
+                                            <a href="#" class="flex items-center p-3 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                                                <i class="bx bx-news text-primary mr-3"></i>
+                                                <span class="text-sm">Blog & Updates</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Mobile Navigation Bar -->
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-dark-secondary shadow-lg z-10">
+            <div class="flex justify-around">
+                <button class="nav-btn flex-1 py-3 text-primary border-t-2 border-primary flex flex-col items-center justify-center" data-target="start-tab">
+                    <i class="bx bx-home-alt text-xl"></i>
+                    <span class="text-xs mt-1">Start</span>
+                </button>
+                <button class="nav-btn flex-1 py-3 text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center" data-target="study-tab">
+                    <i class="bx bx-book-open text-xl"></i>
+                    <span class="text-xs mt-1">Study</span>
+                </button>
+                <button class="nav-btn flex-1 py-3 text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center relative" data-target="messages-tab">
+                    <i class="bx bx-message-detail text-xl"></i>
+                    <span class="text-xs mt-1">Messages</span>
+                    <span class="badge">2</span>
+                </button>
+                <button class="nav-btn flex-1 py-3 text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center" data-target="stats-tab">
+                    <i class="bx bx-bar-chart-alt-2 text-xl"></i>
+                    <span class="text-xs mt-1">Stats</span>
+                </button>
+                <button class="nav-btn flex-1 py-3 text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center" data-target="settings-tab">
+                    <i class="bx bx-cog text-xl"></i>
+                    <span class="text-xs mt-1">Settings</span>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Desktop Sidebar Navigation -->
+        <nav class="hidden md:flex fixed left-0 top-0 h-full bg-white dark:bg-dark-secondary shadow-lg z-10 flex-col p-6 w-24">
+            <div class="flex flex-col items-center mb-10">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM1RDVDREUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNNCAxOVY1YTIgMiAwIDAgMSAyLTJoMTRhMiAyIDAgMCAxIDIgMnYxNGEyIDIgMCAwIDEtMiAySDZhMiAyIDAgMCAxLTItMnoiPjwvcGF0aD48cGF0aCBkPSJNNiAxNFYzIj48L3BhdGg+PHBhdGggZD0iTTE4IDIxVjE0Ij48L3BhdGg+PHBhdGggZD0iTTYgMTBIMTgiPjwvcGF0aD48L3N2Zz4=" alt="Logo" class="h-12 w-12 mb-1">
+                <h1 class="text-xs font-bold">StudyEasy</h1>
+            </div>
+            
+            <div class="relative flex-1 flex flex-col items-center space-y-8">
+                <button class="nav-btn bg-primary/10 text-primary rounded-xl p-3 w-full flex flex-col items-center" data-target="start-tab">
+                    <i class="bx bx-home-alt text-2xl"></i>
+                    <span class="text-xs mt-1">Start</span>
+                </button>
+                <button class="nav-btn rounded-xl p-3 w-full flex flex-col items-center text-gray-500 dark:text-gray-400" data-target="study-tab">
+                    <i class="bx bx-book-open text-2xl"></i>
+                    <span class="text-xs mt-1">Study</span>
+                </button>
+                <button class="nav-btn rounded-xl p-3 w-full flex flex-col items-center text-gray-500 dark:text-gray-400 relative" data-target="messages-tab">
+                    <i class="bx bx-message-detail text-2xl"></i>
+                    <span class="text-xs mt-1">Messages</span>
+                    <span class="badge">2</span>
+                </button>
+                <button class="nav-btn rounded-xl p-3 w-full flex flex-col items-center text-gray-500 dark:text-gray-400" data-target="stats-tab">
+                    <i class="bx bx-bar-chart-alt-2 text-2xl"></i>
+                    <span class="text-xs mt-1">Stats</span>
+                </button>
+                <button class="nav-btn rounded-xl p-3 w-full flex flex-col items-center text-gray-500 dark:text-gray-400" data-target="settings-tab">
+                    <i class="bx bx-cog text-2xl"></i>
+                    <span class="text-xs mt-1">Settings</span>
+                </button>
+            </div>
+            
+            <div>
+                <button id="darkModeToggleDesktop" class="w-full p-3 rounded-xl bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex justify-center">
+                    <i class="bx bx-moon dark:hidden text-2xl"></i>
+                    <i class="bx bx-sun hidden dark:inline-block text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+    </div>
+    
+    <!-- Play Game Modal -->
+    <div id="play-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-20 hidden">
+        <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 max-w-md w-full mx-4 transform transition-all">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Choose Your Challenge</h3>
+                <button id="close-modal" class="p-1">
+                    <i class="bx bx-x text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="mb-6">
+                <h4 class="text-sm font-medium mb-2">Select Subject</h4>
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="game-subject-btn bg-gray-100 dark:bg-gray-800 p-3 rounded-lg flex items-center justify-center">Mathematics</button>
+                    <button class="game-subject-btn bg-gray-100 dark:bg-gray-800 p-3 rounded-lg flex items-center justify-center">Portuguese</button>
+                    <button class="game-subject-btn bg-gray-100 dark:bg-gray-800 p-3 rounded-lg flex items-center justify-center">Science</button>
+                    <button class="game-subject-btn bg-gray-100 dark:bg-gray-800 p-3 rounded-lg flex items-center justify-center">History</button>
+                    <button class="game-subject-btn bg-gray-100 dark:bg-gray-800 p-3 rounded-lg flex items-center justify-center">Geography</button>
+                    <button class="game-subject-btn bg-gray-100 dark:bg-gray-800 p-3 rounded-lg flex items-center justify-center">English</button>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <h4 class="text-sm font-medium mb-2">Difficulty Level</h4>
+                <div class="flex space-x-2">
+                    <button class="game-difficulty-btn flex-1 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-center">Easy</button>
+                    <button class="game-difficulty-btn flex-1 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-center">Medium</button>
+                    <button class="game-difficulty-btn flex-1 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-center">Hard</button>
+                </div>
+            </div>
+            
+            <button id="start-game-btn" class="w-full bg-primary text-white rounded-lg py-3 font-semibold">Start Game</button>
+        </div>
+    </div>
+    
+    <script>
+        // Dark mode functionality
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+        
+        document.getElementById('darkModeToggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+        
+        document.getElementById('darkModeToggleDesktop')?.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+        
+        // Study materials data
+        const studyMaterials = {
+            mathematics: {
+                name: "Mathematics",
+                color: "primary",
+                icon: "bx-math",
+                topics: [
+                    "Natural, Integer and Rational Numbers",
+                    "Basic Operations",
+                    "Fractions and Decimals",
+                    "Percentages",
+                    "Ratios and Proportions",
+                    "Sets",
+                    "First-degree Equations",
+                    "Second-degree Equations",
+                    "Functions",
+                    "Systems of Equations",
+                    "Inequalities",
+                    "Arithmetic and Geometric Progressions",
+                    "Probability",
+                    "Statistics",
+                    "Plane Geometry",
+                    "Pythagorean Theorem",
+                    "Spatial Geometry",
+                    "Circumference and Circle",
+                    "Geometric Transformations",
+                    "Trigonometry",
+                    "Matrices and Determinants",
+                    "Linear Systems",
+                    "Logarithms",
+                    "Complex Numbers",
+                    "Combinatorial Analysis"
+                ]
+            },
+            portuguese: {
+                name: "Portuguese",
+                color: "secondary",
+                icon: "bx-book-open",
+                topics: [
+                    "Reading and Interpreting Texts",
+                    "Text Types and Genres",
+                    "Spelling and Grammatical Rules",
+                    "Punctuation",
+                    "Word Classes",
+                    "Verbal and Nominal Agreement",
+                    "Verbal and Nominal Regency",
+                    "Crase",
+                    "Figures of Speech",
+                    "Phonetics and Phonology",
+                    "Word Formation",
+                    "Syntax",
+                    "Subordinate and Coordinated Sentences",
+                    "Simple and Compound Periods",
+                    "Textual Cohesion and Coherence",
+                    "Argumentation and Persuasion",
+                    "Textual Production",
+                    "Literary Analysis",
+                    "Brazilian Literary Movements",
+                    "Portuguese Literature",
+                    "African Literature in Portuguese",
+                    "Analysis of Poems and Prose",
+                    "Fables, Short Stories and Chronicles",
+                    "Use of Linguistic Variation",
+                    "Semantics",
+                    "Tenses and Moods Verbal",
+                    "Sound and Construction Figures",
+                    "Journalistic and Advertising Texts"
+                ]
+            },
+            history: {
+                name: "History",
+                color: "accent",
+                icon: "bx-time-five",
+                topics: [
+                    "Prehistory",
+                    "Eastern Antiquity",
+                    "Ancient Greece",
+                    "Ancient Rome",
+                    "Feudalism",
+                    "Cultural Renaissance",
+                    "Great Navigations",
+                    "Reformation and Counter-Reformation",
+                    "Industrial Revolution",
+                    "Enlightenment",
+                    "French Revolution",
+                    "Independence in America",
+                    "Colonization of Brazil",
+                    "Slavery in Brazil",
+                    "Gold Cycle",
+                    "Independence of Brazil",
+                    "Vargas Era",
+                    "Military Dictatorship in Brazil",
+                    "World War I",
+                    "World War II",
+                    "Cold War",
+                    "Globalization",
+                    "Russian Revolution",
+                    "Revolutions in Latin America",
+                    "History of Africa",
+                    "Social Movements in Brazil",
+                    "Contemporary History",
+                    "Feminist and Minority Movements",
+                    "Indigenous History in Brazil",
+                    "Economy and Society in Colonial Brazil"
+                ]
+            },
+            geography: {
+                name: "Geography",
+                color: "primary",
+                icon: "bx-map",
+                topics: [
+                    "Cartography",
+                    "Orientation and Geographic Locations",
+                    "Terrestrial Relief",
+                    "Climates of the World",
+                    "Hydrography",
+                    "World Vegetation",
+                    "Brazilian Biomes",
+                    "Geopolitics",
+                    "Migrations",
+                    "Urbanization",
+                    "Industrialization",
+                    "Environmental Impacts and Sustainability",
+                    "Agriculture and Livestock",
+                    "Mineral Resources and Energy",
+                    "Physical Geography",
+                    "Demography",
+                    "Regions of Brazil",
+                    "Globalization and World Economy",
+                    "International Trade",
+                    "Pollution and Climate Change",
+                    "Deforestation and Environmental Preservation",
+                    "Sustainable Development",
+                    "Regionalization of the World",
+                    "Urban Problems",
+                    "Natural and Humanized Landscapes"
+                ]
+            },
+            biology: {
+                name: "Biology",
+                color: "tertiary",
+                icon: "bx-dna",
+                topics: [
+                    "Cytology",
+                    "Animal and Plant Tissue",
+                    "Genetics and Heredity",
+                    "DNA and RNA",
+                    "Evolution and Natural Selection",
+                    "Ecology and the Environment",
+                    "Biogeochemical Cycles",
+                    "Cellular Biochemistry",
+                    "Reproduction",
+                    "Human Body Systems",
+                    "Microorganisms and Diseases",
+                    "Human Physiology",
+                    "Photosynthesis and Cellular Respiration",
+                    "Biomes of the World",
+                    "Classification of Living Beings",
+                    "Zoology",
+                    "Botany",
+                    "Immunology",
+                    "Ethology",
+                    "Biotechnology",
+                    "Genetic Engineering",
+                    "Human Evolution",
+                    "Ecosystems and Biodiversity",
+                    "Sustainability",
+                    "Comparative Anatomy",
+                    "Ecological Relationships",
+                    "Parasitology",
+                    "Pollution and Environmental Impact",
+                    "Public Health and Vaccines",
+                    "Bioethics"
+                ]
+            },
+            physics: {
+                name: "Physics",
+                color: "secondary",
+                icon: "bx-atom",
+                topics: [
+                    "Kinematics",
+                    "Dynamics",
+                    "Energy",
+                    "Work and Power",
+                    "Hydrostatics",
+                    "Thermodynamics",
+                    "Waves",
+                    "Electricity and Magnetism",
+                    "Electrical Circuits",
+                    "Geometric Optics",
+                    "Reflection and Refraction of Light",
+                    "Universal Gravity",
+                    "Circular Motion",
+                    "Heat and Temperature",
+                    "Electrostatics",
+                    "Magnetism",
+                    "Centripetal Force",
+                    "Pressure in Fluids",
+                    "Gases and Gas Laws",
+                    "Radiation and Electromagnetic Spectrum",
+                    "Modern Physics",
+                    "Subatomic Particles",
+                    "Oscillations and Pendulums",
+                    "Nuclear Energy",
+                    "Velocity and Acceleration",
+                    "Collisions and Conservation of Energy",
+                    "Linear Momentum",
+                    "Simple Machines",
+                    "Simple Harmonic Motion",
+                    "Practical Applications of Physics"
+                ]
+            },
+            chemistry: {
+                name: "Chemistry",
+                color: "tertiary",
+                icon: "bx-vial",
+                topics: [
+                    "Properties of Matter",
+                    "Atomic Structure",
+                    "Periodic Table",
+                    "Chemical Bonds",
+                    "Chemical Reactions",
+                    "Stoichiometry",
+                    "Acidity, Basicity and pH",
+                    "Chemical Solutions",
+                    "Separation of Mixtures",
+                    "Chemical Kinetics",
+                    "Thermochemistry",
+                    "Electrochemistry",
+                    "Organic Chemistry",
+                    "Functional Groups",
+                    "Polymers",
+                    "Isomerism",
+                    "Oxidation-Reduction Reactions",
+                    "Chemical Equilibrium",
+                    "Environmental Chemistry",
+                    "Gases and Gas Laws",
+                    "Salts and Bases",
+                    "Acids and their Properties",
+                    "Radioactivity",
+                    "Inorganic Compounds",
+                    "Water and its Chemical Properties",
+                    "Petroleum and its Derivatives",
+                    "Basic Biochemistry",
+                    "Endothermic and Exothermic Reactions",
+                    "Catalysis",
+                    "Industrial Applications of Chemistry"
+                ]
+            },
+            english: {
+                name: "English",
+                color: "accent",
+                icon: "bx-conversation",
+                topics: [
+                    "Alphabet and Phonetics",
+                    "Basic Vocabulary",
+                    "Greetings and Introductions",
+                    "Personal, Possessive and Demonstrative Pronouns",
+                    "Verbs in the Simple Present Tense",
+                    "Verbs in the Simple Past Tense",
+                    "Verbs in the Simple Future Tense",
+                    "Modal Verbs",
+                    "Verbs in the Present Continuous Tense",
+                    "Compound Verb Tenses",
+                    "Definite and Indefinite Articles",
+                    "Prepositions of Place and Time",
+                    "Adjectives",
+                    "Connectives",
+                    "Interrogative and Negative Sentences",
+                    "Vocabulary about Professions",
+                    "Vocabulary about Food",
+                    "Vocabulary about Hobbies and Sports",
+                    "Idiomatic Expressions",
+                    "Listening",
+                    "Reading",
+                    "Writing",
+                    "Speaking",
+                    "Phrasal Verbs",
+                    "Usage of 'There is' and 'There are'",
+                    "Differences Between Formal and Informal English",
+                    "Structure of Formal Emails and Letters"
+                ]
+            },
+            sociology: {
+                name: "Sociology",
+                color: "primary",
+                icon: "bx-group",
+                topics: [
+                    "Introduction to Sociology",
+                    "Culture and Society",
+                    "Social Institutions",
+                    "Social Stratification",
+                    "Social Classes and Inequality",
+                    "Work and Social Division of Labor",
+                    "Globalization and its Social Impacts",
+                    "Social Movements and Citizenship",
+                    "Cultural Identity",
+                    "Ethnocentrism and Cultural Relativism",
+                    "Consumption and Consumer Society",
+                    "Power and Politics in Society",
+                    "Sociology of Education",
+                    "Sociology of Work",
+                    "Diversity and Prejudice",
+                    "Urbanization and Urban Problems",
+                    "Cultural Industry and Media",
+                    "Migration and Social Mobility",
+                    "Violence and Crime in Society",
+                    "Human and Social Rights",
+                    "Sociology of Religions",
+                    "The Role of the State in Society",
+                    "Democracy and Citizenship",
+                    "Sociology and the Environment",
+                    "Feminist Movements",
+                    "Youth and Political Participation",
+                    "Contemporary Society and Technology",
+                    "Karl Marx",
+                    "Émile Durkheim"
+                ]
+            },
+            philosophy: {
+                name: "Philosophy",
+                color: "secondary",
+                icon: "bx-bulb",
+                topics: [
+                    "Introduction to Philosophy",
+                    "Pre-Socratics",
+                    "Socratic Philosophy",
+                    "Plato and the World of Ideas",
+                    "Aristotle and Logic",
+                    "Ethics and Morals",
+                    "Hellenistic Philosophy",
+                    "Medieval Philosophy",
+                    "Renaissance Philosophy",
+                    "Rationalism",
+                    "Empiricism",
+                    "Contractualism",
+                    "Enlightenment Philosophy",
+                    "Kant and Criticism",
+                    "Hegel and Dialectics",
+                    "Marx and Historical Materialism",
+                    "Existentialism",
+                    "Philosophy of Science",
+                    "Philosophy of Politics",
+                    "Environmental Ethics",
+                    "Philosophy of Language",
+                    "Contemporary Philosophy",
+                    "Nihilism",
+                    "Alienation and Ideology",
+                    "Philosophy of Technology",
+                    "Aesthetics and Philosophy of Art",
+                    "Eastern Philosophy",
+                    "Philosophy of Education",
+                    "Freedom and Determinism",
+                    "The Relationship Between Philosophy and Religion"
+                ]
+            },
+            "physical-education": {
+                name: "Physical Education",
+                color: "tertiary",
+                icon: "bx-run",
+                topics: [
+                    "History of Physical Education",
+                    "Benefits of Practicing Sports",
+                    "Stretching and Warming Up",
+                    "Team Sports",
+                    "Individual Sports",
+                    "Rules and Fundamentals of Sports",
+                    "Cooperative Games",
+                    "Dance and Body Expression",
+                    "Fighting and Martial Arts",
+                    "Anatomy and Physiology of the Human Body",
+                    "Cardiovascular System and Physical Exercises",
+                    "Respiratory System and Physical Exercises",
+                    "Nutrition and Hydration for Athletes",
+                    "Postural Education",
+                    "Sports Injuries and Prevention",
+                    "First Aid",
+                    "Functional Training",
+                    "Physical Fitness and Conditioning",
+                    "Rhythm and Motor Coordination",
+                    "Adapted Sports",
+                    "Mental Health and Physical Activity",
+                    "Sedentary Lifestyle and its Risks",
+                    "Outdoor Activities",
+                    "Traditional and Cultural Games",
+                    "Olympics and History of the Olympic Games",
+                    "Motor Development in Childhood",
+                    "Ethics in Sports",
+                    "Inclusion in Sports",
+                    "Training Planning",
+                    "Impact of Technology on Sport"
+                ]
+            },
+            art: {
+                name: "Art",
+                color: "accent",
+                icon: "bx-palette",
+                topics: [
+                    "History of Art",
+                    "Artistic Movements",
+                    "Elements of Visual Arts",
+                    "Drawing and Painting Techniques",
+                    "Sculpture and Modeling",
+                    "Graffiti and Urban Art",
+                    "Brazilian Folk Art",
+                    "Indigenous and Afro-Brazilian Art",
+                    "Music and its Elements",
+                    "Musical Instruments",
+                    "Theater and Staging",
+                    "Body Expression and Dance",
+                    "Literature and Poetry",
+                    "Cinema and Audiovisual",
+                    "Photography and Photographic Composition",
+                    "Architecture and Design",
+                    "Contemporary Art",
+                    "Artistic Performance",
+                    "Digital Art",
+                    "Comics and Illustration",
+                    "Culture and Cultural Heritage",
+                    "Interpretation of Works of Art",
+                    "Graphic Design and Advertising",
+                    "Art and Politics",
+                    "Art and Religion",
+                    "Exhibitions and Museums",
+                    "Creation of Masks and Costumes",
+                    "History of Cinema",
+                    "Aesthetics and Art Criticism",
+                    "Interdisciplinary Projects in Art"
+                ]
+            }
+        };
+        
+        // Content types
+        const contentTypes = {
+            handouts: {
+                name: "Handouts",
+                icon: "bx-book"
+            },
+            videos: {
+                name: "Video Classes",
+                icon: "bx-video"
+            },
+            questions: {
+                name: "Questions",
+                icon: "bx-question-mark"
+            },
+            flashcards: {
+                name: "Flashcards",
+                icon: "bx-card"
+            }
+        };
+
+        // Navigation tabs
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = btn.getAttribute('data-target');
+                
+                // Update navigation buttons (mobile)
+                document.querySelectorAll('.nav-btn').forEach(navBtn => {
+                    navBtn.classList.remove('text-primary', 'border-t-2', 'border-primary', 'bg-primary/10');
+                    navBtn.classList.add('text-gray-500', 'dark:text-gray-400');
+                });
+                
+                // Add active class to clicked button
+                if (window.innerWidth < 768) {
+                    btn.classList.remove('text-gray-500', 'dark:text-gray-400');
+                    btn.classList.add('text-primary', 'border-t-2', 'border-primary');
+                } else {
+                    btn.classList.remove('text-gray-500', 'dark:text-gray-400');
+                    btn.classList.add('text-primary', 'bg-primary/10');
+                }
+                
+                // Update content tabs
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(target).classList.add('active');
+            });
+        });
+        
+        // Study tab functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM elements
+            const studySearch = document.getElementById('study-search');
+            const disciplinesView = document.getElementById('disciplines-view');
+            const topicsView = document.getElementById('topics-view');
+            const contentView = document.getElementById('content-view');
+            const currentDisciplineTitle = document.getElementById('current-discipline-title');
+            const currentTopicTitle = document.getElementById('current-topic-title');
+            const topicFilters = document.getElementById('topic-filters');
+            const topicsGrid = document.getElementById('topics-grid');
+            const contentItemsGrid = document.getElementById('content-items-grid');
+            const backToDisciplines = document.getElementById('back-to-disciplines');
+            const backToTopics = document.getElementById('back-to-topics');
+            const contentTypeFilters = document.querySelectorAll('.content-type-filter');
+            
+            // Current state
+            let currentDiscipline = null;
+            let currentTopic = null;
+            let currentContentType = 'handouts';
+            
+            // Event listeners for discipline cards
+            document.querySelectorAll('.discipline-card, .view-topics-btn').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Get the discipline from the clicked card or button
+                    const disciplineCard = element.closest('.discipline-card');
+                    const disciplineId = disciplineCard.getAttribute('data-discipline');
+                    
+                    showTopics(disciplineId);
+                });
+            });
+            
+            // Back button to disciplines
+            backToDisciplines.addEventListener('click', () => {
+                disciplinesView.style.display = 'block';
+                topicsView.style.display = 'none';
+                currentDiscipline = null;
+            });
+            
+            // Back button to topics
+            backToTopics.addEventListener('click', () => {
+                topicsView.style.display = 'block';
+                contentView.style.display = 'none';
+                currentTopic = null;
+            });
+            
+            // Search functionality
+            studySearch.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                if (searchTerm.length < 2) {
+                    // If search term is too short, show all disciplines
+                    if (currentDiscipline) {
+                        // If we're in a discipline, show all topics
+                        showAllTopics();
+                    } else {
+                        // Otherwise, show all disciplines
+                        document.querySelectorAll('.discipline-card').forEach(card => {
+                            card.style.display = 'block';
+                        });
+                    }
+                    return;
+                }
+                
+                if (currentDiscipline) {
+                    // Search within topics of current discipline
+                    const visibleTopics = studyMaterials[currentDiscipline].topics.filter(topic => 
+                        topic.toLowerCase().includes(searchTerm)
+                    );
+                    
+                    // Update the topics grid
+                    renderTopicsGrid(visibleTopics);
+                } else {
+                    // Search across all disciplines and topics
+                    document.querySelectorAll('.discipline-card').forEach(card => {
+                        const disciplineId = card.getAttribute('data-discipline');
+                        const discipline = studyMaterials[disciplineId];
+                        
+                        // Check if discipline name matches
+                        if (discipline.name.toLowerCase().includes(searchTerm)) {
+                            card.style.display = 'block';
+                            return;
+                        }
+                        
+                        // Check if any topics in this discipline match
+                        const matchingTopics = discipline.topics.filter(topic => 
+                            topic.toLowerCase().includes(searchTerm)
+                        );
+                        
+                        if (matchingTopics.length > 0) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                }
+            });
+            
+            // Content type filters
+            contentTypeFilters.forEach(filter => {
+                filter.addEventListener('click', () => {
+                    // Update active state
+                    contentTypeFilters.forEach(f => f.classList.remove('active'));
+                    filter.classList.add('active');
+                    
+                    // Update current content type
+                    currentContentType = filter.getAttribute('data-content-type');
+                    
+                    // Refresh content
+                    if (currentTopic) {
+                        showContent(currentDiscipline, currentTopic);
+                    }
+                });
+            });
+            
+            // Function to show topics for a discipline
+            function showTopics(disciplineId) {
+                currentDiscipline = disciplineId;
+                const discipline = studyMaterials[disciplineId];
+                
+                // Update the title
+                currentDisciplineTitle.textContent = discipline.name;
+                
+                // Clear and populate the topic filters
+                topicFilters.innerHTML = '';
+                
+                // Add "All" filter
+                const allFilterBtn = document.createElement('button');
+                allFilterBtn.className = 'topic-filter active bg-primary text-white px-4 py-2 rounded-full text-sm whitespace-nowrap';
+                allFilterBtn.textContent = 'All Topics';
+                allFilterBtn.addEventListener('click', function() {
+                    // Update active state
+                    document.querySelectorAll('.topic-filter').forEach(btn => {
+                        btn.classList.remove('active', 'bg-primary', 'text-white');
+                        btn.classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+                    });
+                    this.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+                    this.classList.add('active', 'bg-primary', 'text-white');
+                    
+                    // Show all topics
+                    showAllTopics();
+                });
+                topicFilters.appendChild(allFilterBtn);
+                
+                // Render the topics grid
+                renderTopicsGrid(discipline.topics);
+                
+                // Show the topics view, hide others
+                disciplinesView.style.display = 'none';
+                topicsView.style.display = 'block';
+                contentView.style.display = 'none';
+            }
+            
+            // Function to render topics grid
+            function renderTopicsGrid(topics) {
+                // Clear existing topics
+                topicsGrid.innerHTML = '';
+                
+                // Render each topic
+                topics.forEach(topic => {
+                    const discipline = studyMaterials[currentDiscipline];
+                    const topicCard = document.createElement('div');
+                    topicCard.className = 'topic-card card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md cursor-pointer';
+                    topicCard.innerHTML = `
+                        <div class="p-4">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-${discipline.color}/10 p-2 rounded-full mr-3">
+                                    <i class="bx ${discipline.icon} text-${discipline.color} text-xl"></i>
+                                </div>
+                                <h3 class="font-semibold">${topic}</h3>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                                Explore all materials related to ${topic.toLowerCase()} including lectures, exercises, and practice tests.
+                            </p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500 dark:text-gray-400">4 types of content</span>
+                                <button class="view-content-btn bg-${discipline.color} text-white text-sm px-3 py-1 rounded-lg">View Materials</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add click event to show content
+                    topicCard.querySelector('.view-content-btn').addEventListener('click', () => {
+                        showContent(currentDiscipline, topic);
+                    });
+                    
+                    topicsGrid.appendChild(topicCard);
+                });
+            }
+            
+            // Function to show all topics for current discipline
+            function showAllTopics() {
+                if (currentDiscipline) {
+                    renderTopicsGrid(studyMaterials[currentDiscipline].topics);
+                }
+            }
+            
+            // Function to show content for a topic
+            function showContent(disciplineId, topic) {
+                currentTopic = topic;
+                const discipline = studyMaterials[disciplineId];
+                
+                // Update the title
+                currentTopicTitle.textContent = topic;
+                
+                // Clear and populate the content grid
+                contentItemsGrid.innerHTML = '';
+                
+                // Generate example content items based on content type
+                const contentCount = 6; // Number of content items to generate
+                
+                for (let i = 1; i <= contentCount; i++) {
+                    const contentCard = document.createElement('div');
+                    contentCard.className = 'card bg-white dark:bg-dark-secondary rounded-xl overflow-hidden shadow-md';
+                    
+                    const contentType = contentTypes[currentContentType];
+                    const contentTitle = getContentTitle(currentContentType, topic, i);
+                    
+                    contentCard.innerHTML = `
+                        <div class="h-40 bg-${discipline.color} flex items-center justify-center">
+                            <i class="${contentType.icon} text-white text-6xl"></i>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs px-2 py-1 bg-${discipline.color}/10 text-${discipline.color} rounded-full">${contentType.name}</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">Level ${Math.min(Math.ceil(i/2), 3)}</span>
+                            </div>
+                            <h3 class="font-semibold mb-2">${contentTitle}</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">${getContentDescription(currentContentType, topic)}</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
+                                        <i class="bx bx-user text-gray-600"></i>
+                                    </div>
+                                    <span class="text-xs ml-2">Prof. ${getRandomProfessor()}</span>
+                                </div>
+                                <button class="bg-${discipline.color} text-white text-sm px-3 py-1 rounded-lg">Start</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    contentItemsGrid.appendChild(contentCard);
+                }
+                
+                // Show the content view, hide others
+                disciplinesView.style.display = 'none';
+                topicsView.style.display = 'none';
+                contentView.style.display = 'block';
+            }
+            
+            // Helper functions for content generation
+            function getContentTitle(contentType, topic, index) {
+                const prefixes = {
+                    handouts: ["Introduction to ", "Complete Guide to ", "Advanced ", "Understanding ", "Mastering ", "Basics of "],
+                    videos: ["Video Lecture: ", "Video Series: ", "Visual Guide to ", "Watch & Learn: ", "Masterclass: ", "Tutorial: "],
+                    questions: ["Practice Questions: ", "Quiz on ", "Test Your Knowledge: ", "Exam Prep: ", "Challenge: ", "Problem Set: "],
+                    flashcards: ["Flashcards: ", "Key Terms: ", "Quick Review: ", "Memory Cards: ", "Concepts: ", "Revision Cards: "]
+                };
+                
+                const prefix = prefixes[contentType][index % prefixes[contentType].length];
+                return `${prefix}${topic}`;
+            }
+            
+            function getContentDescription(contentType, topic) {
+                const descriptions = {
+                    handouts: `Comprehensive study material covering all aspects of ${topic.toLowerCase()} with examples and practice problems.`,
+                    videos: `Watch engaging video lectures that break down complex concepts in ${topic.toLowerCase()} with visual examples.`,
+                    questions: `Test your understanding of ${topic.toLowerCase()} with these practice questions designed to challenge your knowledge.`,
+                    flashcards: `Review key concepts and memorize important terms related to ${topic.toLowerCase()} with these flashcards.`
+                };
+                
+                return descriptions[contentType];
+            }
+            
+            function getRandomProfessor() {
+                const lastNames = ["Silva", "Santos", "Oliveira", "Souza", "Pereira", "Lima", "Costa", "Rodrigues", "Almeida", "Ferreira"];
+                return lastNames[Math.floor(Math.random() * lastNames.length)];
+            }
+        });
+        
+        // Settings tab navigation
+        const settingsTabBtns = document.querySelectorAll('.settings-tab-btn');
+        const settingsTabContents = document.querySelectorAll('.settings-tab-content');
+        
+        settingsTabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                settingsTabBtns.forEach(b => {
+                    b.classList.remove('active', 'text-primary', 'border-b-2', 'border-primary');
+                    b.classList.add('text-gray-500', 'dark:text-gray-400');
+                });
+                btn.classList.remove('text-gray-500', 'dark:text-gray-400');
+                btn.classList.add('active', 'text-primary', 'border-b-2', 'border-primary');
+                
+                settingsTabContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // Show corresponding content
+                const index = Array.from(settingsTabBtns).indexOf(btn);
+                settingsTabContents[index]?.classList.remove('hidden');
+            });
+        });
+        
+        // Play game modal
+        const playButton = document.getElementById('play-button');
+        const playModal = document.getElementById('play-modal');
+        const closeModal = document.getElementById('close-modal');
+        const gameSubjectBtns = document.querySelectorAll('.game-subject-btn');
+        const gameDifficultyBtns = document.querySelectorAll('.game-difficulty-btn');
+        const startGameBtn = document.getElementById('start-game-btn');
+        
+        playButton.addEventListener('click', () => {
+            playModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeModal.addEventListener('click', () => {
+            playModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        });
+        
+        gameSubjectBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                gameSubjectBtns.forEach(b => {
+                    b.classList.remove('bg-primary', 'text-white');
+                });
+                btn.classList.add('bg-primary', 'text-white');
+            });
+        });
+        
+        gameDifficultyBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                gameDifficultyBtns.forEach(b => {
+                    b.classList.remove('bg-primary', 'text-white');
+                });
+                btn.classList.add('bg-primary', 'text-white');
+            });
+        });
+        
+        startGameBtn.addEventListener('click', () => {
+            // Play game logic would go here
+            playModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            
+            // Show a temporary alert (would be replaced with actual game)
+            alert('Game started! This would launch the actual game.');
+        });
+        
+        // Initialize the app with the first tab active
+        document.querySelector('.nav-btn[data-target="start-tab"]').classList.add('text-primary');
+        if (window.innerWidth < 768) {
+            document.querySelector('.nav-btn[data-target="start-tab"]').classList.add('border-t-2', 'border-primary');
+        } else {
+            document.querySelector('.nav-btn[data-target="start-tab"]').classList.add('bg-primary/10');
+        }
+    </script>
+</body>
+</html>
