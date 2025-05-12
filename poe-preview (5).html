@@ -1,0 +1,1640 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmologia, Religiões e Mitologias</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#9493FF',
+                        darkBg: '#181818',
+                        lightBg: '#FFFFFF',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s ease-in-out infinite',
+                        'spin-slow': 'spin 20s linear infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+
+        // Set dark mode based on user preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #5D5CDE;
+            --secondary-color: #9493FF;
+            --tertiary-color: #C8C7FF;
+            --light-bg: #FFFFFF;
+            --dark-bg: #181818;
+            --light-text: #333333;
+            --dark-text: #F0F0F0;
+            --transition-duration: 0.75s;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        .dark body {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity var(--transition-duration) ease, transform var(--transition-duration) ease;
+            z-index: 0;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            z-index: 1;
+        }
+
+        .category-title {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .topic-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .content-container {
+            width: 80%;
+            max-width: 900px;
+            padding: 2rem;
+            border-radius: 1rem;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            z-index: 5;
+            position: relative;
+        }
+
+        .light .content-container {
+            background-color: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .content-container {
+            background-color: rgba(25, 25, 35, 0.85);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title-container {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 2.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 700;
+        }
+
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(93, 92, 222, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .nav-button:hover {
+            background-color: rgba(93, 92, 222, 0.8);
+        }
+
+        .nav-prev {
+            left: 20px;
+        }
+
+        .nav-next {
+            right: 20px;
+        }
+
+        .menu-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .menu {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: rgba(25, 25, 35, 0.95);
+            z-index: 999;
+            transition: left 0.5s ease;
+            overflow-y: auto;
+            padding: 80px 20px 20px;
+        }
+
+        .menu.open {
+            left: 0;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .menu-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background-color: rgba(93, 92, 222, 0.1);
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: rgba(93, 92, 222, 0.3);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background-color: var(--primary-color);
+        }
+
+        .menu-category {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin: 25px 0 10px;
+            color: var(--tertiary-color);
+            letter-spacing: 1px;
+        }
+
+        .keyword {
+            display: inline-block;
+            margin: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: rgba(93, 92, 222, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.3px;
+        }
+
+        .keyword:hover {
+            transform: translateY(-3px);
+            background-color: rgba(93, 92, 222, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .dark .keyword {
+            background-color: rgba(148, 147, 255, 0.15);
+            color: #f0f0f0;
+        }
+        
+        .dark .keyword:hover {
+            background-color: rgba(148, 147, 255, 0.25);
+        }
+
+        .keywords-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 24px;
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+        
+        .keywords-group:hover {
+            transform: translateY(-5px);
+        }
+        
+        .keywords-group.zoomed {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(2);
+            z-index: 9999;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dark .keywords-group.zoomed {
+            background-color: rgba(25, 25, 35, 0.95);
+        }
+        
+        .keywords-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            z-index: 9998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .keywords-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .background-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .canvas-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .image-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: brightness(0.7);
+        }
+
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background-color: transparent;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .mode-toggle:hover {
+            background-color: rgba(93, 92, 222, 0.1);
+        }
+
+        .dark .mode-toggle {
+            color: var(--tertiary-color);
+        }
+        
+        .slide-header {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .slide-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 0 auto;
+        }
+        
+        .dark .slide-header h1 {
+            background-color: rgba(25, 25, 35, 0.8);
+            color: var(--tertiary-color);
+        }
+
+        /* New button to toggle illustration-only mode */
+        .illustration-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .illustration-toggle:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        .slide.illustration-only .content-container,
+        .slide.illustration-only .slide-header,
+        .slide.illustration-only .progress-bar,
+        .slide.illustration-only .nav-button {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .illustration-toggle.active {
+            background-color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .content-container {
+                width: 90%;
+                padding: 1.5rem;
+            }
+
+            .category-title {
+                font-size: 2rem;
+            }
+
+            .topic-title {
+                font-size: 1.8rem;
+            }
+
+            .keyword {
+                font-size: 0.8rem;
+                padding: 5px 10px;
+                margin: 3px;
+            }
+
+            .menu {
+                width: 250px;
+                left: -250px;
+            }
+
+            .menu-item {
+                padding: 10px 15px;
+            }
+            
+            .slide-header h1 {
+                font-size: 1.2rem;
+                padding: 6px 12px;
+            }
+            
+            .keywords-group.zoomed {
+                transform: translate(-50%, -50%) scale(1.6);
+                width: 90%;
+                padding: 15px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .section-title-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-darkBg text-gray-800 dark:text-gray-100">
+    <div class="slide-container">
+        <!-- Home/Welcome slide -->
+        <div class="slide active" id="home">
+            <div class="content-container">
+                <h1 class="text-4xl md:text-6xl font-bold text-center mb-8">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                        Teorias sobre o surgimento do universo e da Terra
+                    </span>
+                </h1>
+                <p class="text-lg md:text-xl text-center mb-8">
+                    Explorando teorias científicas, religiosas e mitológicas sobre a criação do cosmos
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 mt-8">
+                    <button id="start-button" class="px-6 py-3 bg-primary hover:bg-secondary text-white rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none">
+                        Iniciar Apresentação
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic slides will be inserted here by JavaScript -->
+    </div>
+
+    <!-- Navigation buttons -->
+    <button class="nav-button nav-prev">❮</button>
+    <button class="nav-button nav-next">❯</button>
+
+    <!-- Menu button -->
+    <button class="menu-button">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </button>
+
+    <!-- Menu overlay -->
+    <div class="menu-overlay"></div>
+
+    <!-- Menu -->
+    <div class="menu">
+        <div class="menu-category">Teorias Científicas</div>
+        <div class="menu-item" data-topic="section-universo">Teorias sobre o Universo</div>
+        <div class="menu-item" data-topic="bigbang">Teoria do Big Bang</div>
+        <div class="menu-item" data-topic="cordas">Teoria das Cordas</div>
+        <div class="menu-item" data-topic="universoeterno">Teoria do Universo Eterno</div>
+        <div class="menu-item" data-topic="section-terra">Teorias sobre a Terra</div>
+        <div class="menu-item" data-topic="nebulosasolar">Teoria da Nebulosa Solar</div>
+        <div class="menu-item" data-topic="vortex">Teoria do Vórtex</div>
+        <div class="menu-item" data-topic="planetesimal">Hipótese Planetesimal</div>
+
+        <div class="menu-category">Teorias Religiosas</div>
+        <div class="menu-item" data-topic="section-religiosas">Teorias Religiosas</div>
+        <div class="menu-item" data-topic="cristianismo">Cristianismo</div>
+        <div class="menu-item" data-topic="islamismo">Islamismo</div>
+        <div class="menu-item" data-topic="budismo">Budismo</div>
+
+        <div class="menu-category">Teorias Mitológicas</div>
+        <div class="menu-item" data-topic="section-mitologicas">Teorias Mitológicas</div>
+        <div class="menu-item" data-topic="grega">Mitologia Grega</div>
+        <div class="menu-item" data-topic="hinduista">Mitologia Hinduista</div>
+        <div class="menu-item" data-topic="indigena">Mitologia Indígena Brasileira</div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-bar"></div>
+
+    <!-- Keywords overlay for zoom effect -->
+    <div class="keywords-overlay"></div>
+
+    <!-- Dark/Light mode toggle -->
+    <button class="mode-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 dark:hidden">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 hidden dark:block">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+        </svg>
+    </button>
+
+    <!-- Illustration-only toggle button -->
+    <button class="illustration-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Section titles
+            const sectionTitles = {
+                'section-universo': 'Teorias científicas sobre o surgimento do universo',
+                'section-terra': 'Teorias científicas sobre o surgimento do planeta Terra',
+                'section-religiosas': 'Teorias Religiosas',
+                'section-mitologicas': 'Teorias Mitológicas'
+            };
+            
+            // Data structure for topics
+            const topics = [
+                {
+                    id: 'bigbang',
+                    name: 'Teoria do Big Bang',
+                    category: 'scientific',
+                    section: 'universo',
+                    keywordGroups: [
+                        ["\"Explosão\"?"],
+                        ["Singularidade", "Expansão inflacionária", "Formação de partículas", "Nucleossintese primordial", "Formação de átomos", "Formação de estrelas e galáxias"],
+                        ["Um padre criou essa teoria!?"],
+                        ["Georges Lemaitre", "Edwin Hubble", "Alexander Friedmann", "Arno Penzias", "Robert Wilson"],
+                        ["13,8 bilhões de anos"],
+                        ["\"Ah, o nome que eu gosto de chamar essa teoria é muito grande e difícil, vou chamar de Big Bang mesmo, já que vão ignorar isso certo?\""],
+                        ["Estado quântico? Big Rip, Big Freeze ou Big Crunch?"],
+                        ["Teoria da relatividade geral", "Expansão do universo", "Radiação cósmica de fundo", "Abundância de elementos leves", "Distribuição de galáxias", "Lei de Hubble"]
+                    ],
+                    createIllustration: (canvas) => {
+                        const ctx = canvas.getContext('2d');
+                        const centerX = canvas.width / 2;
+                        const centerY = canvas.height / 2;
+                        
+                        // Create a radial gradient for the explosion
+                        const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, canvas.width);
+                        gradient.addColorStop(0, 'white');
+                        gradient.addColorStop(0.1, 'yellow');
+                        gradient.addColorStop(0.2, 'orange');
+                        gradient.addColorStop(0.4, 'red');
+                        gradient.addColorStop(0.6, 'purple');
+                        gradient.addColorStop(0.8, 'blue');
+                        gradient.addColorStop(1, 'transparent');
+                        
+                        ctx.fillStyle = 'black';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        // Draw the explosion
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, canvas.width, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Draw some stars
+                        for (let i = 0; i < 200; i++) {
+                            const x = Math.random() * canvas.width;
+                            const y = Math.random() * canvas.height;
+                            const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+                            
+                            if (distance > canvas.width * 0.3) {
+                                const size = Math.random() * 2;
+                                ctx.fillStyle = 'white';
+                                ctx.beginPath();
+                                ctx.arc(x, y, size, 0, Math.PI * 2);
+                                ctx.fill();
+                            }
+                        }
+                    }
+                },
+                {
+                    id: 'cordas',
+                    name: 'Teoria das Cordas',
+                    category: 'scientific',
+                    section: 'universo',
+                    keywordGroups: [
+                        ["Tudo é formado por cordas!?"],
+                        ["Pitágoras...?"],
+                        ["Gabriele Veneziano", "Leonard Susskind", "John Schwarz", "Michael Green", "Edward Witten"],
+                        ["Partículas e pontos? Nada a ver!"],
+                        ["Teoria de TUDO?"],
+                        ["10 dimensões!?"],
+                        ["Supercordas!?"],
+                        ["Branas?"],
+                        ["Teoria religiosa?"],
+                        ["Escala de Planck", "Acelerador de partículas"],
+                        ["Ela é falsa?"]
+                    ],
+                    createIllustration: (canvas) => {
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Background
+                        ctx.fillStyle = 'black';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        // Draw vibrating strings
+                        for (let i = 0; i < 10; i++) {
+                            const centerX = canvas.width / 2;
+                            const centerY = canvas.height / 2;
+                            const radius = 50 + i * 20;
+                            
+                            ctx.strokeStyle = `hsl(${i * 36}, 100%, 70%)`;
+                            ctx.lineWidth = 2;
+                            
+                            ctx.beginPath();
+                            for (let angle = 0; angle < Math.PI * 2; angle += 0.01) {
+                                const amplitude = 20 * Math.sin(i * 4 + Date.now() * 0.001);
+                                const x = centerX + Math.cos(angle) * (radius + amplitude * Math.sin(angle * 5));
+                                const y = centerY + Math.sin(angle) * (radius + amplitude * Math.sin(angle * 5));
+                                
+                                if (angle === 0) {
+                                    ctx.moveTo(x, y);
+                                } else {
+                                    ctx.lineTo(x, y);
+                                }
+                            }
+                            ctx.closePath();
+                            ctx.stroke();
+                        }
+                        
+                        // Draw some connecting lines for dimensionality
+                        for (let i = 0; i < 20; i++) {
+                            const start = {
+                                x: Math.random() * canvas.width,
+                                y: Math.random() * canvas.height
+                            };
+                            
+                            const end = {
+                                x: Math.random() * canvas.width,
+                                y: Math.random() * canvas.height
+                            };
+                            
+                            ctx.strokeStyle = `rgba(255, 255, 255, ${Math.random() * 0.3})`;
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(start.x, start.y);
+                            ctx.lineTo(end.x, end.y);
+                            ctx.stroke();
+                        }
+                    }
+                },
+                {
+                    id: 'universoeterno',
+                    name: 'Teoria do Universo Eterno',
+                    category: 'scientific',
+                    section: 'universo',
+                    keywordGroups: [
+                        ["O universo SEMPRE existiu."],
+                        ["Aristóteles...?"],
+                        ["Fred Hoyle", "Roger Penrose", "Steinhardt", "Turok"],
+                        ["Cíclico - Big Bounce", "Estacionário", "Quântico"],
+                        ["Cosmologia cíclica conforme", "Gravidade Quântica", "Ausência de singularidade"],
+                        ["Entropia", "Segunda lei da termodinâmica"]
+                    ],
+                    createIllustration: (canvas) => {
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Background
+                        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                        gradient.addColorStop(0, '#0f0c29');
+                        gradient.addColorStop(0.5, '#302b63');
+                        gradient.addColorStop(1, '#24243e');
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        // Draw a cyclic universe representation
+                        const centerX = canvas.width / 2;
+                        const centerY = canvas.height / 2;
+                        const time = Date.now() * 0.001;
+                        
+                        // Draw the circular cycle
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, canvas.width / 4, 0, Math.PI * 2);
+                        ctx.stroke();
+                        
+                        // Draw cycle markers
+                        const phases = ['Expansão', 'Estabilidade', 'Contração', 'Big Bounce'];
+                        for (let i = 0; i < 4; i++) {
+                            const angle = (i * Math.PI / 2) - Math.PI / 4;
+                            const x = centerX + Math.cos(angle) * (canvas.width / 4);
+                            const y = centerY + Math.sin(angle) * (canvas.width / 4);
+                            
+                            ctx.fillStyle = 'white';
+                            ctx.beginPath();
+                            ctx.arc(x, y, 5, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            // Add text labels
+                            ctx.fillStyle = 'white';
+                            ctx.font = '14px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(phases[i], 
+                                centerX + Math.cos(angle) * (canvas.width / 3), 
+                                centerY + Math.sin(angle) * (canvas.width / 3));
+                        }
+                        
+                        // Draw the indicator of current position in cycle
+                        const cyclePosition = (time % 10) / 10;
+                        const posAngle = cyclePosition * Math.PI * 2;
+                        
+                        const indicatorX = centerX + Math.cos(posAngle) * (canvas.width / 4);
+                        const indicatorY = centerY + Math.sin(posAngle) * (canvas.width / 4);
+                        
+                        ctx.fillStyle = '#5D5CDE';
+                        ctx.beginPath();
+                        ctx.arc(indicatorX, indicatorY, 10, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Draw infinity symbol
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+                        ctx.lineWidth = 4;
+                        ctx.beginPath();
+                        
+                        for (let t = 0; t <= Math.PI * 2; t += 0.01) {
+                            const scale = canvas.width / 8;
+                            const x = centerX + scale * Math.sin(t);
+                            const y = centerY + scale * Math.sin(t) * Math.cos(t);
+                            
+                            if (t === 0) {
+                                ctx.moveTo(x, y);
+                            } else {
+                                ctx.lineTo(x, y);
+                            }
+                        }
+                        
+                        ctx.stroke();
+                    }
+                },
+                {
+                    id: 'nebulosasolar',
+                    name: 'Teoria da Nebulosa Solar',
+                    category: 'scientific',
+                    section: 'terra',
+                    keywordGroups: [
+                        ["Nuvem gigante de gás e poeira"],
+                        ["Colapso > protostar > disco protoplanetário"],
+                        ["Acreção de material"],
+                        ["Emanuel Swedenborg", "Immanuel Kant"],
+                        ["Observações astronômicas", "Rotação dos planetas no mesmo plano", "Idade de rochas"],
+                        ["Formação dos planetas gasosos", "Origem da Nuvem de Oort e Cinturão de Kuiper"]
+                    ],
+                    createIllustration: (canvas) => {
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Background
+                        ctx.fillStyle = 'black';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        const centerX = canvas.width / 2;
+                        const centerY = canvas.height / 2;
+                        
+                        // Draw the nebula
+                        const nebulaGradient = ctx.createRadialGradient(
+                            centerX, centerY, 0,
+                            centerX, centerY, canvas.width / 2
+                        );
+                        nebulaGradient.addColorStop(0, 'rgba(255, 200, 100, 0.9)');
+                        nebulaGradient.addColorStop(0.1, 'rgba(255, 150, 50, 0.7)');
+                        nebulaGradient.addColorStop(0.4, 'rgba(200, 100, 150, 0.5)');
+                        nebulaGradient.addColorStop(0.7, 'rgba(100, 50, 150, 0.3)');
+                        nebulaGradient.addColorStop(1, 'rgba(0, 0, 100, 0)');
+                        
+                        ctx.fillStyle = nebulaGradient;
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, canvas.width / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Draw the proto-star
+                        ctx.fillStyle = 'rgba(255, 220, 50, 1)';
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, 30, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Draw the protoplanetary disk
+                        ctx.save();
+                        ctx.translate(centerX, centerY);
+                        ctx.rotate(Math.PI / 6);
+                        ctx.scale(1, 0.2);
+                        
+                        const diskGradient = ctx.createRadialGradient(0, 0, 40, 0, 0, canvas.width / 2);
+                        diskGradient.addColorStop(0, 'rgba(255, 200, 100, 0)');
+                        diskGradient.addColorStop(0.1, 'rgba(255, 200, 100, 0.8)');
+                        diskGradient.addColorStop(0.6, 'rgba(100, 100, 200, 0.6)');
+                        diskGradient.addColorStop(1, 'rgba(50, 50, 100, 0)');
+                        
+                        ctx.fillStyle = diskGradient;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, canvas.width / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        ctx.restore();
+                        
+                        // Draw some proto-planets
+                        const planetPositions = [
+                            {dist: 60, size: 5, color: '#a67c52'},
+                            {dist: 85, size: 8, color: '#cd7f32'},
+                            {dist: 120, size: 9, color: '#2f6b55'},
+                            {dist: 160, size: 7, color: '#aa4203'},
+                            {dist: 210, size: 18, color: '#d8ca9d'},
+                            {dist: 260, size: 16, color: '#ebba5b'}
+                        ];
+                        
+                        const time = Date.now() * 0.0005;
+                        
+                        planetPositions.forEach((planet, i) => {
+                            const angle = time * (1 / (i + 1)) + i;
+                            const x = centerX + Math.cos(angle) * planet.dist;
+                            const y = centerY + Math.sin(angle) * planet.dist * 0.2;
+                            
+                            ctx.fillStyle = planet.color;
+                            ctx.beginPath();
+                            ctx.arc(x, y, planet.size, 0, Math.PI * 2);
+                            ctx.fill();
+                        });
+                        
+                        // Add dust particles
+                        for (let i = 0; i < 300; i++) {
+                            const angle = Math.random() * Math.PI * 2;
+                            const distance = 40 + Math.random() * (canvas.width / 2 - 40);
+                            const x = centerX + Math.cos(angle) * distance;
+                            const y = centerY + Math.sin(angle) * distance * 0.2;
+                            
+                            ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.5})`;
+                            ctx.beginPath();
+                            ctx.arc(x, y, Math.random() * 2, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+                },
+                {
+                    id: 'vortex',
+                    name: 'Teoria do Vórtex',
+                    category: 'scientific',
+                    section: 'terra',
+                    keywordGroups: [
+                        ["Vórtices"],
+                        ["René Descartes"],
+                        ["Éter"],
+                        ["Primeira explicação mecanicista"],
+                        ["O que mantinha os planetas em suas órbitas?"]
+                    ],
+                    createIllustration: (canvas) => {
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Background
+                        ctx.fillStyle = '#1a1a2e';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        const centerX = canvas.width / 2;
+                        const centerY = canvas.height / 2;
+                        const time = Date.now() * 0.001;
+                        
+                        // Draw vortex lines
+                        for (let radius = 20; radius < canvas.width / 1.5; radius += 10) {
+                            ctx.strokeStyle = `rgba(200, 200, 255, ${0.7 - radius / (canvas.width / 1.2)})`;
+                            ctx.lineWidth = 2;
+                            ctx.beginPath();
+                            
+                            for (let angle = 0; angle <= Math.PI * 2; angle += 0.01) {
+                                const spiralRadius = radius + angle * 10;
+                                const wobble = 5 * Math.sin(angle * 10 + time * 2);
+                                const x = centerX + Math.cos(angle + time / 2) * (spiralRadius + wobble);
+                                const y = centerY + Math.sin(angle + time / 2) * (spiralRadius + wobble);
+                                
+                                if (angle === 0) {
+                                    ctx.moveTo(x, y);
+                                } else {
+                                    ctx.lineTo(x, y);
+                                }
+                            }
+                            
+                            ctx.stroke();
+                        }
+                        
+                        // Draw planets caught in the vortex
+                        const planets = [
+                            { dist: 80, size: 8, color: '#FFB347' },
+                            { dist: 130, size: 12, color: '#A2C5AC' },
+                            { dist: 190, size: 10, color: '#9CAFB7' },
+                            { dist: 240, size: 15, color: '#D44000' }
+                        ];
+                        
+                        planets.forEach((planet, i) => {
+                            const speed = 1 / (i + 1);
+                            const angle = time * speed;
+                            const x = centerX + Math.cos(angle) * planet.dist;
+                            const y = centerY + Math.sin(angle) * planet.dist;
+                            
+                            // Planet glow
+                            const gradient = ctx.createRadialGradient(x, y, 0, x, y, planet.size * 2);
+                            gradient.addColorStop(0, planet.color);
+                            gradient.addColorStop(1, 'transparent');
+                            
+                            ctx.fillStyle = gradient;
+                            ctx.beginPath();
+                            ctx.arc(x, y, planet.size * 2, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            // Planet body
+                            ctx.fillStyle = planet.color;
+                            ctx.beginPath();
+                            ctx.arc(x, y, planet.size, 0, Math.PI * 2);
+                            ctx.fill();
+                        });
+                        
+                        // Central sun
+                        const sunGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 30);
+                        sunGradient.addColorStop(0, 'white');
+                        sunGradient.addColorStop(0.2, 'yellow');
+                        sunGradient.addColorStop(1, 'orange');
+                        
+                        ctx.fillStyle = sunGradient;
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, 30, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Draw ether particles
+                        for (let i = 0; i < 100; i++) {
+                            const angle = Math.random() * Math.PI * 2;
+                            const distance = Math.random() * canvas.width / 2;
+                            const x = centerX + Math.cos(angle) * distance;
+                            const y = centerY + Math.sin(angle) * distance;
+                            
+                            ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.5})`;
+                            ctx.beginPath();
+                            ctx.arc(x, y, Math.random() * 2, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+                },
+                {
+                    id: 'planetesimal',
+                    name: 'Hipótese Planetesimal de Chamberlin-Moulton',
+                    category: 'scientific',
+                    section: 'terra',
+                    keywordGroups: [
+                        ["Aglomeração de planetesimais"],
+                        ["Thomas C. Chamberlin", "Forest R. Moulton"],
+                        ["Passagem de uma estrela próxima", "Ejeção de material", "Condensação de planetesimais", "Acreção de planetas"],
+                        ["Problemas com o material ejetado", "Física do gás"]
+                    ],
+                    createIllustration: (canvas) => {
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Background
+                        ctx.fillStyle = 'black';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        const centerX = canvas.width / 2;
+                        const centerY = canvas.height / 2;
+                        
+                        // Draw stars
+                        for (let i = 0; i < 200; i++) {
+                            const x = Math.random() * canvas.width;
+                            const y = Math.random() * canvas.height;
+                            const size = Math.random() * 2;
+                            
+                            ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.8 + 0.2})`;
+                            ctx.beginPath();
+                            ctx.arc(x, y, size, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                        
+                        // Draw the two stars
+                        // Main star
+                        const starGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 30);
+                        starGradient.addColorStop(0, 'white');
+                        starGradient.addColorStop(0.2, 'yellow');
+                        starGradient.addColorStop(1, 'orange');
+                        
+                        ctx.fillStyle = starGradient;
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, 30, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Passing star
+                        const time = Date.now() * 0.001;
+                        const passingStarX = centerX + Math.cos(time * 0.2) * 200;
+                        const passingStarY = centerY + Math.sin(time * 0.2) * 80;
+                        
+                        const passingStarGradient = ctx.createRadialGradient(
+                            passingStarX, passingStarY, 0, 
+                            passingStarX, passingStarY, 20
+                        );
+                        passingStarGradient.addColorStop(0, 'white');
+                        passingStarGradient.addColorStop(0.2, 'lightblue');
+                        passingStarGradient.addColorStop(1, 'blue');
+                        
+                        ctx.fillStyle = passingStarGradient;
+                        ctx.beginPath();
+                        ctx.arc(passingStarX, passingStarY, 20, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Draw tidal forces/ejected material
+                        const angle = Math.atan2(passingStarY - centerY, passingStarX - centerX);
+                        
+                        // Draw ejecta
+                        for (let i = 0; i < 200; i++) {
+                            const ejAngle = angle + Math.PI + (Math.random() * 0.5 - 0.25);
+                            const distance = 30 + Math.random() * 150;
+                            const size = Math.random() * 4 + 1;
+                            
+                            const x = centerX + Math.cos(ejAngle) * distance;
+                            const y = centerY + Math.sin(ejAngle) * distance;
+                            
+                            ctx.fillStyle = `rgba(255, 200, 100, ${Math.random() * 0.8 + 0.2})`;
+                            ctx.beginPath();
+                            ctx.arc(x, y, size, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                        
+                        // Draw planetesimals forming
+                        const planetesimals = [
+                            { dist: 60, angle: angle + Math.PI + 0.2, size: 8 },
+                            { dist: 90, angle: angle + Math.PI - 0.1, size: 10 },
+                            { dist: 120, angle: angle + Math.PI + 0.3, size: 7 },
+                            { dist: 150, angle: angle + Math.PI - 0.2, size: 12 }
+                        ];
+                        
+                        planetesimals.forEach(p => {
+                            const x = centerX + Math.cos(p.angle) * p.dist;
+                            const y = centerY + Math.sin(p.angle) * p.dist;
+                            
+                            // Planetesimal glow
+                            const gradient = ctx.createRadialGradient(x, y, 0, x, y, p.size * 1.5);
+                            gradient.addColorStop(0, 'rgba(255, 200, 100, 0.8)');
+                            gradient.addColorStop(1, 'transparent');
+                            
+                            ctx.fillStyle = gradient;
+                            ctx.beginPath();
+                            ctx.arc(x, y, p.size * 1.5, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            // Planetesimal body
+                            ctx.fillStyle = '#cd7f32';
+                            ctx.beginPath();
+                            ctx.arc(x, y, p.size, 0, Math.PI * 2);
+                            ctx.fill();
+                        });
+                        
+                        // Draw tidal force lines
+                        ctx.strokeStyle = 'rgba(255, 200, 100, 0.3)';
+                        ctx.lineWidth = 1;
+                        
+                        for (let i = 0; i < 20; i++) {
+                            const lineAngle = angle + Math.PI + (Math.random() * 0.5 - 0.25);
+                            const startDist = 30;
+                            const endDist = 30 + Math.random() * 150;
+                            
+                            const startX = centerX + Math.cos(lineAngle) * startDist;
+                            const startY = centerY + Math.sin(lineAngle) * startDist;
+                            const endX = centerX + Math.cos(lineAngle) * endDist;
+                            const endY = centerY + Math.sin(lineAngle) * endDist;
+                            
+                            ctx.beginPath();
+                            ctx.moveTo(startX, startY);
+                            ctx.lineTo(endX, endY);
+                            ctx.stroke();
+                        }
+                    }
+                },
+                {
+                    id: 'cristianismo',
+                    name: 'Cristianismo',
+                    category: 'religion',
+                    section: 'religiosas',
+                    keywordGroups: [
+                        ["Livro de Gênesis", "Palavra divina"],
+                        ["Dia 1: Criação da luz, separação entre dia e noite", "Dia 2: Separação das águas, formação do céu", "Dia 3: Formação da vegetação", "Dia 4: Criação do Sol, Lua e demais estrelas", "Dia 5: Criação dos animais aquáticos e aves", "Dia 6: Criação dos animais terrestres e o ser humano", "Dia 7: Deus descansou"]
+                    ],
+                    imageUrl: "https://pfst.cf2.poecdn.net/base/image/18c3033ddab15b7b3fabd3752aa095db17326fee341e8a607bb12de595b9978f?w=225&h=225"
+                },
+                {
+                    id: 'islamismo',
+                    name: 'Islamismo',
+                    category: 'religion',
+                    section: 'religiosas',
+                    keywordGroups: [
+                        ["Alcorão"],
+                        ["Deus Allah"],
+                        ["Criação em seis etapas"],
+                        ["Céu e Terra unidos"]
+                    ],
+                    imageUrl: "https://pfst.cf2.poecdn.net/base/image/6efe48c8973cc7b22c5c3c170b5bf30d2c0bc934ded64d2534d80a72a4f0c3bc?w=290&h=174"
+                },
+                {
+                    id: 'budismo',
+                    name: 'Budismo',
+                    category: 'religion',
+                    section: 'religiosas',
+                    keywordGroups: [
+                        ["Não existe um Deus"],
+                        ["Universo cíclico"],
+                        ["Leis naturais (dharma)"],
+                        ["Causas e condições (pratītyasamutpāda)"],
+                        ["Monte Meru"],
+                        ["Karma"],
+                        ["Impermanência (anicca)"]
+                    ],
+                    imageUrl: "https://pfst.cf2.poecdn.net/base/image/0e8587671dad67a167e273c4f87358c2ebdf47a76da3a2d4d283e92d9858b637?w=275&h=183"
+                },
+                {
+                    id: 'grega',
+                    name: 'Mitologia Grega',
+                    category: 'mythology',
+                    section: 'mitologicas',
+                    keywordGroups: [
+                        ["Caos"],
+                        ["Gaia", "Tártaro", "Érebo", "Eros"],
+                        ["Gaia + Urano =", "Titãs", "Ciclopes", "Hecatônquiros"],
+                        ["Cronos castra Urano", "Erínias", "Gigantes", "Melíades", "Afrodite"],
+                        ["Titãs controlam o cosmos"]
+                    ],
+                    imageUrl: "https://pfst.cf2.poecdn.net/base/image/a162f744cfcaf9ee2585daceb0720e40a91930f8349a58b4169d9d26c4aabf5d?w=201&h=251"
+                },
+                {
+                    id: 'hinduista',
+                    name: 'Mitologia Hinduista',
+                    category: 'mythology',
+                    section: 'mitologicas',
+                    keywordGroups: [
+                        ["Universo cíclico e infinito", "Kalpas"],
+                        ["Brahma", "Vishnu", "Shiva"],
+                        ["Oceano primordial", "1. Criação do universo", "2. Criação dos elementos básicos", "3. Criação dos seres"],
+                        ["Ciclos cósmicos (kalpas)"],
+                        ["Brahman"]
+                    ],
+                    imageUrl: "https://pfst.cf2.poecdn.net/base/image/30df3314fca106eb8695555d94e3b5fd18e54122a991c315fe5a47bf59995b6b?w=192&h=263"
+                },
+                {
+                    id: 'indigena',
+                    name: 'Mitologia Indígena Brasileira',
+                    category: 'mythology',
+                    section: 'mitologicas',
+                    keywordGroups: [
+                        ["Tupã", "Monã", "Nhanderu"],
+                        ["Surgimento da Terra e do céu"],
+                        ["Espíritos e ancestrais"]
+                    ],
+                    imageUrl: "https://pfst.cf2.poecdn.net/base/image/47f0039eeb422a3f7876820c0734466e9cc591f5a521aa270de50262be734921?w=189&h=267"
+                }
+            ];
+            
+            // Initialize slides for each topic
+            function initializeSlides() {
+                // Create home navigation slide
+                const homeSlide = document.getElementById('home');
+                
+                // Initialize start button
+                document.getElementById('start-button').addEventListener('click', function() {
+                    showTopic('section-universo');
+                });
+                
+                // Create section title slides
+                Object.keys(sectionTitles).forEach(sectionId => {
+                    const sectionSlide = document.createElement('div');
+                    sectionSlide.className = 'slide';
+                    sectionSlide.id = sectionId;
+                    
+                    const sectionTitleContainer = document.createElement('div');
+                    sectionTitleContainer.className = 'section-title-container';
+                    
+                    const sectionTitleEl = document.createElement('h2');
+                    sectionTitleEl.className = 'section-title';
+                    sectionTitleEl.textContent = sectionTitles[sectionId];
+                    
+                    sectionTitleContainer.appendChild(sectionTitleEl);
+                    sectionSlide.appendChild(sectionTitleContainer);
+                    
+                    document.querySelector('.slide-container').appendChild(sectionSlide);
+                });
+                
+                // Create content slides for each topic
+                topics.forEach(topic => {
+                    const contentSlide = document.createElement('div');
+                    contentSlide.className = 'slide';
+                    contentSlide.id = `${topic.id}`;
+                    
+                    // Add header with topic name
+                    const contentHeader = document.createElement('div');
+                    contentHeader.className = 'slide-header';
+                    contentHeader.innerHTML = `<h1>${topic.name}</h1>`;
+                    contentSlide.appendChild(contentHeader);
+                    
+                    // Create background container (for illustration)
+                    const backgroundContainer = document.createElement('div');
+                    backgroundContainer.className = 'background-container';
+                    
+                    // Add background illustration based on topic type
+                    if (topic.imageUrl) {
+                        // For religious and mythological topics, use image backgrounds
+                        const bgImage = document.createElement('div');
+                        bgImage.className = 'image-background';
+                        bgImage.style.backgroundImage = `url(${topic.imageUrl})`;
+                        bgImage.style.backgroundSize = 'cover';
+                        bgImage.style.backgroundPosition = 'center';
+                        backgroundContainer.appendChild(bgImage);
+                    } else {
+                        // For scientific topics, use canvas backgrounds
+                        const bgCanvas = document.createElement('canvas');
+                        bgCanvas.className = 'canvas-background';
+                        bgCanvas.width = window.innerWidth;
+                        bgCanvas.height = window.innerHeight;
+                        bgCanvas.id = `${topic.id}-canvas`;
+                        backgroundContainer.appendChild(bgCanvas);
+                    }
+                    
+                    contentSlide.appendChild(backgroundContainer);
+                    
+                    // Add content container with keywords
+                    const contentContainer = document.createElement('div');
+                    contentContainer.className = 'content-container';
+                    
+                    // Add the topic title
+                    contentContainer.innerHTML = `<h2 class="topic-title">${topic.name}</h2>`;
+                    
+                    // Add keyword groups according to the structure provided
+                    const keywordsContainer = document.createElement('div');
+                    keywordsContainer.className = 'mt-4';
+                    
+                    topic.keywordGroups.forEach((group, groupIndex) => {
+                        const groupDiv = document.createElement('div');
+                        groupDiv.className = 'keywords-group';
+                        groupDiv.dataset.topicId = topic.id;
+                        groupDiv.dataset.groupIndex = groupIndex;
+                        
+                        group.forEach(keyword => {
+                            const keywordSpan = document.createElement('span');
+                            keywordSpan.className = 'keyword';
+                            keywordSpan.textContent = keyword;
+                            groupDiv.appendChild(keywordSpan);
+                        });
+                        
+                        keywordsContainer.appendChild(groupDiv);
+                    });
+                    
+                    contentContainer.appendChild(keywordsContainer);
+                    contentSlide.appendChild(contentContainer);
+                    
+                    // Add the slide to the container
+                    document.querySelector('.slide-container').appendChild(contentSlide);
+                });
+                
+                // Add event listeners for keyword groups zooming
+                document.querySelectorAll('.keywords-group').forEach(group => {
+                    group.addEventListener('click', function() {
+                        const overlay = document.querySelector('.keywords-overlay');
+                        
+                        // Toggle zoom class on the clicked group
+                        this.classList.toggle('zoomed');
+                        
+                        // Toggle overlay visibility
+                        if (this.classList.contains('zoomed')) {
+                            overlay.classList.add('active');
+                            
+                            // Close zoom when clicking anywhere else
+                            overlay.onclick = () => {
+                                this.classList.remove('zoomed');
+                                overlay.classList.remove('active');
+                            };
+                        } else {
+                            overlay.classList.remove('active');
+                        }
+                    });
+                });
+            }
+            
+            // Initialize all slides
+            initializeSlides();
+            
+            // Array of slides in order for navigation
+            const slideOrder = [
+                'home',
+                'section-universo',
+                'bigbang',
+                'cordas',
+                'universoeterno',
+                'section-terra',
+                'nebulosasolar',
+                'vortex',
+                'planetesimal',
+                'section-religiosas',
+                'cristianismo',
+                'islamismo',
+                'budismo',
+                'section-mitologicas',
+                'grega',
+                'hinduista',
+                'indigena'
+            ];
+            
+            // Current state variables
+            let currentTopic = 'home';
+            let currentSlideIndex = 0;
+            let animationFrames = {};
+            let illustrationOnlyMode = false;
+            
+            // Function to show a specific topic
+            function showTopic(topicId) {
+                // If currently showing the same topic, do nothing
+                if (currentTopic === topicId) return;
+                
+                // Hide current slide
+                const currentSlide = document.querySelector('.slide.active');
+                if (currentSlide) {
+                    currentSlide.classList.remove('active');
+                }
+                
+                // Cancel any running animations
+                if (animationFrames[currentTopic]) {
+                    cancelAnimationFrame(animationFrames[currentTopic]);
+                }
+                
+                // Clear any open zoomed keywords
+                document.querySelectorAll('.keywords-group.zoomed').forEach(group => {
+                    group.classList.remove('zoomed');
+                });
+                document.querySelector('.keywords-overlay').classList.remove('active');
+                
+                // Update current state
+                currentTopic = topicId;
+                currentSlideIndex = slideOrder.indexOf(topicId);
+                
+                // Show new slide
+                const targetSlide = document.getElementById(topicId);
+                
+                if (targetSlide) {
+                    targetSlide.classList.add('active');
+                    
+                    // Apply illustration-only mode if it's enabled
+                    if (illustrationOnlyMode) {
+                        targetSlide.classList.add('illustration-only');
+                    }
+                    
+                    // Update active menu item
+                    document.querySelectorAll('.menu-item').forEach(item => {
+                        if (item.getAttribute('data-topic') === topicId) {
+                            item.classList.add('active');
+                        } else {
+                            item.classList.remove('active');
+                        }
+                    });
+                    
+                    // Start animation for background if scientific topic
+                    const topic = topics.find(t => t.id === topicId);
+                    
+                    if (topic && !topic.imageUrl) {
+                        const canvas = document.getElementById(`${topicId}-canvas`);
+                        
+                        // Resize canvas to current dimensions
+                        canvas.width = window.innerWidth;
+                        canvas.height = window.innerHeight;
+                        
+                        // Create animation
+                        function animate() {
+                            topic.createIllustration(canvas);
+                            animationFrames[topicId] = requestAnimationFrame(animate);
+                        }
+                        
+                        animate();
+                    }
+                    
+                    // Update progress bar
+                    updateProgressBar();
+                }
+            }
+            
+            // Function to go to next/previous slide
+            function changeSlide(direction) {
+                let nextIndex = direction === 'next' ? 
+                    (currentSlideIndex + 1) % slideOrder.length : 
+                    (currentSlideIndex - 1 + slideOrder.length) % slideOrder.length;
+                
+                showTopic(slideOrder[nextIndex]);
+            }
+            
+            // Update progress bar
+            function updateProgressBar() {
+                const progress = document.querySelector('.progress-bar');
+                const progressPercentage = ((currentSlideIndex) / (slideOrder.length - 1)) * 100;
+                progress.style.width = `${progressPercentage}%`;
+            }
+            
+            // Function to toggle illustration-only mode
+            function toggleIllustrationOnly() {
+                illustrationOnlyMode = !illustrationOnlyMode;
+                
+                // Toggle class on current slide
+                const currentSlide = document.querySelector('.slide.active');
+                if (currentSlide) {
+                    if (illustrationOnlyMode) {
+                        currentSlide.classList.add('illustration-only');
+                    } else {
+                        currentSlide.classList.remove('illustration-only');
+                    }
+                }
+                
+                // Toggle active class on button
+                document.querySelector('.illustration-toggle').classList.toggle('active', illustrationOnlyMode);
+            }
+            
+            // Set up event listeners
+            document.addEventListener('click', function(e) {
+                // Handle slide click for next/previous navigation (only if not clicking on a keyword group)
+                if (e.target.closest('.slide') && !e.target.closest('.keywords-group')) {
+                    const slide = e.target.closest('.slide');
+                    const slideRect = slide.getBoundingClientRect();
+                    const clickX = e.clientX - slideRect.left;
+                    
+                    // Left side click (previous topic)
+                    if (clickX < slideRect.width * 0.3) {
+                        changeSlide('prev');
+                    }
+                    // Right side click (next topic) 
+                    else if (clickX > slideRect.width * 0.7) {
+                        changeSlide('next');
+                    }
+                }
+            });
+            
+            // Navigation buttons
+            document.querySelector('.nav-prev').addEventListener('click', function() {
+                changeSlide('prev');
+            });
+            
+            document.querySelector('.nav-next').addEventListener('click', function() {
+                changeSlide('next');
+            });
+            
+            // Menu toggle
+            document.querySelector('.menu-button').addEventListener('click', function() {
+                document.querySelector('.menu').classList.toggle('open');
+                document.querySelector('.menu-overlay').classList.toggle('open');
+            });
+            
+            // Menu overlay click
+            document.querySelector('.menu-overlay').addEventListener('click', function() {
+                document.querySelector('.menu').classList.remove('open');
+                document.querySelector('.menu-overlay').classList.remove('open');
+            });
+            
+            // Menu item click
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const topicId = this.getAttribute('data-topic');
+                    showTopic(topicId);
+                    
+                    // Close menu on mobile
+                    document.querySelector('.menu').classList.remove('open');
+                    document.querySelector('.menu-overlay').classList.remove('open');
+                });
+            });
+            
+            // Mode toggle
+            document.querySelector('.mode-toggle').addEventListener('click', function() {
+                document.documentElement.classList.toggle('dark');
+            });
+            
+            // Illustration-only toggle
+            document.querySelector('.illustration-toggle').addEventListener('click', toggleIllustrationOnly);
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                // Resize all canvases for scientific topics
+                topics.forEach(topic => {
+                    if (!topic.imageUrl) {
+                        const canvas = document.getElementById(`${topic.id}-canvas`);
+                        if (canvas) {
+                            canvas.width = window.innerWidth;
+                            canvas.height = window.innerHeight;
+                            
+                            // Redraw if this is the current topic
+                            if (currentTopic === topic.id) {
+                                topic.createIllustration(canvas);
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Handle keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                // Close any zoomed keyword group when Escape is pressed
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.keywords-group.zoomed').forEach(group => {
+                        group.classList.remove('zoomed');
+                    });
+                    document.querySelector('.keywords-overlay').classList.remove('active');
+                    return;
+                }
+                
+                // Only handle navigation if no keyword group is zoomed
+                if (!document.querySelector('.keywords-group.zoomed')) {
+                    switch (e.key) {
+                        case 'ArrowLeft':
+                            changeSlide('prev');
+                            break;
+                        case 'ArrowRight':
+                            changeSlide('next');
+                            break;
+                        case 'i':
+                            toggleIllustrationOnly();
+                            break;
+                    }
+                }
+            });
+        });
+    </script>
+
+
+
+</body></html>
