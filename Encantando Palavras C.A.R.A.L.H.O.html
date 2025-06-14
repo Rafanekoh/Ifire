@@ -1,0 +1,646 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encantando Palavras - Incentivo à Leitura</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        primaryDark: '#4B4BC8'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #5D5CDE 0%, #4B4BC8 100%);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #5D5CDE 0%, #4B4BC8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .dark .card-hover:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 transition-colors duration-300">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50 transition-colors duration-300">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <img src="https://pfst.cf2.poecdn.net/base/image/490f94cbe490fa17381a899811739c324822a8dfb050068487bbf3189c390861?w=1080&amp;h=1070" alt="Encantando Palavras Logo" class="w-10 h-10 rounded-full">
+                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Encantando Palavras</h1>
+                </div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Início</a>
+                    <a href="#sobre" class="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Sobre</a>
+                    <a href="#problema" class="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Problema</a>
+                    <a href="#solucoes" class="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Soluções</a>
+                    <a href="#acoes" class="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Ações</a>
+                    <a href="#contato" class="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Contato</a>
+                </div>
+                
+                <button id="mobile-menu-btn" class="md:hidden text-gray-600 dark:text-gray-300">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4">
+                <a href="#inicio" class="block py-2 text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Início</a>
+                <a href="#sobre" class="block py-2 text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Sobre</a>
+                <a href="#problema" class="block py-2 text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Problema</a>
+                <a href="#solucoes" class="block py-2 text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Soluções</a>
+                <a href="#acoes" class="block py-2 text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Ações</a>
+                <a href="#contato" class="block py-2 text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Contato</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="gradient-bg text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <div class="max-w-4xl mx-auto">
+                <i class="fas fa-book-reader text-6xl mb-6 opacity-90"></i>
+                <h1 class="text-5xl md:text-6xl font-bold mb-6">Encantando Palavras</h1>
+                <p class="text-xl md:text-2xl mb-4 opacity-90">C.A.R.A.L.H.O</p>
+                <p class="text-lg mb-8 opacity-80">Conscientização Adequada, Realista e Alternativa para uma Leitura Hábil e Organizada</p>
+                <p class="text-xl mb-10 max-w-3xl mx-auto leading-relaxed">
+                    Conscientizando a população sobre a importância da leitura no desenvolvimento cognitivo e formação cidadã
+                </p>
+                <a href="#sobre" class="bg-white text-primary px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors inline-flex items-center">
+                    <span>Conheça nosso projeto</span>
+                    <i class="fas fa-arrow-down ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sobre Section -->
+    <section id="sobre" class="py-20 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4 text-gray-800 dark:text-white">Sobre o Projeto</h2>
+                <div class="w-24 h-1 bg-primary mx-auto mb-8"></div>
+                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                    Uma iniciativa dedicada a transformar a relação da sociedade com a leitura
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-3xl font-bold mb-6 text-gradient">Nossa Missão</h3>
+                    <p class="text-lg text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                        Conscientizar a população, desde a primeira infância até a terceira idade, 
+                        sobre a importância da leitura no processo de alfabetização e desenvolvimento cognitivo.
+                    </p>
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-primary text-xl mt-1 mr-3"></i>
+                            <p class="text-gray-600 dark:text-gray-300">Promover o hábito da leitura em todas as idades</p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-primary text-xl mt-1 mr-3"></i>
+                            <p class="text-gray-600 dark:text-gray-300">Desenvolver pensamento crítico e comunicação</p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-primary text-xl mt-1 mr-3"></i>
+                            <p class="text-gray-600 dark:text-gray-300">Combater a desinformação através da educação</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Imagem das crianças lendo -->
+                    <div class="relative rounded-2xl overflow-hidden shadow-xl">
+                        <img src="https://pfst.cf2.poecdn.net/base/image/72b644b7eee8a4f420d15a80711fbf7c4d1528e62cb0b1bfb09539551e05ac77?w=275&amp;h=183" alt="Crianças lendo juntas na biblioteca" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end">
+                            <p class="text-white p-6 font-semibold">Crianças descobrindo o mundo através da leitura</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-700 rounded-2xl p-8 shadow-xl">
+                    <h4 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Resultados Esperados</h4>
+                    <div class="space-y-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-chart-line text-white"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-800 dark:text-white">Aumento da Alfabetização</h5>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">Maior taxa de pessoas alfabetizadas</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-users text-white"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-800 dark:text-white">Engajamento Social</h5>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">Participação ativa em clubes de leitura</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-brain text-white"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-800 dark:text-white">Desenvolvimento Cognitivo</h5>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">Melhoria das capacidades intelectuais</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problema Section -->
+    <section id="problema" class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4 text-gray-800 dark:text-white">Diagnóstico do Problema</h2>
+                <div class="w-24 h-1 bg-primary mx-auto mb-8"></div>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="bg-red-50 dark:bg-red-900/20 rounded-2xl p-8">
+                    <h3 class="text-2xl font-bold mb-6 text-red-800 dark:text-red-300 flex items-center">
+                        <i class="fas fa-exclamation-triangle mr-3"></i>
+                        O Problema
+                    </h3>
+                    <p class="text-lg text-red-700 dark:text-red-200 mb-6">
+                        <strong>Desinteresse populacional na leitura</strong> - Um problema que afeta cidadãos de todas as idades
+                    </p>
+                    
+                    <h4 class="text-xl font-semibold mb-4 text-red-800 dark:text-red-300">Principais Causas:</h4>
+                    <ul class="space-y-3 text-red-700 dark:text-red-200">
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-red-500 mt-1 mr-3"></i>
+                            <span>Alternativas mais prazerosas disponíveis</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-red-500 mt-1 mr-3"></i>
+                            <span>Introdução tardia à alfabetização</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-red-500 mt-1 mr-3"></i>
+                            <span>Falta de divulgação das bibliotecas públicas</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-red-500 mt-1 mr-3"></i>
+                            <span>Preços considerados altos dos livros</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-red-500 mt-1 mr-3"></i>
+                            <span>Leituras obrigatórias mal conduzidas</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-orange-50 dark:bg-orange-900/20 rounded-2xl p-8">
+                    <h3 class="text-2xl font-bold mb-6 text-orange-800 dark:text-orange-300 flex items-center">
+                        <i class="fas fa-chart-line-down mr-3"></i>
+                        Consequências
+                    </h3>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="fas fa-comments text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-orange-800 dark:text-orange-300">Dificuldade de Comunicação</h4>
+                                <p class="text-orange-700 dark:text-orange-200 text-sm">Limitações na expressão e compreensão</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="fas fa-eye-slash text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-orange-800 dark:text-orange-300">Falta de Opinião Crítica</h4>
+                                <p class="text-orange-700 dark:text-orange-200 text-sm">Dificuldade em analisar informações</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="fas fa-question-circle text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-orange-800 dark:text-orange-300">Desinformação</h4>
+                                <p class="text-orange-700 dark:text-orange-200 text-sm">Maior vulnerabilidade a fake news</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="fas fa-puppet text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-orange-800 dark:text-orange-300">Facilidade de Manipulação</h4>
+                                <p class="text-orange-700 dark:text-orange-200 text-sm">Menor resistência a influências externas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Soluções Section -->
+    <section id="solucoes" class="py-20 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4 text-gray-800 dark:text-white">Nossas Soluções</h2>
+                <div class="w-24 h-1 bg-primary mx-auto mb-8"></div>
+                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                    Estratégias inovadoras para despertar o interesse pela leitura
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-gray-700 rounded-2xl p-6 card-hover">
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-users text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">Clubes de Leitura</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">
+                        Criação de comunidades que compartilham experiências literárias
+                    </p>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-700 rounded-2xl p-6 card-hover">
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-chalkboard-teacher text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">Projetos Pedagógicos</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">
+                        Trabalhos escolares interativos sobre histórias e personagens
+                    </p>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-700 rounded-2xl p-6 card-hover">
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-award text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">Sistema de Recompensas</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">
+                        Incentivos para quem desenvolve o hábito da leitura diária
+                    </p>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-700 rounded-2xl p-6 card-hover">
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-building text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">Atividades em Bibliotecas</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">
+                        Programações especiais para diferentes faixas etárias
+                    </p>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-700 rounded-2xl p-6 card-hover">
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-route text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">Excursões Culturais</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">
+                        Visitas a feiras, bibliotecas e espaços culturais
+                    </p>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-700 rounded-2xl p-6 card-hover">
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-circle text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">Rodas de Leitura</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">
+                        Momentos de compartilhamento e discussão de obras
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ações por Faixa Etária -->
+    <section id="acoes" class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4 text-gray-800 dark:text-white">Ações por Faixa Etária</h2>
+                <div class="w-24 h-1 bg-primary mx-auto mb-8"></div>
+                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                    Estratégias personalizadas para cada etapa da vida
+                </p>
+            </div>
+            
+            <div class="space-y-8">
+                <!-- Primeira Infância -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-baby text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-blue-800 dark:text-blue-300">Primeira Infância (0 a 11 anos)</h3>
+                            <p class="text-blue-600 dark:text-blue-200">Formação das bases para futuros leitores</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-lg font-semibold mb-3 text-blue-800 dark:text-blue-300">Estratégias:</h4>
+                            <ul class="space-y-2 text-blue-700 dark:text-blue-200">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-blue-500 mt-1 mr-2"></i>
+                                    <span>Rodas de leitura em voz alta</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-blue-500 mt-1 mr-2"></i>
+                                    <span>Obras com moral exemplar e positiva</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-blue-500 mt-1 mr-2"></i>
+                                    <span>Edições com imagens expressivas e texturizadas</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-blue-500 mt-1 mr-2"></i>
+                                    <span>Visitas em escolas maternais e fundamental I</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-100 dark:bg-blue-800/30 rounded-xl p-4">
+                            <h5 class="font-semibold text-blue-800 dark:text-blue-300 mb-2">Benefícios Comprovados:</h5>
+                            <p class="text-blue-700 dark:text-blue-200 text-sm">
+                                Estudos da American National Library of Medicine mostram que a leitura desde a primeira infância 
+                                estimula áreas do cérebro responsáveis pela linguagem, memória e atenção.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Primeira Idade -->
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-user-graduate text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-green-800 dark:text-green-300">Primeira Idade (12 a 20 anos)</h3>
+                            <p class="text-green-600 dark:text-green-200">Desenvolvimento do pensamento crítico</p>
+                        </div>
+                    </div>
+                    <div class="text-green-700 dark:text-green-200">
+                        <p class="mb-4">
+                            Nesta fase, aproveitamos das rodas de conversa para analisar obras com maior nível de complexidade 
+                            conforme o ano letivo, promovendo debates enriquecedores sobre os temas abordados.
+                        </p>
+                        <p>
+                            O foco está no desenvolvimento da capacidade de análise e interpretação, 
+                            utilizando menos recursos visuais e mais estímulos ao pensamento abstrato.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Idades Adultas -->
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6">
+                        <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-briefcase text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-2">Segunda Idade (21 a 49)</h3>
+                        <p class="text-purple-600 dark:text-purple-200 text-sm">
+                            Programas voltados para adultos em fase produtiva, 
+                            com foco em desenvolvimento pessoal e profissional.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-2xl p-6">
+                        <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-user-friends text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-orange-800 dark:text-orange-300 mb-2">Terceira Idade (50 a 77)</h3>
+                        <p class="text-orange-600 dark:text-orange-200 text-sm">
+                            Atividades adaptadas para adultos maduros, 
+                            promovendo socialização e bem-estar através da leitura.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-800 dark:to-slate-800 rounded-2xl p-6">
+                        <div class="w-12 h-12 bg-gray-500 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-heart text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-300 mb-2">Quarta Idade (77+)</h3>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Programas especiais para idosos, mantendo a mente ativa 
+                            e promovendo qualidade de vida através da literatura.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contato Section -->
+    <section id="contato" class="py-20 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4 text-gray-800 dark:text-white">Entre em Contato</h2>
+                <div class="w-24 h-1 bg-primary mx-auto mb-8"></div>
+                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                    Junte-se ao movimento Encantando Palavras e faça parte da transformação
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Participe do Projeto</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+                        Seja você um educador, pai, estudante ou simplesmente alguém que acredita no poder 
+                        transformador da leitura, sua participação é fundamental para o sucesso do projeto.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-volunteer-heart text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-800 dark:text-white">Seja Voluntário</h4>
+                                <p class="text-gray-600 dark:text-gray-300">Participe das atividades em escolas e bibliotecas</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-handshake text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-800 dark:text-white">Parcerias</h4>
+                                <p class="text-gray-600 dark:text-gray-300">Escolas e instituições interessadas em colaborar</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-share-alt text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-800 dark:text-white">Divulgação</h4>
+                                <p class="text-gray-600 dark:text-gray-300">Ajude a espalhar a palavra nas redes sociais</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-700 rounded-2xl p-8 shadow-xl">
+                    <h3 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Conecte-se Conosco</h3>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <i class="fab fa-facebook text-blue-600 text-2xl mr-4"></i>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 dark:text-white">Facebook</h4>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">Acompanhe nossas atividades</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-4 bg-pink-50 dark:bg-pink-900/20 rounded-lg">
+                            <i class="fab fa-instagram text-pink-600 text-2xl mr-4"></i>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 dark:text-white">Instagram</h4>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">Fotos e vídeos dos projetos</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                            <i class="fab fa-whatsapp text-green-600 text-2xl mr-4"></i>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 dark:text-white">WhatsApp</h4>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">Contato direto para parcerias</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-primary hover:bg-primaryDark text-white py-3 px-6 rounded-full font-semibold transition-colors">
+                        Quero Participar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 dark:bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="https://pfst.cf2.poecdn.net/base/image/490f94cbe490fa17381a899811739c324822a8dfb050068487bbf3189c390861?w=1080&amp;h=1070" alt="Encantando Palavras Logo" class="w-8 h-8 rounded-full">
+                        <h3 class="text-xl font-bold">Encantando Palavras</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Transformando vidas através da leitura e educação, uma palavra de cada vez.
+                    </p>
+                    <p class="text-gray-400 text-sm">
+                        C.A.R.A.L.H.O - Conscientização Adequada, Realista e Alternativa para uma Leitura Hábil e Organizada
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Links Rápidos</h4>
+                    <div class="space-y-2">
+                        <a href="#sobre" class="block text-gray-300 hover:text-primary transition-colors">Sobre o Projeto</a>
+                        <a href="#problema" class="block text-gray-300 hover:text-primary transition-colors">Problema</a>
+                        <a href="#solucoes" class="block text-gray-300 hover:text-primary transition-colors">Soluções</a>
+                        <a href="#acoes" class="block text-gray-300 hover:text-primary transition-colors">Ações</a>
+                        <a href="#contato" class="block text-gray-300 hover:text-primary transition-colors">Contato</a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Recursos</h4>
+                    <div class="space-y-2">
+                        <p class="text-gray-300">Redes Sociais</p>
+                        <p class="text-gray-300">Atividades Presenciais</p>
+                        <p class="text-gray-300">Parcerias Educacionais</p>
+                        <p class="text-gray-300">Material Didático</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-400">
+                    © 2024 Encantando Palavras. Promovendo a leitura para um futuro melhor.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode toggle functionality
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+
+        // Add scroll effect to navbar
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.classList.add('backdrop-blur-md', 'bg-white/95', 'dark:bg-gray-800/95');
+            } else {
+                header.classList.remove('backdrop-blur-md', 'bg-white/95', 'dark:bg-gray-800/95');
+            }
+        });
+    </script>
+
+
+</body></html>
