@@ -1,0 +1,242 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Infinito</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .text-item {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .dark .gradient-bg {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+        }
+        
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 transition-colors duration-300">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-8 px-4 text-center sticky top-0 z-10 shadow-lg">
+        <h1 class="text-4xl md:text-6xl font-bold mb-2">SITE INFINITO</h1>
+        <p class="text-lg md:text-xl opacity-90">Role para baixo e veja a magia acontecer...</p>
+        <div class="mt-4">
+            <span class="text-sm opacity-75">Total de mensagens: </span>
+            <span id="counter" class="font-bold text-xl">0</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="min-h-screen py-8">
+        <div id="content-container" class="max-w-4xl mx-auto px-4 space-y-6">
+            <!-- Textos serão inseridos aqui dinamicamente -->
+        </div>
+        
+        <!-- Loading Indicator -->
+        <div id="loading" class="hidden flex justify-center items-center py-8">
+            <div class="loading-spinner"></div>
+            <span class="ml-3 text-gray-600 dark:text-gray-300">Carregando mais...</span>
+        </div>
+    </main>
+
+    <!-- Footer Info -->
+    <div class="fixed bottom-4 right-4 bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg text-sm">
+        <span id="scroll-info">Scroll: 0%</span>
+    </div>
+
+    <script>
+        // Configuração do modo escuro
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Variáveis globais
+        let messageCount = 0;
+        let isLoading = false;
+        const contentContainer = document.getElementById('content-container');
+        const counter = document.getElementById('counter');
+        const loading = document.getElementById('loading');
+        const scrollInfo = document.getElementById('scroll-info');
+        
+        // Texto que será repetido (você pode modificar aqui)
+        const MESSAGE_TEXT = "VAI TOMAR NO SEU CU SOPHIKA";
+        
+        // Cores aleatórias para os textos
+        const colors = [
+            'text-red-500', 'text-blue-500', 'text-green-500', 'text-yellow-500',
+            'text-purple-500', 'text-pink-500', 'text-indigo-500', 'text-teal-500',
+            'text-orange-500', 'text-cyan-500'
+        ];
+        
+        // Tamanhos aleatórios
+        const sizes = [
+            'text-lg', 'text-xl', 'text-2xl', 'text-3xl', 'text-4xl'
+        ];
+        
+        // Estilos aleatórios
+        const styles = [
+            'font-normal', 'font-semibold', 'font-bold', 'italic', 'underline'
+        ];
+
+        // Função para criar um novo item de texto
+        function createTextItem() {
+            const div = document.createElement('div');
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
+            const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+            const randomRotation = Math.floor(Math.random() * 11) - 5; // -5 a 5 graus
+            
+            div.className = `text-item p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg ${randomColor} ${randomSize} ${randomStyle}`;
+            div.style.transform = `rotate(${randomRotation}deg)`;
+            div.innerHTML = `
+                <p class="mb-2">${MESSAGE_TEXT}</p>
+                <small class="text-gray-500 dark:text-gray-400 text-sm font-normal">#${messageCount + 1}</small>
+            `;
+            
+            messageCount++;
+            return div;
+        }
+
+        // Função para adicionar novos textos
+        function addTexts(count = 10) {
+            if (isLoading) return;
+            
+            isLoading = true;
+            loading.classList.remove('hidden');
+            
+            // Simula um pequeno delay para efeito visual
+            setTimeout(() => {
+                for (let i = 0; i < count; i++) {
+                    const textItem = createTextItem();
+                    contentContainer.appendChild(textItem);
+                }
+                
+                counter.textContent = messageCount;
+                isLoading = false;
+                loading.classList.add('hidden');
+            }, 500);
+        }
+
+        // Função para detectar se chegou perto do final da página
+        function isNearBottom() {
+            const scrollTop = window.pageYOffset;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            
+            return scrollTop + windowHeight >= documentHeight - 1000;
+        }
+
+        // Função para atualizar informações de scroll
+        function updateScrollInfo() {
+            const scrollTop = window.pageYOffset;
+            const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = Math.round((scrollTop / documentHeight) * 100);
+            
+            scrollInfo.textContent = `Scroll: ${scrollPercent}%`;
+        }
+
+        // Event listener para scroll infinito
+        window.addEventListener('scroll', () => {
+            updateScrollInfo();
+            
+            if (isNearBottom()) {
+                addTexts(15); // Adiciona 15 novos textos quando chega perto do final
+            }
+        });
+
+        // Adiciona alguns textos iniciais
+        addTexts(20);
+
+        // Efeito de parallax no header
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const header = document.querySelector('header');
+            header.style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+
+        // Adiciona mais textos quando a página carrega
+        window.addEventListener('load', () => {
+            addTexts(10);
+        });
+
+        // Easter egg: adiciona textos quando clica na tela
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'A' && e.target.tagName !== 'BUTTON') {
+                addTexts(5);
+                
+                // Efeito visual no clique
+                const ripple = document.createElement('div');
+                ripple.style.cssText = `
+                    position: fixed;
+                    top: ${e.clientY}px;
+                    left: ${e.clientX}px;
+                    width: 20px;
+                    height: 20px;
+                    background: rgba(93, 92, 222, 0.5);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                    z-index: 1000;
+                `;
+                
+                document.body.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            }
+        });
+
+        // Adiciona animação de ripple
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+
+</body></html>
