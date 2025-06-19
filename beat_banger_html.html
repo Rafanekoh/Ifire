@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beat Banger Clone</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #eee; }
+    canvas { display: block; margin: 0 auto; background: #fff; }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 800;
+    canvas.height = 600;
+
+    const notes = [
+      { time: 1000, key: "a", hit: false },
+      { time: 2000, key: "s", hit: false },
+      { time: 3000, key: "d", hit: false },
+      { time: 4000, key: "f", hit: false },
+    ];
+
+    let startTime = null;
+    let score = 0;
+    let animations = [];
+
+    function drawNote(note, currentTime) {
+      const y = ((note.time - currentTime) / 1000) * canvas.height;
+      note.y = y;
+      ctx.fillStyle = "blue";
+      ctx.fillRect(note.key.charCodeAt(0) * 10 % canvas.width, y, 50, 20);
+    }
+
+    function drawAnimations() {
+      animations = animations.filter(anim => anim.alpha > 0);
+      for (const anim of animations) {
+        ctx.beginPath();
+        ctx.arc(anim.x, anim.y, anim.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(0, 255, 0, ${anim.alpha})`;
+        ctx.fill();
+        anim.radius += 2;
+        anim.alpha -= 0.05;
+      }
+    }
+
+    function draw() {
+      const currentTime = Date.now() - (startTime || 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (const note of notes) {
+        if (!note.hit && note.time > currentTime - 500 && note.time < currentTime + 1500) {
+          drawNote(note, currentTime);
+        }
+      }
+
+      drawAnimations();
+
+      ctx.fillStyle = "black";
+      ctx.font = "20px sans-serif";
+      ctx.fillText(`Score: ${score}`, 20, 30);
+
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener("keydown", (e) => {
+      const currentTime = Date.now() - (startTime || 0);
+      for (const note of notes) {
+        if (!note.hit && note.key === e.key) {
+          if (Math.abs(note.time - currentTime) < 300) {
+            note.hit = true;
+            score += 100;
+            animations.push({
+              x: note.key.charCodeAt(0) * 10 % canvas.width + 25,
+              y: note.y || 0,
+              radius: 10,
+              alpha: 1
+            });
+          }
+        }
+      }
+    });
+
+    function startGame() {
+      startTime = Date.now();
+      requestAnimationFrame(draw);
+    }
+
+    startGame();
+  </script>
+</body>
+</html>
