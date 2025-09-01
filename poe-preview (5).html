@@ -1,0 +1,350 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projeção de Lucro Mensal</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --panel: #111827;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --accent: #22c55e;
+    --accent2: #60a5fa;
+    --grid: #1f2937;
+    --warn: #f59e0b;
+    --neg: #ef4444;
+  }
+  body {
+    margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.4;
+  }
+  .wrap {
+    max-width: 1100px; margin: 0 auto; padding: 16px;
+    display: grid; gap: 16px;
+  }
+  header h1 { font-size: 1.25rem; margin: 0 0 4px; }
+  header p { margin: 0; color: var(--muted); font-size: .95rem; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid #1f2937;
+    border-radius: 12px; padding: 14px;
+  }
+  .grid {
+    display: grid; gap: 12px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 900px) {
+    .grid { grid-template-columns: 1.2fr .8fr; }
+  }
+  .controls {
+    display: grid; gap: 10px;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+  .controls .full { grid-column: 1 / -1; }
+  .ctrl {
+    background: #0b1220; border: 1px solid #1f2937;
+    padding: 10px; border-radius: 10px;
+  }
+  .ctrl label { display:block; font-weight: 600; margin-bottom: 6px; }
+  .ctrl .hint { color: var(--muted); font-size: .9rem; }
+  select, input[type="range"] {
+    width: 100%;
+    background: #0b1220; color: var(--text);
+    border: 1px solid #253044; border-radius: 8px;
+    padding: 8px;
+  }
+  .kpis {
+    display: grid; gap: 10px;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+  }
+  .kpi {
+    background: #0b1220; border: 1px solid #1f2937;
+    border-radius: 10px; padding: 10px;
+  }
+  .kpi h3 { margin: 0; font-size: .9rem; color: var(--muted); }
+  .kpi .val { font-size: 1.2rem; font-weight: 700; margin-top: 4px; }
+  .legend {
+    display:flex; gap:12px; align-items:center; flex-wrap: wrap; margin-top:8px;
+    color: var(--muted); font-size: .9rem;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 2px; display:inline-block; }
+  .dot.rev { background: var(--accent2); }
+  .dot.cost { background: var(--warn); }
+  .dot.profit { background: var(--accent); }
+  canvas { width: 100%; height: 300px; display: block; }
+  footer { color: var(--muted); font-size: .85rem; }
+  .note { color: var(--muted); }
+  .neg { color: var(--neg); }
+</style>
+<script src="https://puc.poecdn.net/authenticated_preview_page/syncedState.bd4eeeb8e8e02052ee92.js"></script></head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Projeção de Lucro Mensal (12 meses)</h1>
+    <p>Baseada em receitas adicionais de Certificações/Credenciamento e Direito Autoral (inbound), menos custos fixos e variáveis.</p>
+  </header>
+
+  <div class="grid">
+    <section class="panel">
+      <canvas id="chart" aria-label="Gráfico de lucro mensal"></canvas>
+      <div class="legend">
+        <span><span class="dot rev"></span> Receita</span>
+        <span><span class="dot cost"></span> Custos</span>
+        <span><span class="dot profit"></span> Lucro líquido</span>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="controls">
+        <div class="ctrl">
+          <label for="scenario">Cenário de receita</label>
+          <select id="scenario">
+            <option value="min">Mínimo (R$ 26.667/mês)</option>
+            <option value="mid" selected="">Médio (R$ 41.667/mês)</option>
+            <option value="max">Máximo (R$ 66.667/mês)</option>
+          </select>
+          <div class="hint">Valores anuais convertidos para mensal com variação sazonal.</div>
+        </div>
+
+        <div class="ctrl">
+          <label for="season">Sazonalidade (±%)</label>
+          <input id="season" type="range" min="0" max="25" value="10">
+          <div class="hint"><span id="seasonVal">10%</span> de variação mensal na receita.</div>
+        </div>
+
+        <div class="ctrl">
+          <label for="localMode">Despesa do local</label>
+          <select id="localMode">
+            <option value="detailed" selected="">Detalhado (R$ 7.242,50/mês)</option>
+            <option value="flat">Total (R$ 11.000/mês)</option>
+          </select>
+          <div class="hint">Escolha entre detalhamento ou total informado.</div>
+        </div>
+
+        <div class="ctrl full">
+          <label>Custos resumidos (mensais)</label>
+          <div class="kpis">
+            <div class="kpi">
+              <h3>Fixos</h3>
+              <div class="val" id="kpiFixed">R$ 17.552,50</div>
+            </div>
+            <div class="kpi">
+              <h3>Variáveis</h3>
+              <div class="val" id="kpiVar">R$ 13.619,76</div>
+            </div>
+            <div class="kpi">
+              <h3>Total Custos</h3>
+              <div class="val" id="kpiTotalCost">R$ 31.172,26</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ctrl full">
+          <label>Indicadores recomendados</label>
+          <div class="note">
+            Certificações: RFPs elegíveis, taxa de vitória, ticket médio.
+            Inbound: tráfego orgânico, MQLs, receita atribuída.
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <footer class="panel">
+    Observações:
+    <ul>
+      <li>IPTU anual rateado por 12 (R$ 492,50/mês).</li>
+      <li>Salários variáveis como média: Engenheiro R$ 10.000; Pintor R$ 2.450.</li>
+      <li>Materiais considerados como custo mensal médio.</li>
+      <li>Para usar a soma “Total (local alugado) R$ 11.000/mês”, altere “Despesa do local”.</li>
+      <li>Se desejar, posso adaptar para múltiplos projetos/mês e custos variáveis por projeto.</li>
+    </ul>
+  </footer>
+</div>
+
+<script>
+(function() {
+  const fmt = v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  // Receitas base mensais por cenário
+  const revenueBase = {
+    min: 26667,
+    mid: 41667,
+    max: 66667
+  };
+
+  // Custos fixos
+  const office = 10310; // Escritório 12 pessoas
+  const localDetailed = 4800 + 1950 + (5910 / 12); // 7242.5
+  const localFlat = 11000;
+
+  // Custos variáveis mensais (médias)
+  const materiais = 300 + 35 + 380 + 29.90 + 24.90 + 399.96; // 1169.76
+  const engenheiro = (5000 + 15000) / 2; // 10000
+  const pintor = (3100 + 1800) / 2;     // 2450
+  const variaveis = materiais + engenheiro + pintor; // 13619.76
+
+  const els = {
+    scenario: document.getElementById('scenario'),
+    season: document.getElementById('season'),
+    seasonVal: document.getElementById('seasonVal'),
+    localMode: document.getElementById('localMode'),
+    kpiFixed: document.getElementById('kpiFixed'),
+    kpiVar: document.getElementById('kpiVar'),
+    kpiTotalCost: document.getElementById('kpiTotalCost'),
+    canvas: document.getElementById('chart')
+  };
+
+  function getFixedCost() {
+    const local = els.localMode.value === 'detailed' ? localDetailed : localFlat;
+    return office + local;
+  }
+
+  function getTotalCost() {
+    return getFixedCost() + variaveis;
+  }
+
+  function buildSeasonalSeries(base, seasonPct) {
+    // 12 meses com ondas suaves usando seno e leve ruído determinístico
+    const months = 12;
+    const out = [];
+    for (let i = 0; i < months; i++) {
+      const theta = (i / months) * 2 * Math.PI;
+      const wave = Math.sin(theta) * seasonPct;
+      const noise = (Math.sin(i * 2.3) + Math.cos(i * 1.7)) * 0.5 * (seasonPct * 0.25);
+      const factor = 1 + (wave + noise);
+      out.push(base * factor);
+    }
+    return out;
+  }
+
+  // Desenho simples em canvas (sem libs externas)
+  const ctx = els.canvas.getContext('2d');
+
+  function drawChart(revenue, costs) {
+    const w = els.canvas.clientWidth;
+    const h = els.canvas.clientHeight;
+    els.canvas.width = Math.round(w * devicePixelRatio);
+    els.canvas.height = Math.round(h * devicePixelRatio);
+    ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+
+    ctx.clearRect(0, 0, w, h);
+    const padding = { l: 48, r: 12, t: 20, b: 26 };
+
+    // Compute profit
+    const profit = revenue.map(r => r - costs);
+
+    // Y scale
+    const all = revenue.concat(Array(12).fill(costs), profit);
+    const yMin = Math.min(0, ...all);
+    const yMax = Math.max(...all);
+    const yPad = (yMax - yMin) * 0.1 || 1;
+    const min = yMin - yPad, max = yMax + yPad;
+
+    const xTo = i => padding.l + (i / 11) * (w - padding.l - padding.r);
+    const yTo = v => {
+      const t = (v - min) / (max - min);
+      return h - padding.b - t * (h - padding.t - padding.b);
+    };
+
+    // Grid
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid');
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = 0; i <= 4; i++) {
+      const y = padding.t + (i / 4) * (h - padding.t - padding.b);
+      ctx.moveTo(padding.l, y); ctx.lineTo(w - padding.r, y);
+    }
+    ctx.stroke();
+
+    // Axes labels (Y)
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '12px system-ui, -apple-system, Segoe UI, Roboto, Arial';
+    for (let i = 0; i <= 4; i++) {
+      const val = min + (i / 4) * (max - min);
+      const y = padding.t + (i / 4) * (h - padding.t - padding.b);
+      ctx.fillText(fmt(val), 6, y + 4);
+    }
+
+    // Draw line helper
+    function drawLine(data, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      data.forEach((v, i) => {
+        const x = xTo(i);
+        const y = yTo(v);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+
+    // Colors
+    const styles = getComputedStyle(document.documentElement);
+    const colRev = styles.getPropertyValue('--accent2').trim();
+    const colCost = styles.getPropertyValue('--warn').trim();
+    const colProfit = styles.getPropertyValue('--accent').trim();
+
+    // Draw series
+    drawLine(revenue, colRev);
+    drawLine(Array(12).fill(costs), colCost);
+    drawLine(profit, colProfit);
+
+    // X labels (meses)
+    const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    ctx.fillStyle = '#9ca3af';
+    for (let i = 0; i < 12; i++) {
+      const x = xTo(i);
+      ctx.fillText(meses[i], x - 10, h - 6);
+    }
+
+    // Tooltips simples ao passar o mouse
+    els.canvas.onmousemove = (e) => {
+      const rect = els.canvas.getBoundingClientRect();
+      const mx = (e.clientX - rect.left);
+      const idx = Math.round((mx - padding.l) / ((w - padding.l - padding.r) / 11));
+      if (idx < 0 || idx > 11) { els.canvas.title = ''; return; }
+      const tip = [
+        meses[idx],
+        `Receita: ${fmt(revenue[idx])}`,
+        `Custos: ${fmt(costs)}`,
+        `Lucro: ${fmt(profit[idx])}`
+      ].join(' | ');
+      els.canvas.title = tip;
+    };
+  }
+
+  function update() {
+    const scenario = els.scenario.value;
+    const seasonPct = Number(els.season.value) / 100;
+    els.seasonVal.textContent = Math.round(seasonPct * 100) + '%';
+
+    const fixed = getFixedCost();
+    const totalCost = fixed + variaveis;
+
+    els.kpiFixed.textContent = fmt(fixed);
+    els.kpiVar.textContent = fmt(variaveis);
+    els.kpiTotalCost.textContent = fmt(totalCost);
+
+    const baseRev = revenueBase[scenario];
+    const seasonalRevenue = buildSeasonalSeries(baseRev, seasonPct);
+    drawChart(seasonalRevenue, totalCost);
+  }
+
+  // Event listeners
+  ['change', 'input'].forEach(ev => {
+    els.scenario.addEventListener(ev, update);
+    els.season.addEventListener(ev, update);
+    els.localMode.addEventListener(ev, update);
+  });
+
+  // Initial render
+  update();
+  // Resize handling
+  window.addEventListener('resize', update);
+})();
+</script>
+
+
+</body></html>
