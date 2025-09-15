@@ -1,0 +1,1065 @@
+<!DOCTYPE html><html lang="pt-BR" data-theme="light"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Clima | Cidade do México -- 02/08 a 10/09</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://highcharts.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+  <style>
+    :root {
+      --font-sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      --radius: 10px;
+      --radius-sm: 7px;
+      --shadow-1: 0 1px 2px rgba(0,0,0,.05), 0 4px 14px rgba(0,0,0,.06);
+      --shadow-2: 0 6px 24px rgba(0,0,0,.10);
+
+      --space-1: 6px;
+      --space-2: 10px;
+      --space-3: 14px;
+      --space-4: 18px;
+      --space-5: 24px;
+
+      --fs-xs: 12px;
+      --fs-sm: 13px;
+      --fs-md: 14.5px;
+      --fs-lg: clamp(18px, 2.8vw, 22px);
+
+      --bg: #f7f7f8;
+      --card: #ffffff;
+      --text: #1a1b1e;
+      --muted: #6a6f76;
+      --border: #d7d9de;
+      --line: #eceef2;
+      --header: #f2f4f7;
+      --accent: #2f6feb;
+      --accent-weak: #e7efff;
+      --row-zebra: #fafbfc;
+      --row-hover: #eef4ff;
+      --warn: #b54708;
+      --focus: 2px solid #2f6feb;
+
+      /* Cores das séries solicitadas */
+      --min-color: #8B0000;   /* vermelho escuro */
+      --max-color: #FF6B6B;   /* vermelho claro */
+      --amp-color: #FFA500;   /* laranja */
+      --rain-color: #1E90FF;  /* azul */
+    }
+    [data-theme="dark"] {
+      --bg: #0f1115;
+      --card: #171a21;
+      --text: #e6e8eb;
+      --muted: #a0a7b1;
+      --border: #2a2f36;
+      --line: #22262d;
+      --header: #1d222a;
+      --accent: #6aa3ff;
+      --accent-weak: #0c1f3f;
+      --row-zebra: #13171d;
+      --row-hover: #0e2a57;
+      --warn: #ffb95e;
+      --focus: 2px solid #6aa3ff;
+      --shadow-1: none;
+      --shadow-2: none;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.45;
+      margin: 0;
+    }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: var(--space-5) var(--space-3);
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2) var(--space-3);
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: var(--space-3);
+    }
+    .title-wrap { min-width: 220px; }
+    h1 { margin: 0 0 2px 0; font-size: var(--fs-lg); font-weight: 700; letter-spacing: .2px; }
+    .sub { margin: 0; color: var(--muted); font-size: var(--fs-sm); }
+
+    .controls {
+      display: flex;
+      gap: var(--space-2);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 8px 12px;
+      font-size: var(--fs-sm);
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: var(--shadow-1);
+    }
+    .btn:focus { outline: var(--focus); }
+    .btn[data-active="true"] {
+      border-color: transparent;
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .table-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-2);
+      overflow: hidden;
+      margin-bottom: var(--space-5);
+    }
+    .table-toolbar {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-2) var(--space-3);
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--card), color-mix(in oklab, var(--card) 80%, var(--header)));
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      padding: 8px 10px;
+      border-radius: 999px;
+      box-shadow: var(--shadow-1);
+      font-size: var(--fs-sm);
+    }
+    .chip label { color: var(--muted); font-weight: 600; letter-spacing: .2px; }
+    select, input[type="search"] {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: var(--fs-sm);
+      outline: none;
+    }
+    input[type="search"]::placeholder { color: var(--muted); }
+    select:focus, input[type="search"]:focus { outline: var(--focus); }
+
+    .table-wrap { width: 100%; overflow: auto; }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 720px;
+      font-size: var(--fs-md);
+    }
+    caption {
+      text-align: left;
+      padding: var(--space-3) var(--space-3) var(--space-2);
+      color: var(--muted);
+      font-size: var(--fs-sm);
+    }
+    thead th {
+      position: sticky; top: 0; z-index: 2; background: var(--header); color: var(--text);
+      font-weight: 700; font-size: var(--fs-sm); letter-spacing: .2px; border-bottom: 1px solid var(--border);
+      padding: 10px 12px; text-align: left; white-space: nowrap;
+    }
+    thead th.sortable { cursor: pointer; }
+    thead th.sortable .sort-indicator { margin-left: 6px; font-size: 11px; color: var(--muted); }
+    thead th[aria-sort="ascending"] .sort-indicator::after { content: "▲"; }
+    thead th[aria-sort="descending"] .sort-indicator::after { content: "▼"; }
+    thead th[aria-sort="none"] .sort-indicator::after { content: "↕"; }
+    tbody td, tbody th { border-bottom: 1px solid var(--line); padding: 10px 12px; vertical-align: middle; }
+    tbody tr:nth-child(even) td { background: var(--row-zebra); }
+    tbody tr:hover td { background: var(--row-hover); transition: background-color .15s ease-in-out; }
+    .avg-row td {
+      font-weight: 700;
+      background: color-mix(in oklab, var(--accent-weak) 60%, var(--card));
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .cell-text { text-align: left; }
+    .cell-num { text-align: right; white-space: nowrap; }
+    .cell-date { text-align: center; white-space: nowrap; }
+    .truncate { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    :root[data-density="compact"] tbody td { padding: 6px 10px; }
+    :root[data-density="compact"] thead th { padding: 8px 10px; }
+    :root[data-density="compact"] .table-toolbar { padding: 8px 10px; }
+
+    .foot { margin-top: var(--space-3); color: var(--muted); font-size: var(--fs-sm); }
+
+    .clickable:focus { outline: var(--focus); outline-offset: -2px; }
+
+    @media (max-width: 680px) {
+      header { gap: var(--space-2); }
+      .controls { width: 100%; }
+      .controls .chip { width: 100%; justify-content: space-between; }
+      .controls .chip > *:not(label) { max-width: 60%; }
+    }
+
+    /* Cartão do gráfico */
+    .chart-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-2);
+      padding: var(--space-3);
+    }
+    .chart-header {
+      margin-bottom: var(--space-3);
+    }
+    .chart-title {
+      margin: 0;
+      font-size: var(--fs-lg);
+      font-weight: 700;
+      letter-spacing: .2px;
+      text-align: center;
+    }
+    .chart-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: var(--fs-sm);
+      text-align: center;
+    }
+    .chart-wrap {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .chart-canvas {
+      min-width: 900px; /* garante legibilidade dos rótulos dos 13 blocos de médias */
+    }
+    .legend-pill {
+      display: inline-flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      margin-top: var(--space-2);
+      color: var(--muted);
+      font-size: var(--fs-sm);
+    }
+    .legend-dot {
+      display: inline-block;
+      width: 12px; height: 12px; border-radius: 50%;
+      border: 1px solid rgba(0,0,0,.1);
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://puc.poecdn.net/authenticated_preview_page/syncedState.bd4eeeb8e8e02052ee92.js"></script></head>
+<body>
+  <div class="page" id="root">
+    <header>
+      <div class="title-wrap">
+        <h1>Cidade do México -- 02/08 a 10/09</h1>
+        <p class="sub">Relatório executivo • Sequência contínua de dias; médias a cada 3 dias e totais gerais ao fim.</p>
+      </div>
+      <div class="controls">
+        <button class="btn" id="toggleTheme" aria-pressed="false" title="Alternar tema claro/escuro">Tema: Claro</button>
+        <button class="btn" id="toggleDensity" aria-pressed="false" title="Alternar densidade de linhas">Espaçamento: Confortável</button>
+      </div>
+    </header>
+
+    <!-- Cartão do climograma -->
+    <section class="chart-card" aria-label="Climograma — Cidade do México">
+      <div class="chart-header">
+        <h2 class="chart-title">Cidade do México/México</h2>
+        <p class="chart-subtitle">19°26′N 99°8′W</p>
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="climogram" class="chart-canvas" height="360" aria-label="Gráfico com barras de temperaturas e linha de pluviosidade"></canvas>
+      </div>
+
+      <div class="legend-pill" aria-hidden="true">
+        <span class="legend-dot" style="background: var(--min-color)"></span> Temp. mínima
+        <span class="legend-dot" style="background: var(--max-color)"></span> Temp. máxima
+        <span class="legend-dot" style="background: var(--amp-color)"></span> Amplitude térmica
+        <span class="legend-dot" style="background: var(--rain-color)"></span> Pluviosidade (linha)
+      </div>
+    </section>
+
+    <!-- Tabela original -->
+    <div class="table-card" role="region" aria-label="Tabela de clima -- Cidade do México">
+      <div class="table-toolbar">
+        <div class="chip" role="group" aria-label="Busca rápida">
+          <label for="quickSearch">Buscar</label>
+          <input type="search" id="quickSearch" placeholder="Filtrar por dia/semana…" aria-label="Busca rápida">
+        </div>
+        <div class="chip" role="group" aria-label="Ordenação inicial">
+          <label for="defaultSort">Ordenar por</label>
+          <select id="defaultSort" aria-label="Ordenar por">
+            <option value="0|asc">Dia (asc)</option>
+            <option value="1|desc">Temp. Máx. (desc)</option>
+            <option value="2|asc">Temp. Mín. (asc)</option>
+            <option value="3|desc">Amplitude (desc)</option>
+            <option value="4|desc">Pluviosidade (desc)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="dataTable" aria-describedby="tableCaption">
+          <caption id="tableCaption">Dados climáticos por dia -- temperaturas em °C, pluviosidade em mm.</caption>
+          <thead>
+            <tr>
+              <th class="sortable" data-col="0" scope="col" aria-sort="none">Dia <span class="sort-indicator" aria-hidden="true"></span></th>
+              <th class="sortable" data-col="1" scope="col" aria-sort="none">Temp. Máx. <span class="sort-indicator" aria-hidden="true"></span></th>
+              <th class="sortable" data-col="2" scope="col" aria-sort="none">Temp. Mín. <span class="sort-indicator" aria-hidden="true"></span></th>
+              <th class="sortable" data-col="3" scope="col" aria-sort="none">Amplitude Térmica <span class="sort-indicator" aria-hidden="true"></span></th>
+              <th class="sortable" data-col="4" scope="col" aria-sort="none">Pluviosidade <span class="sort-indicator" aria-hidden="true"></span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cell-date truncate" title="02/08 (sáb)">02/08 (sáb)</td>
+              <td class="cell-num" data-number="20">20 °C</td>
+              <td class="cell-num" data-number="12">12 °C</td>
+              <td class="cell-num" data-number="8">8 °C</td>
+              <td class="cell-num" data-number="0">0,0 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="03/08 (dom)">03/08 (dom)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="12.3">12,3 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="04/08 (seg)">04/08 (seg)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="0">0,0 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="24">24 °C</td>
+              <td class="cell-num" data-number="12.6">12,6 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="4.1">4,1 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="05/08 (ter)">05/08 (ter)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="0">0,0 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="06/08 (qua)">06/08 (qua)</td>
+              <td class="cell-num" data-number="23">23 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="9">9 °C</td>
+              <td class="cell-num" data-number="3.0">3,0 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="07/08 (qui)">07/08 (qui)</td>
+              <td class="cell-num" data-number="24">24 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="0.3">0,3 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="24.3">24,3 °C</td>
+              <td class="cell-num" data-number="13.3">13,3 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="1.1">1,1 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="08/08 (sex)">08/08 (sex)</td>
+              <td class="cell-num" data-number="24">24 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="0.7">0,7 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="09/08 (sáb)">09/08 (sáb)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="15">15 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="15.8">15,8 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="10/08 (dom)">10/08 (dom)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="0">0,0 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="25.3">25,3 °C</td>
+              <td class="cell-num" data-number="13.6">13,6 °C</td>
+              <td class="cell-num" data-number="11.6">11,6 °C</td>
+              <td class="cell-num" data-number="5.5">5,5 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="11/08 (seg)">11/08 (seg)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="17.5">17,5 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="12/08 (ter)">12/08 (ter)</td>
+              <td class="cell-num" data-number="27">27 °C</td>
+              <td class="cell-num" data-number="12">12 °C</td>
+              <td class="cell-num" data-number="15">15 °C</td>
+              <td class="cell-num" data-number="18.6">18,6 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="13/08 (qua)">13/08 (qua)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="15">15 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="3.2">3,2 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="26.3">26,3 °C</td>
+              <td class="cell-num" data-number="13.3">13,3 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="13.1">13,1 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="14/08 (qui)">14/08 (qui)</td>
+              <td class="cell-num" data-number="25">25 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="10.7">10,7 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="15/08 (sex)">15/08 (sex)</td>
+              <td class="cell-num" data-number="24">24 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="11.2">11,2 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="16/08 (sáb)">16/08 (sáb)</td>
+              <td class="cell-num" data-number="25">25 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="12">12 °C</td>
+              <td class="cell-num" data-number="0">0,0 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="24.6">24,6 °C</td>
+              <td class="cell-num" data-number="13.3">13,3 °C</td>
+              <td class="cell-num" data-number="11.3">11,3 °C</td>
+              <td class="cell-num" data-number="7.3">7,3 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="17/08 (dom)">17/08 (dom)</td>
+              <td class="cell-num" data-number="25">25 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="12">12 °C</td>
+              <td class="cell-num" data-number="0">0,0 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="18/08 (seg)">18/08 (seg)</td>
+              <td class="cell-num" data-number="25">25 °C</td>
+              <td class="cell-num" data-number="15">15 °C</td>
+              <td class="cell-num" data-number="10">10 °C</td>
+              <td class="cell-num" data-number="0.3">0,3 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="19/08 (ter)">19/08 (ter)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="12">12 °C</td>
+              <td class="cell-num" data-number="0.1">0,1 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="25.3">25,3 °C</td>
+              <td class="cell-num" data-number="14">14,0 °C</td>
+              <td class="cell-num" data-number="11.3">11,3 °C</td>
+              <td class="cell-num" data-number="0.13">0,13 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="20/08 (qua)">20/08 (qua)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="0.3">0,3 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="21/08 (qui)">21/08 (qui)</td>
+              <td class="cell-num" data-number="25">25 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="22.6">22,6 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="22/08 (sex)">22/08 (sex)</td>
+              <td class="cell-num" data-number="24">24 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="10">10 °C</td>
+              <td class="cell-num" data-number="0.3">0,3 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="25">25,0 °C</td>
+              <td class="cell-num" data-number="13.6">13,6 °C</td>
+              <td class="cell-num" data-number="11.3">11,3 °C</td>
+              <td class="cell-num" data-number="7.7">7,7 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="23/08 (sáb)">23/08 (sáb)</td>
+              <td class="cell-num" data-number="25">25 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="13.2">13,2 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="24/08 (dom)">24/08 (dom)</td>
+              <td class="cell-num" data-number="27">27 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="21.6">21,6 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="25/08 (seg)">25/08 (seg)</td>
+              <td class="cell-num" data-number="27">27 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="12">12 °C</td>
+              <td class="cell-num" data-number="8">8,0 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="26.3">26,3 °C</td>
+              <td class="cell-num" data-number="14.3">14,3 °C</td>
+              <td class="cell-num" data-number="12">12 °C</td>
+              <td class="cell-num" data-number="14.2">14,2 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="26/08 (ter)">26/08 (ter)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="7.8">7,8 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="27/08 (qua)">27/08 (qua)</td>
+              <td class="cell-num" data-number="21">21 °C</td>
+              <td class="cell-num" data-number="15">15 °C</td>
+              <td class="cell-num" data-number="6">6 °C</td>
+              <td class="cell-num" data-number="0">0,0 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="28/08 (qui)">28/08 (qui)</td>
+              <td class="cell-num" data-number="27">27 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="1">1,0 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="24.6">24,6 °C</td>
+              <td class="cell-num" data-number="14">14,0 °C</td>
+              <td class="cell-num" data-number="10.6">10,6 °C</td>
+              <td class="cell-num" data-number="2.9">2,9 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="29/08 (sex)">29/08 (sex)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="12">12 °C</td>
+              <td class="cell-num" data-number="1.4">1,4 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="30/08 (sáb)">30/08 (sáb)</td>
+              <td class="cell-num" data-number="22">22 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="8">8 °C</td>
+              <td class="cell-num" data-number="0">0,0 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="31/08 (dom)">31/08 (dom)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="12">12 °C</td>
+              <td class="cell-num" data-number="0.1">0,1 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="24.6">24,6 °C</td>
+              <td class="cell-num" data-number="14">14,0 °C</td>
+              <td class="cell-num" data-number="10.6">10,6 °C</td>
+              <td class="cell-num" data-number="0.5">0,5 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="01/09 (seg)">01/09 (seg)</td>
+              <td class="cell-num" data-number="25">25 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="4.3">4,3 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="02/09 (ter)">02/09 (ter)</td>
+              <td class="cell-num" data-number="25">25 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="10">10 °C</td>
+              <td class="cell-num" data-number="8.1">8,1 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="03/09 (qua)">03/09 (qua)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="15">15 °C</td>
+              <td class="cell-num" data-number="13">13 °C</td>
+              <td class="cell-num" data-number="19.4">19,4 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="25.3">25,3 °C</td>
+              <td class="cell-num" data-number="14.6">14,6 °C</td>
+              <td class="cell-num" data-number="11.3">11,3 °C</td>
+              <td class="cell-num" data-number="10.6">10,6 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="04/09 (qui)">04/09 (qui)</td>
+              <td class="cell-num" data-number="25">25 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="3.6">3,6 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="05/09 (sex)">05/09 (sex)</td>
+              <td class="cell-num" data-number="23">23 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="9">9 °C</td>
+              <td class="cell-num" data-number="0">0,0 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="06/09 (sáb)">06/09 (sáb)</td>
+              <td class="cell-num" data-number="27">27 °C</td>
+              <td class="cell-num" data-number="15">15 °C</td>
+              <td class="cell-num" data-number="12">12 °C</td>
+              <td class="cell-num" data-number="2">2,0 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text is-inconsistent" title="Valor original: 16 (parece fora do padrão de amplitude)">
+                Média
+              </td>
+              <td class="cell-num" data-number="25">25,0 °C</td>
+              <td class="cell-num" data-number="14.6">14,6 °C</td>
+              <td class="cell-num" data-number="16">16 °C</td>
+              <td class="cell-num" data-number="1.8">1,8 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="07/09 (dom)">07/09 (dom)</td>
+              <td class="cell-num" data-number="25">25 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="4.8">4,8 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="08/09 (seg)">08/09 (seg)</td>
+              <td class="cell-num" data-number="25">25 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="4.9">4,9 mm</td>
+            </tr>
+            <tr>
+              <td class="cell-date truncate" title="09/09 (ter)">09/09 (ter)</td>
+              <td class="cell-num" data-number="26">26 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="12">12 °C</td>
+              <td class="cell-num" data-number="6.6">6,6 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="25.3">25,3 °C</td>
+              <td class="cell-num" data-number="14.6">14,6 °C</td>
+              <td class="cell-num" data-number="11">11 °C</td>
+              <td class="cell-num" data-number="5.4">5,4 mm</td>
+            </tr>
+
+            <tr>
+              <td class="cell-date truncate" title="10/09 (qua)">10/09 (qua)</td>
+              <td class="cell-num" data-number="24">24 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="10">10 °C</td>
+              <td class="cell-num" data-number="0">0,0 mm</td>
+            </tr>
+            <tr class="avg-row">
+              <td class="cell-text">Média</td>
+              <td class="cell-num" data-number="24">24 °C</td>
+              <td class="cell-num" data-number="14">14 °C</td>
+              <td class="cell-num" data-number="10">10 °C</td>
+              <td class="cell-num" data-number="0">0,0 mm</td>
+            </tr>
+
+            <tr class="avg-row">
+              <td class="cell-text">Total geral (médias)</td>
+              <td class="cell-num" data-number="25.1">25,1 °C</td>
+              <td class="cell-num" data-number="13.8">13,8 °C</td>
+              <td class="cell-num" data-number="11.3">11,3 °C</td>
+              <td class="cell-num" data-number="5.5">5,5 mm</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="foot">
+      Notas: Totais gerais calculados como média de todos os 40 dias (02/08 a 10/09). Unidades: temperaturas em °C e pluviosidade em milímetros (mm).
+    </p>
+  </div>
+
+  <script>
+    // Utilidade: detectar número (usa data-number quando disponível)
+    function getNumericValue(cell) {
+      const ds = cell.getAttribute('data-number');
+      if (ds !== null) return parseFloat(ds);
+      const txt = cell.textContent.replace(/\./g, '').replace(',', '.');
+      const num = parseFloat(txt.match(/-?\d+(\.\d+)?/)?.[0] ?? 'NaN');
+      return isNaN(num) ? Number.NEGATIVE_INFINITY : num;
+    }
+
+    // Ordenação por coluna
+    const table = document.getElementById('dataTable');
+    const thead = table.querySelector('thead');
+    const tbody = table.querySelector('tbody');
+    const headers = Array.from(thead.querySelectorAll('th.sortable'));
+
+    function sortBy(colIndex, direction) {
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const mapped = rows.map((tr, i) => {
+        const cells = tr.children;
+        const cell = cells[colIndex];
+        let key;
+        if (colIndex === 0) {
+          const txt = (cell?.textContent || '').trim();
+          const m = txt.match(/(\d{2})\/(\d{2})/);
+          if (m) {
+            const dd = parseInt(m[1],10);
+            const mm = parseInt(m[2],10);
+            key = new Date(2024, mm-1, dd).getTime();
+          } else {
+            key = txt.toLowerCase();
+          }
+        } else {
+          key = getNumericValue(cell);
+        }
+        return { tr, key, i };
+      });
+
+      mapped.sort((a,b) => {
+        let comp = 0;
+        if (a.key < b.key) comp = -1;
+        else if (a.key > b.key) comp = 1;
+        else comp = a.i - b.i;
+        return direction === 'asc' ? comp : -comp;
+      });
+
+      const frag = document.createDocumentFragment();
+      mapped.forEach(({tr}) => frag.appendChild(tr));
+      tbody.innerHTML = '';
+      tbody.appendChild(frag);
+    }
+
+    function setHeaderSortState(activeIndex, dir) {
+      headers.forEach((th, i) => {
+        th.setAttribute('aria-sort', i === activeIndex ? (dir === 'asc' ? 'ascending' : 'descending') : 'none');
+      });
+    }
+
+    headers.forEach((th, i) => {
+      th.classList.add('clickable');
+      th.tabIndex = 0;
+      th.addEventListener('click', () => {
+        const current = th.getAttribute('aria-sort') || 'none';
+        const next = current === 'ascending' ? 'descending' : 'ascending';
+        setHeaderSortState(i, next === 'ascending' ? 'asc' : 'desc');
+        sortBy(i, next === 'ascending' ? 'asc' : 'desc');
+      });
+      th.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          th.click();
+        }
+      });
+    });
+
+    const searchInput = document.getElementById('quickSearch');
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.trim().toLowerCase();
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      rows.forEach(tr => {
+        const text = tr.textContent.toLowerCase();
+        tr.style.display = text.includes(q) ? '' : 'none';
+      });
+    });
+
+    const defaultSort = document.getElementById('defaultSort');
+    defaultSort.addEventListener('change', () => {
+      const [col, dir] = defaultSort.value.split('|');
+      setHeaderSortState(Number(col), dir);
+      sortBy(Number(col), dir);
+    });
+    setHeaderSortState(0, 'asc');
+    sortBy(0, 'asc');
+
+    // Tema claro/escuro
+    const btnTheme = document.getElementById('toggleTheme');
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      btnTheme.textContent = 'Tema: ' + (theme === 'dark' ? 'Escuro' : 'Claro');
+      btnTheme.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+      // Atualiza cores do gráfico ao trocar tema
+      if (window.climogramChart) {
+        const isDark = theme === 'dark';
+        const grid = isDark ? 'rgba(230,232,235,0.08)' : 'rgba(26,27,30,0.08)';
+        const tick = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || (isDark ? '#a0a7b1' : '#6a6f76');
+        window.climogramChart.options.scales.y.temperature.grid.color = grid;
+        window.climogramChart.options.scales.y.temperature.ticks.color = tick;
+        window.climogramChart.options.scales.y1.pluvio.grid.color = grid;
+        window.climogramChart.options.scales.y1.pluvio.ticks.color = tick;
+        window.climogramChart.options.scales.x.grid.color = grid;
+        window.climogramChart.options.scales.x.ticks.color = tick;
+        window.climogramChart.update('none');
+      }
+    }
+    btnTheme.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      setTheme(current === 'light' ? 'dark' : 'light');
+    });
+
+    // Densidade (confortável/compacta)
+    const btnDensity = document.getElementById('toggleDensity');
+    function setDensity(d) {
+      document.documentElement.setAttribute('data-density', d);
+      btnDensity.textContent = 'Espaçamento: ' + (d === 'compact' ? 'Compacta' : 'Confortável');
+      btnDensity.setAttribute('aria-pressed', d === 'compact' ? 'true' : 'false');
+    }
+    btnDensity.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-density') || 'comfortable';
+      setDensity(current === 'comfortable' ? 'compact' : 'comfortable');
+    });
+
+    setTheme('light');
+    setDensity('comfortable');
+
+    // ---------------------------
+    // Construção do CLIMOGRAMA
+    // ---------------------------
+    // 1) Percorre a tabela e coleta APENAS as linhas "Média", e para cada média
+    // pega os 3 dias anteriores para montar o rótulo "dd/mm • dd/mm • dd/mm".
+    function parseAveragesWithLabels() {
+      const rows = Array.from(document.querySelectorAll('#dataTable tbody tr'));
+      const avgIndices = [];
+      rows.forEach((tr, i) => {
+        const isAvg = tr.classList.contains('avg-row');
+        const firstCellText = (tr.children[0]?.textContent || '').trim().toLowerCase();
+        if (isAvg && firstCellText.startsWith('média')) {
+          avgIndices.push(i);
+        }
+      });
+
+      const labels = [];
+      const tmax = [];
+      const tmin = [];
+      const amp = [];
+      const rain = [];
+
+      avgIndices.forEach((idx) => {
+        // Coleta rótulos dos 3 dias imediatamente anteriores
+        const d1 = rows[idx - 3]?.children[0]?.textContent?.match(/(\d{2}\/\d{2})/)?.[1] || '';
+        const d2 = rows[idx - 2]?.children[0]?.textContent?.match(/(\d{2}\/\d{2})/)?.[1] || '';
+        const d3 = rows[idx - 1]?.children[0]?.textContent?.match(/(\d{2}\/\d{2})/)?.[1] || '';
+        const bloco = [d1, d2, d3].filter(Boolean).join(' • ');
+        labels.push(bloco);
+
+        // Extrai as médias (colunas: 1=max, 2=min, 3=amp, 4=pluvio)
+        const tr = rows[idx];
+        tmax.push(getNumericValue(tr.children[1]));
+        tmin.push(getNumericValue(tr.children[2]));
+        amp.push(getNumericValue(tr.children[3]));
+        rain.push(getNumericValue(tr.children[4]));
+      });
+
+      return { labels, tmax, tmin, amp, rain };
+    }
+
+    const { labels, tmax, tmin, amp, rain } = parseAveragesWithLabels();
+
+    // 2) Cria o gráfico combinado (barras+linha) com eixos à esquerda (°C) e direita (mm)
+    const ctx = document.getElementById('climogram').getContext('2d');
+
+    const css = getComputedStyle(document.documentElement);
+    const colorMin = css.getPropertyValue('--min-color').trim() || '#8B0000';
+    const colorMax = css.getPropertyValue('--max-color').trim() || '#FF6B6B';
+    const colorAmp = css.getPropertyValue('--amp-color').trim() || '#FFA500';
+    const colorRain = css.getPropertyValue('--rain-color').trim() || '#1E90FF';
+    const gridColor = 'rgba(26,27,30,0.08)';
+    const tickColor = css.getPropertyValue('--muted').trim() || '#6a6f76';
+
+    // Função para gerar ticks de 5 em 5 cobrindo o range de dados
+    function niceTickBounds(values, step = 5, paddingSteps = 1, floorZero = false) {
+      if (!values.length) return { min: 0, max: step * 2 };
+      const vmin = Math.min(...values);
+      const vmax = Math.max(...values);
+      let min = Math.floor(vmin / step) * step - paddingSteps * step;
+      let max = Math.ceil(vmax / step) * step + paddingSteps * step;
+      if (floorZero) min = 0;
+      if (min === max) max = min + step * 2;
+      return { min, max, step };
+    }
+
+    // Temperaturas: combinar tmin, tmax e amp para definir limites do eixo esquerdo
+    const tempAll = [...tmin, ...tmax, ...amp].filter(v => Number.isFinite(v));
+    const tempBounds = niceTickBounds(tempAll, 5, 1, false);
+
+    // Pluviosidade: eixo à direita, iniciar em 0
+    const rainBounds = niceTickBounds(rain, 5, 1, true);
+
+    const data = {
+      labels,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Temp. mínima (°C)',
+          data: tmin,
+          backgroundColor: colorMin,
+          borderColor: colorMin,
+          borderWidth: 0,
+          yAxisID: 'temperature',
+          order: 2,
+          barPercentage: 0.9,
+          categoryPercentage: 0.8
+        },
+        {
+          type: 'bar',
+          label: 'Temp. máxima (°C)',
+          data: tmax,
+          backgroundColor: colorMax,
+          borderColor: colorMax,
+          borderWidth: 0,
+          yAxisID: 'temperature',
+          order: 2,
+          barPercentage: 0.9,
+          categoryPercentage: 0.8
+        },
+        {
+          type: 'bar',
+          label: 'Amplitude térmica (°C)',
+          data: amp,
+          backgroundColor: colorAmp,
+          borderColor: colorAmp,
+          borderWidth: 0,
+          yAxisID: 'temperature',
+          order: 2,
+          barPercentage: 0.9,
+          categoryPercentage: 0.8
+        },
+        {
+          type: 'line',
+          label: 'Pluviosidade (mm)',
+          data: rain,
+          borderColor: colorRain,
+          backgroundColor: colorRain,
+          yAxisID: 'pluvio',
+          order: 1,
+          tension: 0.25,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          fill: false
+        }
+      ]
+    };
+
+    const climogramChart = new Chart(ctx, {
+      type: 'bar',
+      data,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: { color: tickColor }
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+              title: (items) => {
+                // Mostra os três dias no título do tooltip
+                return items[0]?.label || '';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: gridColor },
+            ticks: {
+              color: tickColor,
+              // Quebra linha dos rótulos longos em duas linhas
+              callback: function(value) {
+                const lbl = this.getLabelForValue(value);
+                if (!lbl) return '';
+                const parts = lbl.split(' • ');
+                // Junta como "dd/mm dd/mm" na primeira linha e o terceiro na segunda, quando possível
+                if (parts.length === 3) {
+                  return parts[0] + ' ' + parts[1] + '\n' + parts[2];
+                }
+                return lbl;
+              }
+            }
+          },
+          temperature: {
+            position: 'left',
+            title: { display: true, text: 'Temperatura (°C)', color: tickColor },
+            min: tempBounds.min,
+            max: tempBounds.max,
+            grid: { color: gridColor },
+            ticks: {
+              color: tickColor,
+              stepSize: 5
+            }
+          },
+          pluvio: {
+            position: 'right',
+            title: { display: true, text: 'Pluviosidade (mm)', color: tickColor },
+            min: rainBounds.min,
+            max: rainBounds.max,
+            grid: { drawOnChartArea: false, color: gridColor },
+            ticks: {
+              color: tickColor,
+              stepSize: 5
+            }
+          }
+        }
+      }
+    });
+
+    // Exponha para atualização de tema
+    window.climogramChart = climogramChart;
+  </script>
+
+
+</body></html>
