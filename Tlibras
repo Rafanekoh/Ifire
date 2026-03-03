@@ -1,78 +1,205 @@
-<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-  <script>
-    // Armazenamos a instância do widget para usar a tradução manual depois
-    const vlibrasWidget = new window.VLibras.Widget('https://vlibras.gov.br/app');
-  </script>
-
-  <script>
-    const startBtn = document.getElementById('start');
-    const stopBtn = document.getElementById('stop');
-    const textarea = document.getElementById('texto');
-    const status = document.getElementById('status');
-
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      status.textContent = 'Este navegador não suporta reconhecimento de voz.';
-      startBtn.disabled = true;
-    }
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'pt-BR';
-    recognition.continuous = true;
-    recognition.interimResults = true;
-
-    // Variável para acumular o texto sem apagar o anterior
-    let transcricaoCompleta = '';
-
-    startBtn.onclick = () => {
-      try {
-        recognition.start();
-        status.textContent = '🎙 Escutando… fale normalmente';
-      } catch (e) {
-        console.error("Reconhecimento já estava ativo.");
-      }
-    };
-
-    stopBtn.onclick = () => {
-      recognition.stop();
-      status.textContent = '⏹ Reconhecimento pausado';
-    };
-
-    recognition.onresult = (event) => {
-      let interimTranscript = '';
-
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          transcricaoCompleta += transcript + ' ';
-          
-          // ENVIAR PARA O VLIBRAS:
-          // O plugin do VLibras escuta mudanças de texto. 
-          // Se o disparo do evento 'input' não funcionar, usamos a API direta:
-          if (window.plugin && window.plugin.player) {
-              window.plugin.player.translate(transcript);
-          }
-        } else {
-          interimTranscript += transcript;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Traduz Libras | Tradutor de Voz e Texto</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+    
+    <style>
+        :root {
+            --primary: #3B82F6;
+            --primary-dark: #2563EB;
+            --bg: #F3F4F6;
         }
-      }
 
-      // Atualiza o textarea com o texto fixo + o que está sendo processado agora
-      textarea.value = transcricaoCompleta + interimTranscript;
-      
-      // Scroll automático para o final do texto
-      textarea.scrollTop = textarea.scrollHeight;
-    };
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-    recognition.onerror = (event) => {
-      if(event.error === 'no-speech') return;
-      status.textContent = 'Erro: ' + event.error;
-    };
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            text-align: center;
+        }
 
-    recognition.onend = () => {
-      if (status.textContent.includes('Escutando')) {
-          recognition.start(); // Reinicia automaticamente se parar sozinho
-      }
-    };
-  </script>
+        h1 { color: var(--primary); margin-bottom: 1.5rem; }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 50px 12px 15px;
+            border: 2px solid #E5E7EB;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus { border-color: var(--primary); }
+
+        .btn-mic {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--primary);
+            transition: color 0.2s;
+        }
+
+        .btn-mic.listening {
+            color: #EF4444;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.2); }
+            100% { transform: translateY(-50%) scale(1); }
+        }
+
+        .btn-translate {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #6B7280;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Traduz Libras</h1>
+        <p>Digite ou fale para traduzir para sinais</p>
+
+        <div class="input-group">
+            <input type="text" id="campo-texto" placeholder="O que você quer dizer?" />
+            <button class="btn-mic" id="btn-voz" title="Clique para falar">
+                <span class="mdi mdi-microphone" id="icone-mic"></span>
+            </button>
+        </div>
+
+        <button class="btn-translate" onclick="dispararTraducao()">
+            TRADUZIR AGORA
+        </button>
+
+        <div id="status-voz" class="status">Aguardando comando...</div>
+    </div>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+
+    <script>
+        const btnVoz = document.getElementById('btn-voz');
+        const iconeMic = document.getElementById('icone-mic');
+        const campoTexto = document.getElementById('campo-texto');
+        const statusVoz = document.getElementById('status-voz');
+
+        // Configuração da API de Voz
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'pt-BR';
+            recognition.interimResults = false;
+
+            btnVoz.addEventListener('click', () => {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.log("Reconhecimento já está ativo.");
+                }
+            });
+
+            recognition.onstart = () => {
+                btnVoz.classList.add('listening');
+                iconeMic.className = 'mdi mdi-microphone-outline';
+                statusVoz.innerText = "Ouvindo agora...";
+            };
+
+            recognition.onresult = (event) => {
+                const resultado = event.results[0][0].transcript;
+                campoTexto.value = resultado;
+                statusVoz.innerText = "Texto capturado com sucesso!";
+                
+                // Dispara a tradução automática após captar a voz
+                setTimeout(() => dispararTraducao(), 500);
+            };
+
+            recognition.onerror = () => {
+                statusVoz.innerText = "Erro ao reconhecer voz. Tente novamente.";
+                resetMic();
+            };
+
+            recognition.onend = () => {
+                resetMic();
+            };
+
+            function resetMic() {
+                btnVoz.classList.remove('listening');
+                iconeMic.className = 'mdi mdi-microphone';
+            }
+
+        } else {
+            btnVoz.style.display = 'none';
+            statusVoz.innerText = "Seu navegador não suporta tradução por voz.";
+        }
+
+        // Função para acionar o VLibras
+        function dispararTraducao() {
+            const texto = campoTexto.value;
+            if (texto.trim() !== "") {
+                // O VLibras Widget usa esse padrão para tradução via JS
+                if (window.VLibras && window.VLibras.Widget) {
+                    const plugin = window.VLibras.Widget();
+                    plugin.translate(texto);
+                } else {
+                    alert("Aguarde o carregamento do tradutor.");
+                }
+            } else {
+                alert("Por favor, digite ou fale algo primeiro.");
+            }
+        }
+    </script>
+</body>
+</html>
