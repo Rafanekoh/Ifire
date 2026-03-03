@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Simulador de Acessibilidade Real</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <aside class="panel">
+    <h2>Simulações</h2>
+
+    <label>
+      <input type="checkbox" id="tremor">
+      Tremor nas mãos
+    </label>
+
+    <label>
+      <input type="checkbox" id="teclado">
+      Apenas teclado
+    </label>
+
+    <label>
+      <input type="checkbox" id="semVisao">
+      Sem visão
+    </label>
+
+    <label>
+      <input type="checkbox" id="semAudicao">
+      Sem audição
+    </label>
+
+    <label>
+      <input type="checkbox" id="baixaCognicao">
+      Baixa cognição
+    </label>
+
+    <hr>
+
+    <h3>Feedback</h3>
+    <ul id="feedback"></ul>
+  </aside>
+
+  <main id="app">
+    <h1>Site de Teste</h1>
+
+    <button>Comprar</button>
+
+    <input type="text" placeholder="Seu nome">
+
+    <img src="https://via.placeholder.com/150">
+
+    <video controls width="300">
+      <source src="" type="video/mp4">
+    </video>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+body {
+  display: flex;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.panel {
+  width: 280px;
+  padding: 16px;
+  background: #111;
+  color: #fff;
+}
+
+.panel label {
+  display: block;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+main {
+  padding: 40px;
+  flex: 1;
+}
+
+.sem-visao {
+  background: black;
+  color: black;
+}
+
+.baixa-cognicao * {
+  animation: piscar 0.8s infinite alternate;
+}
+
+@keyframes piscar {
+  from { opacity: 1; }
+  to { opacity: 0.6; }
+}
+
+const tremor = document.getElementById("tremor");
+const teclado = document.getElementById("teclado");
+const semVisao = document.getElementById("semVisao");
+const semAudicao = document.getElementById("semAudicao");
+const baixaCognicao = document.getElementById("baixaCognicao");
+
+const feedback = document.getElementById("feedback");
+const app = document.getElementById("app");
+
+function log(msg) {
+  const li = document.createElement("li");
+  li.textContent = msg;
+  feedback.appendChild(li);
+}
+
+/* 🖱️ Tremor nas mãos */
+document.addEventListener("mousemove", (e) => {
+  if (!tremor.checked) return;
+
+  const x = e.clientX + (Math.random() * 10 - 5);
+  const y = e.clientY + (Math.random() * 10 - 5);
+
+  document.body.style.cursor = "none";
+
+  let fakeCursor = document.getElementById("fakeCursor");
+  if (!fakeCursor) {
+    fakeCursor = document.createElement("div");
+    fakeCursor.id = "fakeCursor";
+    fakeCursor.style.position = "fixed";
+    fakeCursor.style.width = "12px";
+    fakeCursor.style.height = "12px";
+    fakeCursor.style.background = "red";
+    fakeCursor.style.borderRadius = "50%";
+    fakeCursor.style.pointerEvents = "none";
+    document.body.appendChild(fakeCursor);
+  }
+
+  fakeCursor.style.left = x + "px";
+  fakeCursor.style.top = y + "px";
+});
+
+/* ⌨️ Apenas teclado */
+document.addEventListener("click", (e) => {
+  if (teclado.checked) {
+    e.preventDefault();
+    log("❌ Mouse desativado. Use apenas teclado.");
+  }
+});
+
+/* 👁️ Sem visão */
+semVisao.addEventListener("change", () => {
+  if (semVisao.checked) {
+    app.classList.add("sem-visao");
+    log("⚠️ Conteúdo visual indisponível");
+    falarEstrutura();
+  } else {
+    app.classList.remove("sem-visao");
+  }
+});
+
+/* 🔊 Leitura estrutural (simulação de leitor de tela) */
+function falarEstrutura() {
+  const elementos = document.querySelectorAll("button, input, img");
+  elementos.forEach(el => {
+    let texto = "";
+
+    if (el.tagName === "BUTTON") texto = "Botão sem rótulo acessível";
+    if (el.tagName === "INPUT") texto = "Campo de entrada sem label";
+    if (el.tagName === "IMG") texto = "Imagem sem descrição";
+
+    const utterance = new SpeechSynthesisUtterance(texto);
+    speechSynthesis.speak(utterance);
+    log("❌ " + texto);
+  });
+}
+
+/* 🔇 Sem audição */
+semAudicao.addEventListener("change", () => {
+  document.querySelectorAll("video, audio").forEach(media => {
+    media.muted = semAudicao.checked;
+  });
+
+  if (semAudicao.checked) {
+    log("❌ Vídeo sem legenda detectado");
+  }
+});
+
+/* 🧩 Baixa cognição */
+baixaCognicao.addEventListener("change", () => {
+  if (baixaCognicao.checked) {
+    app.classList.add("baixa-cognicao");
+    log("⚠️ Excesso de estímulos visuais");
+    log("⚠️ Linguagem possivelmente complexa");
+  } else {
+    app.classList.remove("baixa-cognicao");
+  }
+});
