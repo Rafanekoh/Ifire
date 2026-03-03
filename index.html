@@ -12,21 +12,21 @@
     <video id="video" autoplay playsinline class="fixed inset-0 w-full h-full object-cover z-0"></video>
     
     <div class="relative z-10 h-full flex flex-col justify-end pointer-events-none">
-        <div class="bg-slate-900/95 backdrop-blur-2xl p-8 rounded-t-[3rem] border-t border-white/20 pointer-events-auto shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+        <div class="bg-slate-900/95 backdrop-blur-2xl p-8 rounded-t-[3rem] border-t border-white/20 pointer-events-auto shadow-2xl">
             
             <div id="loader" class="hidden mb-4 flex items-center gap-3">
-                <div class="w-5 h-5 border-3 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                <span class="text-blue-400 text-sm font-bold animate-pulse">IA ANALISANDO CENÁRIO...</span>
+                <div class="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <span class="text-blue-400 text-xs font-bold uppercase tracking-widest">Processando...</span>
             </div>
 
             <div class="mb-6">
-                <h2 id="label" class="text-blue-500 text-[10px] font-black uppercase tracking-[0.4em] mb-2">Tradução Contextual</h2>
-                <p id="texto-principal" class="text-xl font-bold leading-tight text-slate-100">Toque no botão para identificar o que está à sua frente.</p>
+                <h2 class="text-blue-500 text-[10px] font-black uppercase tracking-[0.4em] mb-2">Visão Computacional</h2>
+                <p id="texto-principal" class="text-xl font-bold leading-tight text-slate-100">Toque no botão para identificar o cenário.</p>
             </div>
             
-            <div class="flex justify-center pb-4">
-                <button id="btnCapturar" class="bg-blue-600 hover:bg-blue-500 w-24 h-24 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(37,99,235,0.6)] active:scale-95 transition-all">
-                    <i data-lucide="scan-eye" class="w-12 h-12 text-white"></i>
+            <div class="flex justify-center pb-6">
+                <button id="btnCapturar" class="bg-blue-600 hover:bg-blue-500 w-20 h-20 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all">
+                    <i data-lucide="scan-eye" class="w-10 h-10 text-white"></i>
                 </button>
             </div>
         </div>
@@ -35,16 +35,17 @@
     <script>
         lucide.createIcons();
 
-        // --- CONFIGURAÇÃO ---
-        const API_KEY = "AIzaSyCKh6COajCS2BYKezSPczeJTIt84zHiRCY"; // <--- COLOQUE SUA CHAVE AQUI
+        // CHAVE INTEGRADA ABAIXO
+        const MINHA_CHAVE = "AIzaSyCKh6COajCS2BYKezSPczeJTIt84zHiRCY"; 
+        
         const video = document.getElementById('video');
         const texto = document.getElementById('texto-principal');
         const loader = document.getElementById('loader');
 
         // Iniciar Câmera
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-            .then(s => video.srcObject = s)
-            .catch(e => texto.innerText = "Erro: Permita o acesso à câmera.");
+            .then(s => { video.srcObject = s; })
+            .catch(e => { texto.innerText = "Erro na câmera. Verifique permissões."; });
 
         function falar(t) {
             window.speechSynthesis.cancel();
@@ -54,51 +55,42 @@
         }
 
         document.getElementById('btnCapturar').onclick = async () => {
-            if(API_KEY.includes("AIzaSyCKh6COajCS2BYKezSPczeJTIt84zHiRCY")) return alert("Por favor, insira a API KEY no código!");
-
             loader.classList.remove('hidden');
-            texto.innerText = "Observando ambiente...";
+            texto.innerText = "Analisando mundo...";
 
             const canvas = document.createElement('canvas');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             canvas.getContext('2d').drawImage(video, 0, 0);
-            const base64 = canvas.toDataURL('image/jpeg', 0.6).split(',')[1];
+            const base64 = canvas.toDataURL('image/jpeg', 0.5).split(',')[1];
 
-            // ROTA ATUALIZADA PARA V1 (MAIS ESTÁVEL)
-            const URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-
-            const payload = {
-                contents: [{
-                    parts: [{
-                        text: "Aja como um tradutor de mundo real para autistas e idosos. Descreva o que você vê nesta imagem e como a pessoa deve agir. Responda em Português do Brasil de forma curta e direta."
-                    }, {
-                        inline_data: { mime_type: "image/jpeg", data: base64 }
-                    }]
-                }]
-            };
+            const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${MINHA_CHAVE}`;
 
             try {
                 const response = await fetch(URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [
+                                { text: "Você é um guia de acessibilidade para autistas e idosos. Descreva o local ou objeto desta foto e diga como a pessoa deve agir ou o que o objeto faz. Responda em Português do Brasil, de forma curta, clara e direta." },
+                                { inline_data: { mime_type: "image/jpeg", data: base64 } }
+                            ]
+                        }]
+                    })
                 });
 
                 const data = await response.json();
 
                 if(data.error) {
-                    // Tenta uma rota alternativa caso a V1 falhe em alguns projetos
-                    throw new Error(data.error.message);
+                    texto.innerText = "Erro técnico: " + data.error.message;
+                } else {
+                    const r = data.candidates[0].content.parts[0].text;
+                    texto.innerText = r;
+                    falar(r);
                 }
-
-                const resultado = data.candidates[0].content.parts[0].text;
-                texto.innerText = resultado;
-                falar(resultado);
-
             } catch (e) {
-                console.error(e);
-                texto.innerText = "Erro na IA: O modelo pode estar sobrecarregado ou a chave precisa de ativação. Tente novamente em instantes.";
+                texto.innerText = "Erro de conexão. Verifique se o site está em HTTPS (GitHub Pages).";
             } finally {
                 loader.classList.add('hidden');
             }
