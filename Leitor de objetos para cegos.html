@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identificador 100% PT-BR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <style>
+        body { background: #000; margin: 0; overflow: hidden; }
+        canvas { position: absolute; top: 0; left: 0; z-index: 5; }
+        video { width: 100vw; height: 100vh; object-fit: cover; }
+        .ui { position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; padding: 2rem; background: linear-gradient(transparent, rgba(0,0,0,0.9)); text-align: center; }
+    </style>
+</head>
+<body>
+
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas"></canvas>
+
+    <div class="ui">
+        <div id="status" class="text-blue-500 text-[10px] font-bold uppercase tracking-[0.3em] mb-2 text-white">Carregando Inteligência...</div>
+        <div id="resultado" class="text-5xl font-black text-white uppercase tracking-tighter">---</div>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const resElement = document.getElementById('resultado');
+        const statusElement = document.getElementById('status');
+        
+        let model;
+        let ultimaPalavra = "";
+
+        // FUNÇÃO DE TRADUÇÃO VIA API (Resolve o problema do inglês)
+        async function traduzir(texto) {
+            try {
+                const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=pt&dt=t&q=${encodeURI(texto)}`);
+                const json = await res.json();
+                return json[0][0][0];
+            } catch (e) {
+                return texto; // Caso falhe, mantém o original (backup)
+            }
+        }
+
+        async function init() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = stream;
+                
+                // Carregando o modelo COCO-SSD (Mais preciso que o MobileNet)
+                model = await cocoSsd.load();
+                
+                statusElement.innerText = "IA PRONTA - APONTE A CÂMERA";
+                prever();
+            } catch (e) {
+                resElement.innerText = "ERRO NA CÂMERA";
+            }
+        }
+
+        function falar(t) {
+            window.speechSynthesis.cancel();
+            const m = new SpeechSynthesisUtterance(t);
+            m.lang = 'pt-BR';
+            window.speechSynthesis.speak(m);
+        }
+
+        async function prever() {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            const predictions = await model.detect(video);
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (predictions.length > 0) {
+                // Pega o objeto com maior confiança
+                const obj = predictions[0];
+                const nomeIngles = obj.class;
+
+                // Só traduz e fala se mudar o objeto
+                if (nomeIngles !== ultimaPalavra) {
+                    const nomePT = await traduzir(nomeIngles);
+                    resElement.innerText = nomePT;
+                    falar(nomePT);
+                    ultimaPalavra = nomeIngles;
+                }
+
+                // Desenha o quadrado visual (Feedback para o usuário)
+                ctx.strokeStyle = "#3b82f6";
+                ctx.lineWidth = 4;
+                ctx.strokeRect(...obj.bbox);
+            }
+
+            requestAnimationFrame(prever);
+        }
+
+        init();
+    </script>
+</body>
+</html>
