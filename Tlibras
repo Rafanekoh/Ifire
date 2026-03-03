@@ -2,16 +2,13 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Traduz Libras – Voz para Libras em Tempo Real</title>
-
+  <title>Traduz Libras – Voz para Libras</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Tradutor automático de voz para Libras em tempo real. Acessível, gratuito e online." />
-  <meta name="theme-color" content="#2563eb" />
 
   <style>
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: system-ui, sans-serif;
       background: #0f172a;
       color: #e5e7eb;
       display: flex;
@@ -30,14 +27,13 @@
     }
 
     h1 {
-      margin-top: 0;
       text-align: center;
       color: #60a5fa;
     }
 
     p {
       text-align: center;
-      opacity: 0.85;
+      opacity: .85;
     }
 
     .controls {
@@ -54,27 +50,14 @@
       border: none;
       cursor: pointer;
       font-weight: 600;
-      transition: 0.2s;
     }
 
-    .start {
-      background: #22c55e;
-      color: #022c22;
-    }
-
-    .stop {
-      background: #ef4444;
-      color: #450a0a;
-    }
-
-    button:active {
-      transform: scale(0.96);
-    }
+    .start { background: #22c55e; }
+    .stop  { background: #ef4444; }
 
     textarea {
       width: 100%;
       min-height: 120px;
-      resize: none;
       border-radius: 12px;
       border: none;
       padding: 14px;
@@ -88,7 +71,7 @@
       margin-top: 10px;
       text-align: center;
       font-size: 14px;
-      opacity: 0.8;
+      opacity: 0.85;
     }
   </style>
 </head>
@@ -96,20 +79,15 @@
 <body>
   <main class="container">
     <h1>🎤 Traduz Libras</h1>
-    <p>Fale em português e veja a tradução automática para Libras.</p>
+    <p>O site solicitará permissão para usar seu microfone.</p>
 
     <div class="controls">
       <button class="start" id="start">▶ Iniciar</button>
       <button class="stop" id="stop">■ Parar</button>
     </div>
 
-    <textarea
-      id="texto"
-      placeholder="O texto reconhecido aparecerá aqui automaticamente..."
-      aria-label="Texto transcrito da fala"
-    ></textarea>
-
-    <div class="status" id="status">Aguardando ação do usuário…</div>
+    <textarea id="texto" placeholder="Texto reconhecido aparecerá aqui…"></textarea>
+    <div class="status" id="status">Clique em iniciar para permitir o microfone.</div>
   </main>
 
   <!-- VLibras -->
@@ -125,7 +103,7 @@
     new window.VLibras.Widget('https://vlibras.gov.br/app');
   </script>
 
-  <!-- Reconhecimento de Voz -->
+  <!-- Controle de Microfone + Voz -->
   <script>
     const startBtn = document.getElementById('start');
     const stopBtn = document.getElementById('stop');
@@ -135,47 +113,61 @@
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    if (!SpeechRecognition) {
-      status.textContent = 'Este navegador não suporta reconhecimento de voz.';
-      startBtn.disabled = true;
+    let recognition;
+
+    async function pedirPermissaoMicrofone() {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        status.textContent = '✅ Microfone permitido. Pode falar.';
+        return true;
+      } catch (err) {
+        status.textContent = '❌ Permissão de microfone negada.';
+        return false;
+      }
     }
 
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'pt-BR';
-    recognition.continuous = true;
-    recognition.interimResults = true;
+    startBtn.onclick = async () => {
+      if (!SpeechRecognition) {
+        status.textContent = 'Reconhecimento de voz não suportado.';
+        return;
+      }
 
-    startBtn.onclick = () => {
+      const permitido = await pedirPermissaoMicrofone();
+      if (!permitido) return;
+
+      recognition = new SpeechRecognition();
+      recognition.lang = 'pt-BR';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+
       recognition.start();
-      status.textContent = '🎙 Escutando… fale normalmente';
+      status.textContent = '🎙 Escutando…';
+
+      recognition.onresult = (event) => {
+        let textoFinal = '';
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            textoFinal += event.results[i][0].transcript + ' ';
+          }
+        }
+
+        if (textoFinal.trim()) {
+          textarea.value = textoFinal.trim();
+          textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      };
+
+      recognition.onerror = (e) => {
+        status.textContent = 'Erro: ' + e.error;
+      };
     };
 
     stopBtn.onclick = () => {
-      recognition.stop();
-      status.textContent = '⏹ Reconhecimento pausado';
-    };
-
-    recognition.onresult = (event) => {
-      let textoFinal = '';
-
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal) {
-          textoFinal += event.results[i][0].transcript + ' ';
-        }
+      if (recognition) {
+        recognition.stop();
+        status.textContent = '⏹ Reconhecimento pausado.';
       }
-
-      if (textoFinal.trim()) {
-        textarea.value = textoFinal.trim();
-
-        // força o VLibras a atualizar
-        textarea.dispatchEvent(
-          new Event('input', { bubbles: true })
-        );
-      }
-    };
-
-    recognition.onerror = (event) => {
-      status.textContent = 'Erro no reconhecimento de voz: ' + event.error;
     };
   </script>
 </body>
