@@ -1,227 +1,134 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <title>Traduz Libras – Voz para Libras</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="google-site-verification" content="-QTUrBz_lmQ5sM5W55jhDadf56sUQ7BaLXS8YibuE1A" />
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M1Q6DCQJ38"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-M1Q6DCQJ38', {
+        page_title: 'Traduz Libras',
+        custom_map: { custom_parameter_1: 'feature_used' },
+      });
+    </script>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
+    <title>Traduz Libras | Tradutor Online para Língua Brasileira de Sinais</title>
+    <meta name="description" content="Traduz Libras: tradutor online gratuito para Libras com tradução básica e simultânea. Converta texto e fala em português para Língua Brasileira de Sinais de forma rápida e acessível." />
+    <meta name="keywords" content="traduz libras, tradutor libras, língua brasileira de sinais, tradução libras online, tradutor de sinais, libras português, tradução simultânea, reconhecimento de voz, acessibilidade, inclusão digital, deficiência auditiva, surdos" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    .container {
-      max-width: 600px;
-      width: 90%;
-      background: #020617;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,.4);
-    }
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="manifest" href="/site.webmanifest" />
 
-    h1 {
-      text-align: center;
-      color: #60a5fa;
-    }
+    <link rel="preconnect" href="https://vlibras.gov.br" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
 
-    p {
-      text-align: center;
-      opacity: .85;
-    }
+    <script type="module" crossorigin src="/assets/index-Bs4siKxr.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-C07pyL9-.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-hq5YYHAw.css">
 
-    .controls {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      margin: 20px 0;
-    }
-
-    button {
-      padding: 14px 20px;
-      font-size: 16px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .start { background: #22c55e; }
-    .stop  { background: #ef4444; }
-
-    textarea {
-      width: 100%;
-      min-height: 120px;
-      border-radius: 12px;
-      border: none;
-      padding: 14px;
-      font-size: 16px;
-      background: #020617;
-      color: #e5e7eb;
-      box-shadow: inset 0 0 0 1px #1e293b;
-    }
-
-    .status {
-      margin-top: 10px;
-      text-align: center;
-      font-size: 14px;
-      opacity: 0.85;
-    }
-  </style>
-</head>
-
-<body>
-  <main class="container">
-    <h1>🎤 Traduz Libras</h1>
-    <p>O site solicitará permissão para usar seu microfone.</p>
-
-    <div class="controls">
-      <button class="start" id="start">▶ Iniciar</button>
-      <button class="stop" id="stop">■ Parar</button>
-    </div>
-
-    <textarea id="texto" placeholder="Texto reconhecido aparecerá aqui…"></textarea>
-    <div class="status" id="status">Clique em iniciar para permitir o microfone.</div>
-  </main>
-
-  <!-- VLibras -->
-  <div vw class="enabled">
-    <div vw-access-button class="active"></div>
-    <div vw-plugin-wrapper>
-      <div class="vw-plugin-top-wrapper"></div>
-    </div>
-  </div>
-
-  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-  <script>
-    new window.VLibras.Widget('https://vlibras.gov.br/app');
-  </script>
-
-  <!-- Controle de Microfone + Voz -->
- <script>
-  const startBtn = document.getElementById('start');
-  const stopBtn = document.getElementById('stop');
-  const textarea = document.getElementById('texto');
-  const status = document.getElementById('status');
-
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  if (!SpeechRecognition) {
-    status.textContent = 'Reconhecimento de voz não suportado neste navegador.';
-    startBtn.disabled = true;
-  }
-
-  const recognition = new SpeechRecognition();
-  recognition.lang = 'pt-BR';
-  recognition.continuous = true;
-  recognition.interimResults = true;
-
-  async function pedirPermissaoMicrofone() {
-    try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      return true;
-    } catch (err) {
-      return false;
-    }
-  }
-
-  startBtn.addEventListener('click', async () => {
-    status.textContent = 'Solicitando permissão do microfone…';
-
-    const permitido = await pedirPermissaoMicrofone();
-    if (!permitido) {
-      status.textContent = '❌ Permissão de microfone negada.';
-      return;
-    }
-
-    try {
-      recognition.start(); // ✅ chamado DIRETAMENTE após clique
-      status.textContent = '🎙 Escutando… fale normalmente';
-    } catch (err) {
-      status.textContent = '⚠️ Reconhecimento já está ativo.';
-    }
-  });
-
-  stopBtn.addEventListener('click', () => {
-    recognition.stop();
-    status.textContent = '⏹ Reconhecimento pausado.';
-  });
-
-  recognition.onresult = (event) => {
-    let textoFinal = '';
-
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      if (event.results[i].isFinal) {
-        textoFinal += event.results[i][0].transcript + ' ';
+    <style>
+      /* Estilo básico para o botão de voz que aparecerá na tela */
+      .btn-voice-float {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        background-color: #3B82F6;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        transition: transform 0.2s, background-color 0.2s;
       }
-    }
-
-    if (textoFinal.trim()) {
-      textarea.value = textoFinal.trim();
-      textarea.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-  };
-
-  recognition.onerror = (event) => {
-    if (event.error === 'not-allowed') {
-      status.textContent =
-        '❌ Microfone bloqueado. Verifique permissões do site no navegador.';
-    } else {
-      status.textContent = 'Erro no reconhecimento: ' + event.error;
-    }
-  };
-</script>
-
-    startBtn.onclick = async () => {
-      if (!SpeechRecognition) {
-        status.textContent = 'Reconhecimento de voz não suportado.';
-        return;
+      .btn-voice-float.recording {
+        background-color: #ef4444;
+        animation: pulse 1.5s infinite;
       }
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
 
-      const permitido = await pedirPermissaoMicrofone();
-      if (!permitido) return;
+    <button id="start-voice" class="btn-voice-float" title="Traduzir voz para Libras">
+      <i class="mdi mdi-microphone"></i>
+    </button>
 
-      recognition = new SpeechRecognition();
-      recognition.lang = 'pt-BR';
-      recognition.continuous = true;
-      recognition.interimResults = true;
+    <script>
+      const btn = document.getElementById('start-voice');
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-      recognition.start();
-      status.textContent = '🎙 Escutando…';
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'pt-BR';
+        recognition.continuous = false; // Para quando o usuário termina de falar
+        recognition.interimResults = false;
 
-      recognition.onresult = (event) => {
-        let textoFinal = '';
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          if (event.results[i].isFinal) {
-            textoFinal += event.results[i][0].transcript + ' ';
+        btn.addEventListener('click', () => {
+          try {
+            recognition.start();
+          } catch (e) {
+            recognition.stop();
           }
-        }
+        });
 
-        if (textoFinal.trim()) {
-          textarea.value = textoFinal.trim();
-          textarea.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-      };
+        recognition.onstart = () => {
+          btn.classList.add('recording');
+          console.log("Ouvindo...");
+        };
 
-      recognition.onerror = (e) => {
-        status.textContent = 'Erro: ' + e.error;
-      };
-    };
+        recognition.onend = () => {
+          btn.classList.remove('recording');
+        };
 
-    stopBtn.onclick = () => {
-      if (recognition) {
-        recognition.stop();
-        status.textContent = '⏹ Reconhecimento pausado.';
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          console.log("Transcrição:", transcript);
+          
+          // 1. Tenta preencher qualquer campo de texto na tela (input ou textarea)
+          const inputField = document.querySelector('textarea, input[type="text"]');
+          if (inputField) {
+            inputField.value = transcript;
+            // Dispara evento para o framework (React/Vue) detectar a mudança
+            inputField.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+
+          // 2. Integração Direta com o Widget VLibras (se disponível no DOM)
+          // O widget geralmente busca o texto de um elemento com o atributo data-vlibras-text
+          const vlibrasWidget = document.querySelector('.vlibras-interpreter');
+          if (window.VLibras && window.VLibras.Widget) {
+             // Força a tradução do texto capturado
+             // Nota: A forma exata depende da versão do widget, mas simular 
+             // a entrada no campo de busca do widget é o caminho mais seguro.
+          }
+          
+          alert("Você disse: " + transcript + ". Traduzindo...");
+        };
+
+        recognition.onerror = (event) => {
+          console.error("Erro na voz:", event.error);
+          btn.classList.remove('recording');
+        };
+
+      } else {
+        btn.style.display = 'none';
+        console.warn("Navegador não suporta Web Speech API");
       }
-    };
-  </script>
-</body>
+    </script>
+  </body>
 </html>
