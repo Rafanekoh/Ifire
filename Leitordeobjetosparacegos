@@ -2,103 +2,258 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Identificador 100% PT-BR</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Assistente Sensorial V4 - Persistência Ativada</title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
-        body { background: #000; margin: 0; overflow: hidden; }
-        canvas { position: absolute; top: 0; left: 0; z-index: 5; }
+        body { background: #000; margin: 0; color: white; font-family: sans-serif; overflow: hidden; touch-action: none; }
         video { width: 100vw; height: 100vh; object-fit: cover; }
-        .ui { position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; padding: 2rem; background: linear-gradient(transparent, rgba(0,0,0,0.9)); text-align: center; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; }
+        #modo-display { font-size: 2.2rem; font-weight: bold; text-align: center; background: rgba(0,0,0,0.85); padding: 25px; border: 5px solid #fff; border-radius: 10px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
     <video id="video" autoplay playsinline muted></video>
-    <canvas id="canvas"></canvas>
-
-    <div class="ui">
-        <div id="status" class="text-blue-500 text-[10px] font-bold uppercase tracking-[0.3em] mb-2 text-white">Carregando Inteligência...</div>
-        <div id="resultado" class="text-5xl font-black text-white uppercase tracking-tighter">---</div>
+    <canvas id="procCanvas" style="display:none;"></canvas>
+    
+    <div class="overlay">
+        <div id="modo-display">INICIALIZANDO...</div>
     </div>
 
     <script>
+        // CONFIGURAÇÃO DO MODELO
+        const URL_MODELO_TM = "https://teachablemachine.withgoogle.com/models/6X6WsLb0y/"; 
+
         const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const resElement = document.getElementById('resultado');
-        const statusElement = document.getElementById('status');
-        
-        let model;
-        let ultimaPalavra = "";
+        const modoDisplay = document.getElementById('modo-display');
+        const canvas = document.getElementById('procCanvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-        // FUNÇÃO DE TRADUÇÃO VIA API (Resolve o problema do inglês)
-        async function traduzir(texto) {
-            try {
-                const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=pt&dt=t&q=${encodeURI(texto)}`);
-                const json = await res.json();
-                return json[0][0][0];
-            } catch (e) {
-                return texto; // Caso falhe, mantém o original (backup)
-            }
-        }
+        let model, modelTM;
+        let modoAtual = 0;
+        let sistemaPausado = false;
+        let ultimaFala = "";
+        let ultimoObjeto = "";
+        let ultimaPessoaFalada = "";
+        let pessoaDetectadaAgora = "";
+        let tempoInicioDeteccao = 0;
+        let ultimaCorDita = "";
+        let ultimoToque = 0;
+        let processando = false;
 
-        async function init() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-                video.srcObject = stream;
-                
-                // Carregando o modelo COCO-SSD (Mais preciso que o MobileNet)
-                model = await cocoSsd.load();
-                
-                statusElement.innerText = "IA PRONTA - APONTE A CÂMERA";
-                prever();
-            } catch (e) {
-                resElement.innerText = "ERRO NA CÂMERA";
-            }
-        }
+        const MODOS = ["Objetos", "Pessoas", "Leitor de Texto", "Cores", "Luz", "Temperatura"];
 
-        function falar(t) {
+        const dic = {
+            'person': 'pessoa', 'bicycle': 'bicicleta', 'car': 'carro', 'motorcycle': 'moto', 'airplane': 'avião', 'bus': 'ônibus', 'train': 'trem', 'truck': 'caminhão', 'boat': 'barco', 'traffic light': 'semáforo', 'fire hydrant': 'hidrante', 'stop sign': 'pare', 'parking meter': 'parquímetro', 'bench': 'banco', 'bird': 'pássaro', 'cat': 'gato', 'dog': 'cachorro', 'horse': 'cavalo', 'sheep': 'ovelha', 'cow': 'vaca', 'elephant': 'elefante', 'bear': 'urso', 'zebra': 'zebra', 'giraffe': 'girafa', 'backpack': 'mochila', 'umbrella': 'guarda-chuva', 'handbag': 'bolsa', 'tie': 'gravata', 'suitcase': 'mala', 'frisbee': 'disco', 'skis': 'esquis', 'snowboard': 'prancha de neve', 'sports ball': 'bola', 'kite': 'pipa', 'baseball bat': 'taco', 'baseball glove': 'luva', 'skateboard': 'skate', 'surfboard': 'prancha', 'tennis racket': 'raquete', 'bottle': 'garrafa', 'wine glass': 'taça', 'cup': 'copo', 'fork': 'garfo', 'knife': 'faca', 'spoon': 'colher', 'bowl': 'tigela', 'banana': 'banana', 'apple': 'maçã', 'sandwich': 'sanduíche', 'orange': 'laranja', 'broccoli': 'brócolis', 'carrot': 'cenoura', 'hot dog': 'cachorro-quente', 'pizza': 'pizza', 'donut': 'rosquinha', 'cake': 'bolo', 'chair': 'cadeira', 'couch': 'sofá', 'potted plant': 'vaso', 'bed': 'cama', 'dining table': 'mesa', 'toilet': 'banheiro', 'tv': 'televisão', 'laptop': 'notebook', 'mouse': 'mouse', 'remote': 'controle', 'keyboard': 'teclado', 'cell phone': 'celular', 'microwave': 'microondas', 'oven': 'forno', 'toaster': 'torradeira', 'sink': 'pia', 'refrigerator': 'geladeira', 'book': 'livro', 'clock': 'relógio', 'vase': 'vaso', 'scissors': 'tesoura', 'teddy bear': 'urso', 'hair drier': 'secador', 'toothbrush': 'escova'
+        };
+
+        function falar(texto, forcar = false) {
+            if (sistemaPausado && !forcar) return;
+            if (texto === ultimaFala && !forcar) return;
             window.speechSynthesis.cancel();
-            const m = new SpeechSynthesisUtterance(t);
-            m.lang = 'pt-BR';
-            window.speechSynthesis.speak(m);
+            const msg = new SpeechSynthesisUtterance(texto);
+            msg.lang = 'pt-BR';
+            window.speechSynthesis.speak(msg);
+            ultimaFala = texto;
         }
 
-        async function prever() {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            
-            const predictions = await model.detect(video);
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // MODO 0: OBJETOS (COCO-SSD)
+        async function detecObjetos() {
+            if (processando || modoAtual !== 0) return;
+            processando = true;
+            try {
+                const predictions = await model.detect(video);
+                if (predictions.length > 0) {
+                    const traducao = dic[predictions[0].class] || predictions[0].class;
+                    if (traducao !== ultimoObjeto) {
+                        falar(traducao);
+                        ultimoObjeto = traducao;
+                    }
+                }
+            } catch(e) { console.error(e); }
+            processando = false;
+        }
 
-            if (predictions.length > 0) {
-                // Pega o objeto com maior confiança
-                const obj = predictions[0];
-                const nomeIngles = obj.class;
+        // MODO 1: PESSOAS (FILTRO DE 2 SEGUNDOS)
+        async function detecPessoas() {
+            if (processando || modoAtual !== 1) return;
+            processando = true;
+            try {
+                const prediction = await modelTM.predict(video);
+                let maiorProb = 0;
+                let nomeAtual = "";
 
-                // Só traduz e fala se mudar o objeto
-                if (nomeIngles !== ultimaPalavra) {
-                    const nomePT = await traduzir(nomeIngles);
-                    resElement.innerText = nomePT;
-                    falar(nomePT);
-                    ultimaPalavra = nomeIngles;
+                for (let i = 0; i < prediction.length; i++) {
+                    if (prediction[i].probability > maiorProb) {
+                        maiorProb = prediction[i].probability;
+                        nomeAtual = prediction[i].className;
+                    }
                 }
 
-                // Desenha o quadrado visual (Feedback para o usuário)
-                ctx.strokeStyle = "#3b82f6";
-                ctx.lineWidth = 4;
-                ctx.strokeRect(...obj.bbox);
-            }
+                // Validação de Confiança (> 85%)
+                if (maiorProb > 0.85) {
+                    if (nomeAtual === pessoaDetectadaAgora) {
+                        const tempoPassado = Date.now() - tempoInicioDeteccao;
+                        // Se detectado por mais de 2 segundos (2000ms)
+                        if (tempoPassado >= 2000 && nomeAtual !== ultimaPessoaFalada) {
+                            falar(nomeAtual);
+                            if (navigator.vibrate) navigator.vibrate(200); // Vibra ao confirmar
+                            ultimaPessoaFalada = nomeAtual;
+                        }
+                    } else {
+                        // Se mudou a pessoa ou iniciou agora, reseta cronômetro
+                        pessoaDetectadaAgora = nomeAtual;
+                        tempoInicioDeteccao = Date.now();
+                    }
+                } else {
+                    // Se perdeu o foco, limpa os estados para a próxima detecção
+                    pessoaDetectadaAgora = "";
+                    tempoInicioDeteccao = 0;
+                    ultimaPessoaFalada = "";
+                }
+            } catch(e) { console.error(e); }
+            processando = false;
+        }
 
-            requestAnimationFrame(prever);
+        // MODO 2: OCR (TESSERACT)
+        async function detecOCR() {
+            if (processando || modoAtual !== 2) return;
+            processando = true;
+            canvas.width = 400; canvas.height = 300;
+            ctx.drawImage(video, 0, 0, 400, 300);
+            try {
+                const { data: { text } } = await Tesseract.recognize(canvas, 'por');
+                const palavrasValidas = text.toLowerCase().match(/[a-zÀ-ÿ0-9]{3,}/g);
+                if (palavrasValidas) {
+                    const filtrado = palavrasValidas.filter(p => {
+                        const temVogal = /[aeiouyÀ-ÿ]/.test(p);
+                        return temVogal && !/(.)\1\1/.test(p);
+                    }).join(' ');
+                    if (filtrado.trim().length > 2) falar(filtrado);
+                }
+            } catch(e) { console.error(e); }
+            processando = false;
+        }
+
+        // MODO 3: CORES (HSL)
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            if (max === min) h = s = 0;
+            else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+                else if (max === g) h = (b - r) / d + 2;
+                else h = (r - g) / d + 4;
+                h /= 6;
+            }
+            return [h * 360, s * 100, l * 100];
+        }
+
+        function detecCores() {
+            if (modoAtual !== 3) return;
+            const size = 50;
+            canvas.width = size; canvas.height = size;
+            ctx.drawImage(video, (video.videoWidth/2)-(size/2), (video.videoHeight/2)-(size/2), size, size, 0, 0, size, size);
+            const data = ctx.getImageData(0,0,size,size).data;
+            let r=0, g=0, b=0;
+            for(let i=0; i<data.length; i+=4) { r+=data[i]; g+=data[i+1]; b+=data[i+2]; }
+            const [h, s, l] = rgbToHsl(r/(size*size), g/(size*size), b/(size*size));
+            let cor = (l<15)?"preto":(l>85)?"branco":(s<15)?"cinza":"";
+            if(!cor) {
+                if(h<15||h>345) cor="vermelho"; else if(h<45) cor="laranja";
+                else if(h<70) cor="amarelo"; else if(h<160) cor="verde";
+                else if(h<250) cor="azul"; else if(h<290) cor="roxo"; else cor="rosa";
+            }
+            if((cor==="laranja"||cor==="vermelho") && l<40) cor="marrom";
+            if(cor && cor !== ultimaCorDita) { falar(cor); ultimaCorDita = cor; }
+        }
+
+        // MODO 4: LUZ
+        function detecLuz() {
+            if (modoAtual !== 4) return;
+            canvas.width = 10; canvas.height = 10;
+            ctx.drawImage(video, 0, 0, 10, 10);
+            const d = ctx.getImageData(0,0,10,10).data;
+            let b = 0;
+            for(let i=0; i<d.length; i+=4) b += (d[i]+d[i+1]+d[i+2])/3;
+            b /= 25;
+            falar((b<30)?"Muito escuro":(b<80)?"Escuro":(b<150)?"Luz média":(b<220)?"Claro":"Muito claro");
+        }
+
+        // MODO 5: TEMPERATURA
+        async function obterTemperatura() {
+            if (modoAtual !== 5 || processando) return;
+            processando = true;
+            falar("Buscando clima.");
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                try {
+                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current_weather=true`);
+                    const data = await res.json();
+                    falar(Math.round(data.current_weather.temperature) + " graus.", true);
+                } catch(e) { falar("Erro de conexão."); }
+                finally { processando = false; }
+            }, () => { falar("GPS offline."); processando = false; });
+        }
+
+        // CONTROLES DE TOQUE
+        window.addEventListener('touchstart', (e) => {
+            const agora = Date.now();
+            if (agora - ultimoToque < 350) {
+                falar(ultimaFala, true);
+            } else {
+                modoAtual = (modoAtual + 1) % MODOS.length;
+                modoDisplay.innerText = MODOS[modoAtual];
+                falar(MODOS[modoAtual], true);
+                ultimoObjeto = ""; ultimaPessoaFalada = ""; pessoaDetectadaAgora = ""; 
+                tempoInicioDeteccao = 0; ultimaCorDita = "";
+                processando = false;
+                if (modoAtual === 5) obterTemperatura();
+            }
+            ultimoToque = agora;
+        });
+
+        // INICIALIZAÇÃO
+        async function init() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "environment", width: { ideal: 640 } } 
+                });
+                video.srcObject = stream;
+                
+                const [m1, m2] = await Promise.all([
+                    cocoSsd.load(),
+                    tmImage.load(URL_MODELO_TM + "model.json", URL_MODELO_TM + "metadata.json")
+                ]);
+                
+                model = m1; modelTM = m2;
+                modoDisplay.innerText = MODOS[0];
+                falar("Sistemas prontos.");
+                loop();
+            } catch (e) { 
+                falar("Erro na câmera."); 
+            }
+        }
+
+        function loop() {
+            if (!sistemaPausado) {
+                if (modoAtual === 0) detecObjetos();
+                if (modoAtual === 1) detecPessoas();
+                if (modoAtual === 2) detecOCR();
+                if (modoAtual === 3) detecCores();
+                if (modoAtual === 4) detecLuz();
+            }
+            const delay = (modoAtual === 2) ? 4000 : 1200;
+            setTimeout(() => requestAnimationFrame(loop), delay);
         }
 
         init();
     </script>
 </body>
-
 </html>
